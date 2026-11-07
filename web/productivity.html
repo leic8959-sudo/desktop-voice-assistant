@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>小燕子 · 主动助理</title><link rel="stylesheet" href="./productivity.css"></head>
+<body><main>
+<header><a href="./admin_console_demo.html">← 控制台</a><h1>主动助理</h1><p>把重复的事交给提醒，状态变化留给你决定。</p></header>
+<section class="auth"><label>管理员令牌 <input id="token" type="password" autocomplete="off" placeholder="或点击本机登录"></label><button id="local-login">本机登录</button><button id="refresh">刷新数据</button><span id="state" role="status">等待认证</span></section>
+<nav><a href="#routine-panel">提醒与习惯</a><a href="#summary-panel">早晚摘要</a><a href="#subscription-panel">事件订阅</a><a href="#scene-panel">家居场景</a><a href="#event-panel">通知记录</a></nav>
+<section class="card" id="routine-panel"><h2>重复提醒与习惯</h2><form id="routine-form">
+<label class="wide">提醒内容 <input name="title" required maxlength="200" placeholder="例如：起身活动一下"></label>
+<label>重复方式 <select name="frequency"><option value="daily">每天</option><option value="weekly">每周</option><option value="monthly">每月</option><option value="interval">间隔分钟</option></select></label>
+<label data-frequency="clock">提醒时间 <input name="time" type="time" value="09:00"></label><label data-frequency="interval" hidden>间隔分钟 <input name="interval_minutes" type="number" min="1" max="525600" value="60"></label>
+<fieldset data-frequency="weekly" hidden><legend>每周日期</legend><label><input type="checkbox" name="weekday" value="0" checked>一</label><label><input type="checkbox" name="weekday" value="1">二</label><label><input type="checkbox" name="weekday" value="2">三</label><label><input type="checkbox" name="weekday" value="3">四</label><label><input type="checkbox" name="weekday" value="4">五</label><label><input type="checkbox" name="weekday" value="5">六</label><label><input type="checkbox" name="weekday" value="6">日</label></fieldset>
+<label data-frequency="monthly" hidden>每月日期 <input name="month_day" type="number" value="1" min="1" max="31"><small>当月没有该日时采用月末</small></label>
+<label>重复依据 <select name="anchor"><option value="scheduled">按计划时间重复</option><option value="completion">本次完成或跳过后再计时</option></select></label><label>业务时区 <select name="timezone" class="timezone"></select></label>
+<label>首次时间（可选，须带时区）<input name="start_at" placeholder="2026-11-05T09:00:00+08:00"></label><button class="primary" type="submit">保存提醒</button></form><p class="hint">同一规则只保留一个未处理实例。暂停会保留本次提醒；恢复时跳过已错过的计划。卡片交付状态与设备实际显示分别记录。</p><div id="routines" class="items"></div></section>
+<section class="card" id="summary-panel"><h2>早晚摘要</h2><p class="hint">汇总真实待办，可选择日历和天气。不会自动发送邮件或抢占语音。</p><div id="summaries"></div><div class="actions"><button id="summary-now">立即生成本地摘要</button></div><h3>可选主动语音播报</h3><form id="speech-form"><label><span><input name="enabled" type="checkbox"> 授权小燕子主动播报</span></label><fieldset><legend>允许播报的内容</legend><label><input name="kind" type="checkbox" value="summary">早晚摘要</label><label><input name="kind" type="checkbox" value="routine">重复提醒</label><label><input name="kind" type="checkbox" value="subscription">订阅变化</label></fieldset><button type="submit">保存播报授权</button></form><p class="hint">默认关闭。勾选并保存后，将所选提醒文字发送现有云TTS合成；最多30秒。免打扰、提醒静音、会话静音、设备忙碌或没有单一在线设备时跳过，不排队补播。新语音会话开始会停止本次主动播报。已发送不代表设备已播放；当前固件使用会话音量通道。</p><p id="speech-state" class="hint">尚未读取播报授权。</p></section>
+<section class="card" id="subscription-panel"><h2>重要事件与状态订阅</h2><form id="subscription-form">
+<label>事件类型 <select name="kind"><option value="meeting">会议快开始</option><option value="mail">指定邮件到达</option><option value="github_ci">GitHub CI异常</option><option value="ha_state">HA传感器状态</option></select></label>
+<label data-subscription="meeting mail">连接来源 <select name="provider"></select></label>
+<label data-subscription="github_ci ha_state">目标 <input name="target" maxlength="160" placeholder="owner/repo 或 binary_sensor.xxx"></label>
+<label data-subscription="meeting">提前分钟 <input name="lead_minutes" type="number" min="1" max="1440" value="10"></label>
+<label data-subscription="meeting">显示时区 <select name="timezone" class="timezone"></select></label>
+<label data-subscription="mail">指定发件人 <input name="sender" type="email" maxlength="254" placeholder="person@example.com"></label>
+<label data-subscription="mail">主题包含 <input name="subject_contains" maxlength="120" placeholder="与发件人同时填写时须同时满足"></label>
+<label data-subscription="github_ci">分支（可选）<input name="branch" maxlength="120" placeholder="例如 main；留空所有分支"></label>
+<fieldset data-subscription="github_ci"><legend>通知的CI结果</legend><label><input name="conclusion" type="checkbox" value="failure" checked>失败</label><label><input name="conclusion" type="checkbox" value="timed_out" checked>超时</label><label><input name="conclusion" type="checkbox" value="cancelled">取消</label><label><input name="conclusion" type="checkbox" value="action_required">需处理</label><label><input name="conclusion" type="checkbox" value="startup_failure">启动失败</label></fieldset>
+<label>轮询秒数 <input name="interval_s" type="number" min="60" max="86400" value="300"></label>
+<label data-subscription="meeting mail github_ci">合并窗口秒 <input name="merge_window_s" type="number" min="0" max="300" value="30"></label>
+<label data-subscription="meeting mail github_ci">此订阅通知最小间隔秒 <input name="min_notify_interval_s" type="number" min="30" max="3600" value="120"></label>
+<label data-subscription="ha_state">匹配状态（可选）<input name="match_state" maxlength="80" placeholder="如 on；留空通知所有变化"></label><label data-subscription="ha_state">事件关联场景 <select name="scene_id" id="subscription-scene"><option value="">仅通知</option></select></label><button class="primary" type="submit">保存订阅</button></form>
+<p class="hint">邮件须填写发件人或主题之一，均填写时同时匹配；只读收件箱元数据，不读正文。邮件与CI首次只建立基线，不补发历史；会议会提醒当前尚未开始的日程，仅支持主日历且跳过全天日程。会议使用最近完整快照处理改期和取消。重要通知按订阅合并，全局每60秒最多一批、每批最多20条；已开始的会议不补播。读取失败会退避，水位与分页在重启后保留。HA变化仅代表平台报告，关联场景须管理员确认。</p><div id="subscriptions" class="items"></div></section>
+<section class="card" id="scene-panel"><h2>家居场景</h2><button id="load-home">读取已授权家居设备与动作</button><p id="home-state" class="hint">尚未读取设备。</p><form id="scene-form"><label class="wide">场景名称 <input name="name" required maxlength="80"></label><div id="steps" class="wide"></div><button id="add-step" type="button">添加一步</button><button class="primary" type="submit">保存场景</button><button id="cancel-edit" type="button" hidden>取消编辑</button></form><p class="hint">最多10步，严格按顺序执行。任一步结果未知立即停止，不会自动回滚已执行步骤。</p><div id="scenes" class="items"></div><section id="scene-preview" hidden aria-live="polite"></section></section>
+<section class="card" id="event-panel"><h2>通知与执行记录</h2><p class="hint">最近50条；保留30天，最多500条。未连接设备时可在此读取。</p><div id="events" class="items"></div></section>
+<section class="card"><h2>最近结果</h2><pre id="output" role="status">尚未执行操作。</pre></section>
+</main><script type="module" src="./productivity.js"></script></body></html>

@@ -1,0 +1,14 @@
+services:
+  assistant:
+    build: .
+    ports:
+      - "127.0.0.1:8765:8765"
+    env_file:
+      - .env
+    volumes:
+      - ./config.local.json:/app/config.local.json:ro
+      - assistant_runtime:/app/runtime
+    restart: unless-stopped
+
+volumes:
+  assistant_runtime:

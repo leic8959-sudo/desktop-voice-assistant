@@ -1,0 +1,18 @@
+services:
+  music-assistant:
+    image: ghcr.io/music-assistant/server:2.10.9
+    container_name: xiaoyanzi-music-assistant
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8095:8095"
+      - "127.0.0.1:8097:8097"
+    volumes:
+      - ./runtime/music-assistant:/data
+      - ./tools/music_assistant_player:/app/venv/lib/python3.14/site-packages/music_assistant/providers/xiaoyanzi:ro
+    environment:
+      TZ: UTC
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

@@ -1,0 +1,59 @@
+{
+  "source": "NotoSansCJKsc-Regular.otf",
+  "license": "OFL.txt",
+  "size_px": 16,
+  "bpp": 2,
+  "gb2312_codepoints": 6763,
+  "gb2312_hanzi": 6763,
+  "ranges": [
+    "U+0020-U+007F",
+    "U+3000-U+303F",
+    "U+FF00-U+FFEF"
+  ],
+  "ui_extra_codepoints": [
+    "U+201C",
+    "U+201D",
+    "U+3002",
+    "U+FF0C",
+    "U+FF1A",
+    "U+FF1B"
+  ],
+  "source_missing_core_codepoints": [],
+  "generated_missing_requested": [
+    "U+FF00",
+    "U+FFBF",
+    "U+FFC0",
+    "U+FFC1",
+    "U+FFC8",
+    "U+FFC9",
+    "U+FFD0",
+    "U+FFD1",
+    "U+FFD8",
+    "U+FFD9",
+    "U+FFDD",
+    "U+FFDE",
+    "U+FFDF",
+    "U+FFE7",
+    "U+FFEF"
+  ],
+  "optional_source_missing": [
+    "U+FF00",
+    "U+FFBF",
+    "U+FFC0",
+    "U+FFC1",
+    "U+FFC8",
+    "U+FFC9",
+    "U+FFD0",
+    "U+FFD1",
+    "U+FFD8",
+    "U+FFD9",
+    "U+FFDD",
+    "U+FFDE",
+    "U+FFDF",
+    "U+FFE7",
+    "U+FFEF"
+  ],
+  "output_bytes": 3281441,
+  "estimated_bitmap_bytes": 324037,
+  "output_sha256": "eec807b05848df344700aedc40829378a53aa1e39b015485d27787279748b965"
+}

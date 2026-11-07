@@ -1,0 +1,10 @@
+{
+  "type": "player",
+  "domain": "xiaoyanzi",
+  "name": "小燕子网关",
+  "description": "将 Music Assistant 正式音频流交给本机小燕子网关；播放状态由实体设备回执更新。",
+  "codeowners": [],
+  "requirements": [],
+  "documentation": "https://developers.music-assistant.io/",
+  "multi_instance": false
+}
