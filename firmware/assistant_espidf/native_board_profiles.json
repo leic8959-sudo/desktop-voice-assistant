@@ -1,0 +1,2214 @@
+{
+  "schema_version": 1,
+  "profiles": {
+    "waveshare-amoled-1.8": {
+      "project_name": "assistant_espidf",
+      "target": "esp32s3",
+      "bsp_component": "esp32_s3_touch_amoled_1_8",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_AMOLED_18=1"
+      ],
+      "upstream_variant": null,
+      "legacy": true,
+      "legacy_reason": "Historical CO5300 entry; not the upstream SH8601 release identity. Select explicit 1.8-sh8601 or 1.8-v2 for new builds.",
+      "qspi_panel": "co5300",
+      "flash_size_mb": 16
+    },
+    "esp32-s3-box-3": {
+      "project_name": "assistant_box3",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_BOX3=1"
+      ],
+      "upstream_variant": "espressif-esp-box-3",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "LocalBOX3fixedBSP3.2.1wiring/320x240SPI3mode040MHz/displayTTprobeST7789elseILI9341with11boundedvendorrowsandcorrected0x80-0xffmarkers/activeHIGH48sharedreset10-10ms/mirrorXY/PWM47dark/2x20rowDMA. TouchGT9110x5Dthen0x14elseTT211000x24/finite100msIO/multi-error-cancel/releasegate/TTmirrorX319/TTrawlengthheaderandtipvalidation/nochipidentityclaim. I2C1SDA8SCL18/ES7210STD2MIC1-ES831124kMCLK2BCLK17WS45DIN16DOUT15/PA46checkedgate/customwakeAFE-AECmedia-bindingdualOTAretained. DockSD4bit11-14-9-13-42-12/power43LOW/noformat/USBconsole/BOOT0. DockI2C40-41/sensors/MUTE1andcapacitivehomecallbacksnotported/hardwareunaccepted."
+    },
+    "waveshare-amoled-1.75": {
+      "project_name": "assistant_amoled175",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_AMOLED_175=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-touch-amoled-1.75",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "LocalCO53002.2.0/LVGLport2.9/CST9217legacyfiniteIOandreleasegate;466round14originalcommandswithonlybrightnessFF->00/gap6,0/mirrorXYtouch465/noSwap/SPI2mode040MHz/2x20rowinternalDMA. I2C1SDA15SCL14/ALDO1readback/PA46gate/ES7210STD2MIC1-ES8311at24k/customwakeAFE-AECmedia-bindingdualOTAretained. OriginalMCLK42LCDreset39touchreset40/16MBFlash/SD1bitCLK2CMD1D0=3noformat. OnlypinnedCO5300-CST9217sourcepath/noSH8601orCST9220equivalence/hardwareunaccepted."
+    },
+    "m5stack-core-s3": {
+      "project_name": "assistant_cores3",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_CORES3=1"
+      ],
+      "upstream_variant": "m5stack-core-s3",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "LocalfixedBSP3.0.2wiring/320x240/BGR-ILI9341default18commands/invert/SPI3mode040MHz37-35-36LCDCS3/DC35sharedSDMISO/SDK5.5.6pre-postDCoutputgating/noSDKpatch. AW95230x58maskedP0touch0/codec2/SD4-P1LCD1GPIOdirectionandmode/AXP0x34ALDO11.8V-ALDO23.3V-SDALDO43.3V/DLDO1backlightbit7/ownedbitsreadback/100msmutexIO/nochargerorcameraenable. ES7210STD2MIC1-AW8829824k/I2C1SDA12SCL11/I2S0MCLK0BCLK34WS33DOUT13DIN14/resetNC/hwgain15/checkedDACmute/noGPIO0button/noresetasmute. FT5x061.1.1rawcount-event7byte/releasegate/PMICbrightness0actualDLDOoff/LVGLcore1double20rowDMA. SDsharedSPI3CS4noformat/fullwakeAFE-AECbinding-media-dualOTA/QUADPSRAM/16MB. NotCoreS3SEornewILI9342Erevisionacceptance/hardwareunaccepted."
+    },
+    "waveshare-amoled-1.75c": {
+      "project_name": "assistant_amoled175c",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_AMOLED_175C=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-touch-amoled-1.75c",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 32,
+      "implementation_scope": "LocalCO53002.2.0/LVGLport2.9/CST9217legacyfiniteIOandreleasegate;466round14originalcommandswithonlybrightnessFF->00/gap6,0/mirrorXYtouch465/noSwap/SPI2mode040MHz/2x20rowinternalDMA. I2C1SDA15SCL14/ALDO1readback/PA46gate/ES7210STD2MIC1-ES8311at24k/customwakeAFE-AECmedia-bindingdualOTAretained. CvariantMCLK16LCDreset1touchreset2/32MBFlash/noSD. OnlypinnedCO5300-CST9217sourcepath/noSH8601orCST9220equivalence/hardwareunaccepted."
+    },
+    "waveshare-amoled-1.8-sh8601": {
+      "project_name": "assistant_sh8601",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_AMOLED_18=1",
+        "ASSISTANT_BOARD_SH8601=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-touch-amoled-1.8",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Original1.8 SH8601 BSP1.1.4 fixedc77caf; localQSPI368x448/gap0/9commands startup51=00/TCA9554P0-P2reset/FT5x06 IRQ21-resetNC; checked singleES8311BOTHmono24k/PA46/I2C1/AXP2101-ALDO1/1bitSD/customwake-AFE-AEC/media-binding-dualOTA retained;hardware unaccepted"
+    },
+    "waveshare-amoled-1.8-v2": {
+      "project_name": "assistant_amoled18v2",
+      "target": "esp32s3",
+      "bsp_component": "esp32_s3_touch_amoled_1_8",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_AMOLED_18=1",
+        "ASSISTANT_BOARD_AMOLED_18_V2=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-touch-amoled-1.8-v2",
+      "legacy": false,
+      "qspi_panel": "co5300",
+      "flash_size_mb": 16
+    },
+    "esp32-s3-box": {
+      "project_name": "assistant_box",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_BOX=1"
+      ],
+      "upstream_variant": "espressif-esp-box",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "LocalBOXsharedboard/WS47-BL45-versusBOX3WS45-BL47/reset48activeLOW/noSD/SPI3mode040MHz320x240. PinnedXiaoZhiILI9341vendor11parameterrows/corrected0x80-0xffmarkers/BGRcache08matchesvendorMADCTL08/noSwap. BOXmirrorXY/noinvert/TT211000x24legacyboundedrawread-releasegate/ES7210-ES8311native24k/BOOT0PTT. Currentcodec1.5.11checkeddata-mute-gain/PA46externalgate/fullcustomwakeAFE-AECmedia-bindingdualOTA/NVSpreserved/hardwareunaccepted."
+    },
+    "esp32-s3-box-lite": {
+      "project_name": "assistant_boxlite",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_BOXLITE=1"
+      ],
+      "upstream_variant": "espressif-esp-box-lite",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "LocalBOXsharedboard/WS47-BL45-versusBOX3WS45-BL47/reset48activeLOW/noSD/SPI3mode040MHz320x240. PinnedXiaoZhiILI9341vendor11parameterrows/corrected0x80-0xffmarkers/BGRcache08matchesvendorMADCTL08/noSwap. LiteRGBinitialfactoryvsMADCTL08sourcediscrepancyexplicit/mirrorY/invert/backlightinverted/noTouch/ES7243E-ES8156native16k/MCLK256fs/commonPCM24kFIR/BOOT0PTT-cardselectconfirm. Currentcodec1.5.11checkeddata-mute-gain/PA46externalgate/fullcustomwakeAFE-AECmedia-bindingdualOTA/NVSpreserved/hardwareunaccepted."
+    },
+    "lilygo-t-circle-s3": {
+      "project_name": "assistant_tcircle",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_TCIRCLE=1"
+      ],
+      "upstream_variant": "lilygo-t-circle-s3",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16
+    },
+    "lilygo-t-circle-s3-v11": {
+      "project_name": "assistant_tcircle11",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_TCIRCLE=1",
+        "ASSISTANT_BOARD_TCIRCLE_V11=1"
+      ],
+      "upstream_variant": "lilygo-t-circle-s3-v11",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16
+    },
+    "waveshare-amoled-1.32": {
+      "project_name": "assistant_amoled132",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_AMOLED_132=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-touch-amoled-1.32",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 8,
+      "implementation_scope": "PinnedhistoricalSH8601variant22733e088a533378680a03e398279b2f7ab09a73/notregistryCO5300. Local466x466RGB565gap6/QSPI2mode040MHzCS10CLK11data12-13-14-15RST8/11originalcommandsonly51FF->00/2x20rowinternalDMA37280. CST820fixedref340906c82fdee8f218c39bc8f59084f356e515db/address15/reset7LOW200HIGH200/IRQ6poll/5byte02rawcount-singlepoint/noeventassumption/releasegate/ID-A7loggednotauthenticated/noexternalCSTinstalled. I2C1SDA47SCL48/singleES8311BOTH24kmonoMCLK38BCLK39WS41DOUT42DIN40/PA46checkedgate/codec1.5.11. OriginalGPIO18latch-PWR17path/noSD/8MB-OCTPSRAM/2x2A0000OTA-model240000/NVS9000preserved. FullcustomwakeAFE-AECmedia-bindingdualOTA/buildseparate/hardwareunaccepted."
+    },
+    "waveshare-amoled-2.06": {
+      "project_name": "assistant_amoled206",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_AMOLED_206=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-touch-amoled-2.06",
+      "legacy": false,
+      "qspi_panel": "sh8601",
+      "flash_size_mb": 32,
+      "implementation_scope": "LocalSH8601RGB565viareviewedSDKDCSIObridge/32bitQSPI02-32/SPI2mode040MHzCS12CLK11D0..3=4-5-6-7/RST8/410x502Xgap22/11fixedcommandswithonly51FF->00/2x20rowinternalDMA32800bytes/noaxesmirror. FT5x061.1.1raw7bytecount-event/0x38/RST9IRQ38/100msIO/releasegate/noCST9217. I2C1SDA15SCL14/ALDO1-2at3.3Vexistingreadback/ES7210STD2MIC1-ES831124kMCLK16BCLK41WS45DIN42DOUT40/PA46checkedgate/SD1bitCLK2CMD1D0=3noformat/BOOT0/32MB-OCTPSRAM. FullcustomwakeAFE-AECmedia-binding-dualOTAretained/buildseparate/hardwareunaccepted."
+    },
+    "waveshare-amoled-2.16": {
+      "project_name": "assistant_amoled216",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_AMOLED_216=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-touch-amoled-2.16",
+      "legacy": false,
+      "qspi_panel": "co5300",
+      "flash_size_mb": 16,
+      "implementation_scope": "LocalCO53002.2.0panel/fixed15commandsMADCTLA0exceptstartupbrightness0/SPI2mode040MHz480x480/double20rowinternalDMA. FixedCST9217legacy0x5A10byteD000report/rawcountrejectmulti/finite100msIO/originalconfigreadthen10-50msreset/identityloggednotauthenticated/swapXYmirrorY479/releasegate/noCST9220equivalence. OriginalI2C1SDA15SCL14/ALDO1andPA46/ES7210twoSTDslotsMIC1-ES8311at24k/SD1bitCLK2CMD1D0=3/noformat/BOOT0. FullwakeAFE-AECmedia-binding-dualOTAretained;buildtrackedseparately/hardwareunaccepted."
+    },
+    "waveshare-lcd-1.54": {
+      "project_name": "assistant_lcd154",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_WAVESHARE_SPI=1",
+        "ASSISTANT_BOARD_LCD_154=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-touch-lcd-1.54",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16
+    },
+    "waveshare-lcd-1.83": {
+      "project_name": "assistant_lcd183",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_WAVESHARE_SPI=1",
+        "ASSISTANT_BOARD_LCD_183=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-touch-lcd-1.83",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16
+    },
+    "waveshare-lcd-0.85": {
+      "project_name": "assistant_lcd085",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_WAVESHARE_SPI=1",
+        "ASSISTANT_BOARD_LCD_085=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-lcd-0.85",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 8
+    },
+    "waveshare-lcd-1.46": {
+      "project_name": "assistant_lcd146",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_LCD_146=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-touch-lcd-1.46",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Fixed1.46source/QSPI2mode3-40MHz412RGB565/originalSPDdefault402sequence/sharednativepanel/noaxes-swap/SWrotation0extra20rowstripe;TCA9554P0-P1reset/noGPIOtouchreset/address53-100k/cmd0/100msIO/18byteFWread/BIOS-CPU-pointmode-HDP-handshake/full10point64bytebound/checkedclear/8status512byte1spollbudget/firstHDPdecodedperfixedWaveshare-Espressifreference/remainingbytesdrained-bounded/validatedfirstreportpublishedonlyafter82andclearsuccess/payloadsemanticsphysicalunaccepted/initialrelease-multi-OOB-errorcancel/nativecoords. Digital16kRIGHT32input>>12/24kLEFT32PCM5101output/softwaremute/fullwake-AEC-naturalbarge-media-binding-dualOTA preserved. BOOT0/PWR6fresh5shold/latch7 originalsource. SensorRTCbatterytelemetryunimplemented;touchfirmware/HDPremainingdata/ready-release/40MHz/clock/acoustic/runtimephysicalacceptancenot_run;buildtrackedseparately."
+    },
+    "waveshare-lcd-1.85": {
+      "project_name": "assistant_lcd185",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_LCD_185_FAMILY=1",
+        "ASSISTANT_BOARD_LCD_185=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-touch-lcd-1.85",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Original digital16kinput/24kBOTHoutput and independent touchI2C preserved. Checked3MHzpanelID->80MHzQSPI chooses fixed2.0.2default216 forV1 or original184V2; expanderreset plus NC/software01+120ms preserved. Shared360RGB565nativepanel; physical/clock/touch/acoustic/dualOTA acceptance incomplete."
+    },
+    "waveshare-lcd-1.85b": {
+      "project_name": "assistant_lcd185b",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_LCD_185_FAMILY=1",
+        "ASSISTANT_BOARD_LCD_185B=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-touch-lcd-1.85b",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "OriginalES7210/ES8311-24kPA9 and directLCDreset3/touchreset1 preserved. Checked3MHzpanelID->80MHzQSPI chooses original181B-V1 or184V2; board20/150ms reset then panel10/120ms preserved. Shared360RGB565nativepanel; hardware/clock/touch/acoustic/dualOTA acceptance incomplete."
+    },
+    "waveshare-lcd-1.85c": {
+      "project_name": "assistant_lcd185c",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_LCD_185_FAMILY=1",
+        "ASSISTANT_BOARD_LCD_185C=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-touch-lcd-1.85c",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "OriginalVERSION2.0hardwareES7210/ES8311-24kPA15/sharedI2C preserved; C1.0 remains unported. Checked3MHzpanelID->80MHzQSPI chooses fixed2.0.2default216V1 or original184V2; expanderreset plus NC/software01+120ms preserved. Shared360RGB565nativepanel; physical/clock/touch/acoustic/dualOTA acceptance incomplete."
+    },
+    "lc-s3-wifi-1.54tft": {
+      "project_name": "assistant_lctft154",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_LC_TFT=1"
+      ],
+      "upstream_variant": "lc-s3-wifi-1.54tft",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16
+    },
+    "nologo-xingzhi-cube-1.54tft-wifi": {
+      "project_name": "assistant_xztft154",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_XINGZHI_TFT=1",
+        "ASSISTANT_BOARD_TFT_DIGITAL=1"
+      ],
+      "upstream_variant": "nologo-xingzhi-cube-1.54tft-wifi",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16
+    },
+    "zhengchen-1.54tft-wifi": {
+      "project_name": "assistant_zctft154",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_ZHENGCHEN_TFT=1",
+        "ASSISTANT_BOARD_TFT_DIGITAL=1"
+      ],
+      "upstream_variant": "zhengchen-1.54tft-wifi",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16
+    },
+    "bread-compact-wifi-lcd": {
+      "project_name": "assistant_breadlcd",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_TFT_DIGITAL=1",
+        "ASSISTANT_BOARD_BREAD_TFT=1"
+      ],
+      "upstream_variant": "bread-compact-wifi-lcd",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16
+    },
+    "nologo-xingzhi-abs-2.0": {
+      "project_name": "assistant_xzabs20",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_XINGZHI_ABS=1"
+      ],
+      "upstream_variant": "nologo-xingzhi-abs-2.0",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16
+    },
+    "nologo-xingzhi-cube-0.85tft-wifi": {
+      "project_name": "assistant_xz085",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_XINGZHI_085=1",
+        "ASSISTANT_BOARD_TFT_DIGITAL=1"
+      ],
+      "upstream_variant": "nologo-xingzhi-cube-0.85tft-wifi",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": " NV3023one-timeboardstartupusesSDKDCSdrawops+originalBGR55preamble/tableformat05default-or65Xingzhi/16bitbuffer/reset10-120ms/noadded-sleep-api;physicalnot_run."
+    },
+    "nologo-xingzhi-metal-1.54-wifi": {
+      "project_name": "assistant_xzmetal154",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_XINGZHI_METAL=1"
+      ],
+      "upstream_variant": "nologo-xingzhi-metal-1.54-wifi",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16
+    },
+    "spotpear-sp-esp32-s3-1.28-box": {
+      "project_name": "assistant_spbox128",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_SPOTPEAR=1",
+        "ASSISTANT_BOARD_SPOTPEAR_BOX=1"
+      ],
+      "upstream_variant": "spotpear-sp-esp32-s3-1.28-box",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": " CurrentGC9A01defaultusesSDKDCSoperations+exact2.0.4BGR-RGB565-preamble/42commands/originalreset/backlight/posttuning;noexternalGC9A01dependency/noadded-sleep-api;build-evidence-separate/physicalnot_run."
+    },
+    "spotpear-sp-esp32-s3-1.54-muma": {
+      "project_name": "assistant_spmuma154",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_SPOTPEAR=1",
+        "ASSISTANT_BOARD_SPOTPEAR_MUMA=1"
+      ],
+      "upstream_variant": "spotpear-sp-esp32-s3-1.54-muma",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16
+    },
+    "movecall-moji-esp32s3": {
+      "project_name": "assistant_mvmoji",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_MOVECALL=1",
+        "ASSISTANT_BOARD_MOVECALL_MOJI=1"
+      ],
+      "upstream_variant": "movecall-moji-esp32s3",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": " CurrentGC9A01defaultusesSDKDCSoperations+exact2.0.4BGR-RGB565-preamble/42commands/originalreset/backlight/posttuning;noexternalGC9A01dependency/noadded-sleep-api;build-evidence-separate/physicalnot_run."
+    },
+    "movecall-cuican-esp32s3": {
+      "project_name": "assistant_mvcuican",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_MOVECALL=1",
+        "ASSISTANT_BOARD_MOVECALL_CUICAN=1"
+      ],
+      "upstream_variant": "movecall-cuican-esp32s3",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 8,
+      "implementation_scope": " CurrentGC9A01defaultusesSDKDCSoperations+exact2.0.4BGR-RGB565-preamble/42commands/originalreset/backlight/posttuning;noexternalGC9A01dependency/noadded-sleep-api;build-evidence-separate/physicalnot_run."
+    },
+    "genjutech-s3-1.54tft": {
+      "project_name": "assistant_genju154",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_GENJUTECH=1"
+      ],
+      "upstream_variant": "genjutech-s3-1.54tft",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16
+    },
+    "bread-compact-wifi": {
+      "project_name": "assistant_oled32",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_OLED=1"
+      ],
+      "upstream_variant": "bread-compact-wifi",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16
+    },
+    "bread-compact-wifi-128x64": {
+      "project_name": "assistant_oled64",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_OLED=1",
+        "ASSISTANT_BOARD_OLED_64=1"
+      ],
+      "upstream_variant": "bread-compact-wifi-128x64",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16
+    },
+    "nologo-xingzhi-cube-0.96oled-wifi": {
+      "project_name": "assistant_xzoled",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_OLED=1",
+        "ASSISTANT_BOARD_OLED_64=1",
+        "ASSISTANT_BOARD_OLED_CUBE=1"
+      ],
+      "upstream_variant": "nologo-xingzhi-cube-0.96oled-wifi",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16
+    },
+    "hu-087": {
+      "project_name": "assistant_hu087",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_OLED=1",
+        "ASSISTANT_BOARD_OLED_64=1",
+        "ASSISTANT_BOARD_HU087=1"
+      ],
+      "upstream_variant": "hu-087",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16
+    },
+    "kevin-box-2": {
+      "project_name": "assistant_kevinbox2",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_OLED=1",
+        "ASSISTANT_BOARD_OLED_64=1",
+        "ASSISTANT_BOARD_KEVIN_BOX2=1"
+      ],
+      "upstream_variant": "kevin-box-2",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16
+    },
+    "maza-ai-esp32-s3": {
+      "project_name": "assistant_maza29",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_MAZA=1"
+      ],
+      "upstream_variant": "maza-ai-esp32-s3",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16
+    },
+    "wk-esp32s3-dev": {
+      "project_name": "assistant_wkoled32",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_OLED=1",
+        "ASSISTANT_BOARD_WK=1"
+      ],
+      "upstream_variant": "wk-esp32s3-dev",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Pinned release default:SSD1306 128x32,BOARD_NO_MOTOR_CONTROL,simplex audio. Other display/motor configurations remain incomplete."
+    },
+    "yunliao-s3": {
+      "project_name": "assistant_yunliao",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_YUNLIAO=1"
+      ],
+      "upstream_variant": "yunliao-s3",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Base WiFi voice/ST7789 default inversion/ES8388 left microphone/software AEC. Cellular,hardware-reference,IPS selection,battery/sleep/startup gestures incomplete."
+    },
+    "taiji-pi-s3": {
+      "project_name": "assistant_taijistd",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_TAIJI=1"
+      ],
+      "upstream_variant": "taiji-pi-s3",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Fixed STD microphone/panel table;older batch per README.360px QSPI/CST816,24kHz digital input/output,default2-slot output. Physical andclean release acceptance incomplete. Board-owned fixed360RGB565 QSPI lifecycle preserves ST77916 2.0.2 protocol and original table; no external ST77916 package. Touch/acoustic/hardware acceptance remains incomplete."
+    },
+    "taiji-pi-s3-pdm": {
+      "project_name": "assistant_taijipdm",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_TAIJI=1",
+        "ASSISTANT_BOARD_TAIJI_PDM=1"
+      ],
+      "upstream_variant": "taiji-pi-s3-pdm",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Fixed PDM microphone/panel table;batch>2528 per README.360px QSPI/CST816,24kHz digital input/output,default2-slot output. Physical andclean release acceptance incomplete. Board-owned fixed360RGB565 QSPI lifecycle preserves ST77916 2.0.2 protocol and original table; no external ST77916 package. Touch/acoustic/hardware acceptance remains incomplete."
+    },
+    "doit-s3-aibox": {
+      "project_name": "assistant_doitaibox",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_HEADLESS=1",
+        "ASSISTANT_BOARD_DOIT=1"
+      ],
+      "upstream_variant": "doit-s3-aibox",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "HeadlessPDM16kHz input/24kHz output. PhoneAP portal forpairing/status/reminder-card confirmation,common-anodeLED45 andkeys10/15/9. Physical/network/phone acceptance incomplete."
+    },
+    "m5stack-atom-echos3r": {
+      "project_name": "assistant_atomechos3r",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_HEADLESS=1",
+        "ASSISTANT_BOARD_ATOM_ECHOS3R=1"
+      ],
+      "upstream_variant": "m5stack-atom-echos3r",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 8,
+      "implementation_scope": "Headless ES8311 24kHz voice/BCLK-derived codec clock/PA18,phone portal with GPIO41 hold3s,8MB/OCT dualOTA. No genericDoit LED/keys. Physical/manualtalk/button access/hardware-reference acceptance incomplete."
+    },
+    "du-chatx": {
+      "project_name": "assistant_duchatx",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_TFT_DIGITAL=1",
+        "ASSISTANT_BOARD_DUCHATX=1"
+      ],
+      "upstream_variant": "du-chatx",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "128x160ST7789RGB/offset2,1/mirrorXY,16kHzI2Smic/24kHzspeaker,RTCpower1 andBOOT0. Battery/charging/LED/deepsleep andphysicalacceptance incomplete."
+    },
+    "kevin-sp-v4-dev": {
+      "project_name": "assistant_kevinspv4",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_KEVIN_SPV4=1"
+      ],
+      "upstream_variant": "kevin-sp-v4-dev",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "240x280ST7789/offset0,20,ES8311 input-output16kHz/I2C1/PA41,BOOT0. Camera/cellular/LED andphysicalacceptance incomplete."
+    },
+    "jiuchuan-s3": {
+      "project_name": "assistant_jiuchuan",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_JIUCHUAN=1"
+      ],
+      "upstream_variant": "jiuchuan-s3",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "240x296BGR fixedGC9309NA-named sequence (upstreamfilegc9301),ES8311mono24kHz/I2C1/PA42,RTC5hold/high-activepowerkey3/BOOT0/volume6-7. Battery/LED/sleep/originalgestures/controlleridentity andphysicalacceptance incomplete."
+    },
+    "lckfb-lichuang-dev": {
+      "project_name": "assistant_lichuang",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_PCA_BOX=1",
+        "ASSISTANT_BOARD_LICHUANG=1"
+      ],
+      "upstream_variant": "lckfb-lichuang-dev",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "320x240ST7789/PCA9557LCD-PA/ft5x06/ES8311-ES7210TDM4/I2C1/BOOT0. MIC1mono/softwareAEC;hardware-reference/camera/LED/battery andphysicalacceptance incomplete."
+    },
+    "rymcu-bigsmart": {
+      "project_name": "assistant_bigsmart",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_PCA_BOX=1",
+        "ASSISTANT_BOARD_BIGSMART=1"
+      ],
+      "upstream_variant": "rymcu-bigsmart",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "320x240ST7789/PCA9557LCD-PA/gt911/ES8311-ES7210TDM4/I2C1/BOOT0. MIC1mono/softwareAEC;hardware-reference/camera/LED/battery andphysicalacceptance incomplete. GT911nativepolling/default0x5D/noGPIOreset-IRQ-sleep/400kHz/100ms-perIO/fivepoints-no-truncation/initialrelease/error-multipoint-outofrange-cancel-rearm/raw240x320-to-y-239minusx;targetbuild-evidence-separate/physicalnot_run."
+    },
+    "alientek-atk-dnesp32s3": {
+      "project_name": "assistant_atkdev",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_ATK_DEV=1"
+      ],
+      "upstream_variant": "alientek-atk-dnesp32s3",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "320x240ST7789/SPI2/ES8388mono24kHz/XL9555verifiedSPKbit2activeLOW,LCD_BL8on-off/reset10/power11. No physicalGPIO PWM. Camera/LED/expanderkeys/SD andphysicalacceptance incomplete."
+    },
+    "alientek-atk-dnesp32s3-box0": {
+      "project_name": "assistant_atkbox0",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_ATK_BOX0=1"
+      ],
+      "upstream_variant": "alientek-atk-dnesp32s3-box0",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "240x240ST7789/SPI2/ES8311mono16kHz/BCLKderivednoMCLK/system2-codec14-charge47initialHIGH/middle4activeHIGH/vol0-3activeLOW. PA21activeHIGHiscommunitycandidate,notmanufacturerconfirmed. Battery/sleep/powergestures/LED andphysicalacceptance incomplete."
+    },
+    "alientek-atk-dnesp32s3-box": {
+      "project_name": "assistant_atkbox",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_ATK_BOX=1"
+      ],
+      "upstream_variant": "alientek-atk-dnesp32s3-box",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "320x240ST7789/I80-8bit10MHz/XL9555checkedbit5runtimeES8311orNS4168digitalduplex24kHz. Digitalstereo16leftcapture/duplicatedplayback;no32bitmiscast. Panelblankingon-offonly. Expanderoutputpurpose/PA/physicalrevision/audioanddeviceacceptance incomplete."
+    },
+    "alientek-atk-dnesp32s3-box2-wifi": {
+      "project_name": "assistant_atkbox2",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_ATK_BOX2=1"
+      ],
+      "upstream_variant": "alientek-atk-dnesp32s3-box2-wifi",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "240x320ST7789/I80-8bit20MHz/ES8389mono24kHzMCLK/sharedcodec/TXclockretained.TCA9555system-analograils/PA9/USB8-VBUS11/left5LOW-middle7HIGH-rightGPIO0LOWkeys.Charge14input,4G12andSBUstatespreserved.Battery/lowvoltage/sleep/shutdown/extraQkey andphysicalacceptance incomplete."
+    },
+    "alientek-atk-dnesp32s3-box3": {
+      "project_name": "assistant_atkbox3",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_ATK_BOX3=1"
+      ],
+      "upstream_variant": "alientek-atk-dnesp32s3-box3",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "320x240ST7789/SPI2-60MHz/ES8311-ES7210TDM4-24kHz/AW9523BID23-GPIOmode-directions04/05/PA5-HIGH/BL8-LOW/rails11-13HIGH. MixedK1LOW-K2HIGH-BOOT0LOWkeys. Hardware-reference/camera/reset15/rail14/LED/battery/charger/lowvoltage/sleep/poweroff andphysicalacceptance incomplete."
+    },
+    "xorigin-aipi-lite": {
+      "project_name": "assistant_aipilite",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_AIPI=1"
+      ],
+      "upstream_variant": "xorigin-aipi-lite",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "preserved_flash_ranges": [
+        {
+          "offset": 36864,
+          "size": 16384,
+          "purpose": "original_factory_information"
+        },
+        {
+          "offset": 65536,
+          "size": 16384,
+          "purpose": "assistant_device_configuration"
+        }
+      ],
+      "implementation_scope": "128x128BGRST7789/SPI3-40MHz/swapXY-mirrorX/ES8311mono24kHzI2C1/BCLKderived/RTC10power/BOOT42.Preservesfactory9000- CFFF asreadonlyrawpartition;newNVS10000,OTAdata14000.PA9.Nooriginalcredentialreading/battery/sleep/poweroff/LEDacceptance;deviceandrestoreunaccepted."
+    },
+    "waveshare-audio-board": {
+      "project_name": "assistant_wsaudio",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_WS_AUDIO=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-audio-board",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "DefaultJD9853 320x172/SPI2-20MHz/32commandtable/RGB56505/gap0-34/finalswapXY-mirrorY.ES8311-ES7210TDM4monoMIC1-24kHz/I2C0/TCA9555reset0-1/PA8.Camera5-6preserved.OptionalST7789/camera/touch/LED/hardware-reference/deviceacceptance incomplete."
+    },
+    "minsi-k08-dual": {
+      "project_name": "assistant_minsik08",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_TFT_DIGITAL=1",
+        "ASSISTANT_BOARD_MINSI=1"
+      ],
+      "upstream_variant": "minsi-k08-dual",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Wi-Fi voice candidate: ST7789 240x240/SPI3-mode3-40MHz/swapXY-mirrorY/gap80-0. INMP441 monoLEFT32bit16kHz input/MAX98357 monoLEFT32bit16kHz output(network24to16FIR/sameactualPCMsoftwareAECreference;datasheetp19rejects24kHz). BOOT0/up47/down46;GPIO18 microphone,never lamp output. Cellular/battery/sleep/LED/device acceptance incomplete."
+    },
+    "nulllab-ai-vox-v3": {
+      "project_name": "assistant_aivox3",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_AIVOX3=1"
+      ],
+      "upstream_variant": "nulllab-ai-vox-v3",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Wi-Fi voice candidate: optional ST7789 240x240/SPI3-mode0-40MHz/RGB/no rotation. ES8311 I2C0/24kHz/MCLK128fs/initial stereo16/shared mono codec/PA-NC/37.5dB idle gain/software AEC. BOOT0/up46/down45. Cellular/OLED/SD/battery/LED/motor/sleep/device acceptance incomplete."
+    },
+    "mixgo-nova": {
+      "project_name": "assistant_mixgo",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_MIXGO=1"
+      ],
+      "upstream_variant": "mixgo-nova",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 8,
+      "implementation_scope": "128x160 RGB ST7789-compatible panel/SPI3-40MHz/mirrorXY/gap2-1. ES8374 stereo16-init/mono24kHz/MCLK256fs/I2C0-SDA37-SCL36/PA-NC. Board-local register21 input select24 correction with readback;QUAD PSRAM/8MB partitions/BOOT0. Sensor/LED/physical acceptance incomplete."
+    },
+    "magiclick-2p4": {
+      "project_name": "assistant_magic24",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_MAGICLICK=1",
+        "ASSISTANT_BOARD_MAGICLICK_24=1"
+      ],
+      "upstream_variant": "magiclick-2p4",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "128x128 BGR NV3023 driver default init/SPI3-40MHz/mirrorY/activeHIGH BL13. ES8311 mono24kHz/I2C0/PA4(no effect on original PCB2.4,used2.4A). Listen21/up47/down0. LED supply39 off;battery/LED/sleep/physical acceptance incomplete;Currenttargetbuild-evidence-separate. NV3023one-timeboardstartupusesSDKDCSdrawops+originalBGR55preamble/tableformat05default-or65Xingzhi/16bitbuffer/reset10-120ms/noadded-sleep-api;physicalnot_run."
+    },
+    "magiclick-2p5": {
+      "project_name": "assistant_magic25",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_MAGICLICK=1",
+        "ASSISTANT_BOARD_MAGICLICK_25=1"
+      ],
+      "upstream_variant": "magiclick-2p5",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "128x128/SPI3-20MHz/activeLOW BL13. ADC1-channel2(GPIO3) detects2.5A-GC9107 custom table or2.5A1-ST7735-compatible ST7789/gap2-3/mirrorXY. Unknown revision stops display. ES8311 mono24kHz/PA4. Listen21/up47/down0. Wi-Fi-only/modem40off/LED39off. Battery/cellular/sleep/physical acceptance incomplete;Targetbuild-evidence-separate. GC9107one-timeboardinitusesSDKDCSoperations+originalcustomtable/preamble/ID-orADC-selection;noexternalGC9A01dependency/noadded-sleep-api;physicalnot_run."
+    },
+    "labplus-ledong-v2": {
+      "project_name": "assistant_ledongv2",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_LABPLUS=1",
+        "ASSISTANT_BOARD_LEDONG=1"
+      ],
+      "upstream_variant": "labplus-ledong-v2",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Wi-Fi voice candidate:16MB/QUAD PSRAM;320x172 RGB JD9853 via actual fixed ST7789-default branch/SPI2-20MHz/queue7/100ms extra reset delay/swapXY-mirrorXY-gap0-34/CS-NC/BL34/STM8address11-command04-LCDreset.ES8388-24kHz-256fs/slave codec/monoLEFT input/24dB idle/PA-NC/checkanalog46-49/gain/mute/reopen.OnlyBOOT0input;motor/buzzer/RGB/sensors/camera/secondarykey46/touch/sleep/physicalacceptance incomplete."
+    },
+    "labplus-mpython-v3": {
+      "project_name": "assistant_mpythonv3",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_LABPLUS=1",
+        "ASSISTANT_BOARD_MPYTHON=1"
+      ],
+      "upstream_variant": "labplus-mpython-v3",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Wi-Fi voice candidate:16MB/QUAD PSRAM;320x172 RGB JD9853 via actual fixed ST7789-default branch/SPI2-20MHz/queue7/100ms extra reset delay/swapXY-mirrorXY-gap0-34/CS34/BL33/noSTM8reset.ES8388-24kHz-256fs/slave codec/monoLEFT input/24dB idle/PA-NC/checkanalog46-49/gain/mute/reopen.OnlyBOOT0input;motor/buzzer/RGB/sensors/camera/secondarykey46/touch/sleep/physicalacceptance incomplete."
+    },
+    "chd-esp32s3-box": {
+      "project_name": "assistant_chdbox",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_CHD=1"
+      ],
+      "upstream_variant": "chd-esp32s3-box",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "320x240RGB ST7789/noinvert/swapXY-mirrorX/SPI3-40MHz/BL47HIGH/I2C1SDA8-SCL18/ES8311-ES7210TDM4slot0MIC1-24kHz/softwareAEC/PA46HIGH-checkedmute. OptionalFT6336-GT911probe/specificrawcoordinatepaths. BOOT0/cards. GT911usesnativepolling;3.5ST7796dependencyremains. Panel/table/coordinates/hardware-reference/camera/cellular/battery/orientation/sleep/physicalacceptance incomplete. CurrentFT38-GT5D-GT14probe-only-onNACK/selectedIO16or8bits/100msperIO/GTnativefivepoints/FTtwo-pointview/multi-error-bounds-cancel-release-rearm;nativeGTreadyincludedinpointerpresence;targetbuild-evidence-separate/physicalnot_run."
+    },
+    "chd-esp32s3-box-lcd35": {
+      "project_name": "assistant_chdbox35",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_CHD=1",
+        "ASSISTANT_BOARD_CHD_LCD35=1"
+      ],
+      "upstream_variant": "chd-esp32s3-box-lcd35",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "480x320BGR ST7796 reviewed1.3.5default12table/viaSDK-DCS-defaultinit/invert/swapXY/SPI3-40MHz/BL47HIGH/I2C1SDA8-SCL18/ES8311-ES7210TDM4slot0MIC1-24kHz/softwareAEC/PA46HIGH-checkedmute. OptionalFT6336-GT911probe/specificrawcoordinatepaths. BOOT0/cards. GT911usesnativepolling;NoexternalST7796dependency/currenttargetbuild-evidence-separate. Panel/table/coordinates/hardware-reference/camera/cellular/battery/orientation/sleep/physicalacceptance incomplete. CurrentFT38-GT5D-GT14probe-only-onNACK/selectedIO16or8bits/100msperIO/GTnativefivepoints/FTtwo-pointview/multi-error-bounds-cancel-release-rearm;nativeGTreadyincludedinpointerpresence;targetbuild-evidence-separate/physicalnot_run. DefaultST7796one-timeSPI16bitops/preambleBGR08-COLMOD05/table12/softwareReset120ms/reusesreviewedsharedtable;GT35plus80-coordinate-limitationstillunaccepted/physicalnot_run."
+    },
+    "m5stack-atoms3r-cam-m12-echo-base": {
+      "project_name": "assistant_atomm12base",
+      "target": "esp32s3",
+      "bsp_component": "esp_codec_dev",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_HEADLESS=1",
+        "ASSISTANT_BOARD_ATOM_M12_BASE=1"
+      ],
+      "upstream_variant": "m5stack-atoms3r-cam-m12-echo-base",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 8,
+      "implementation_scope": "CAM/M12+AtomicEchoBase voice candidate.No screen/no application key/8MBflash-OctalPSRAM.I2C0SDA38-SCL39/ES8311mono24kHzBCLKderived/BCLK8-WS6-DIN7-DOUT5/PAexpander43-P0only. Schematic-backedPI4IOEdirection03=output1/highZ07=drive0/output05RMWreadback. Wake/softwareAEC/phonehotspotportal600soneachboot,APinterfaceonly. Camera/GPIO18/LED/hotplug/physicalacceptance incomplete. ValidatesPI4IOEreg01manufacturerID101/3.3VPAhardwaregain."
+    },
+    "m5stack-atoms3r-echo-base": {
+      "project_name": "assistant_atoms3rbase",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_ATOM_S3R_DISPLAY=1",
+        "ASSISTANT_BOARD_ATOM_S3R_BASE=1"
+      ],
+      "upstream_variant": "m5stack-atoms3r-echo-base",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 8,
+      "implementation_scope": "AtomS3R+EchoBase8MBflash/OctalPSRAM/128x128BGR/SPI3-40MHz.3wire16MHzRDDID04 selectsGC9107-custom19commands orST7735-viaST7789;unknownIDstops.LP5562internalI2C0SDA45SCL0addr30/W-PWM0E/direct70-C0/clock08-41/linear00-40withreadback.AudioI2C1SDA38SCL39/ES8311mono24kHzBCLKderived/3.3VPA/PI4IOE43P0-onlycheckedmute;BOOT41.Targetbuild-evidence-separate.Camera/IMU/IR/RGB/hotplug/physicalacceptance incomplete. GC9107one-timeboardinitusesSDKDCSoperations+originalcustomtable/preamble/ID-orADC-selection;noexternalGC9A01dependency/noadded-sleep-api;physicalnot_run."
+    },
+    "m5stack-atoms3r-echo-pyramid": {
+      "project_name": "assistant_echopyramid",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_ATOM_S3R_DISPLAY=1",
+        "ASSISTANT_BOARD_ECHO_PYRAMID=1"
+      ],
+      "upstream_variant": "m5stack-atoms3r-echo-pyramid",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 8,
+      "implementation_scope": "8MB/OctalPSRAM/AtomS3R128x128BGR-IDGC9107mirrorXYgap0-0/ST7735nomirrorgap2-3/LP5562-I2C0. PyramidI2C1SDA38SCL39/Si5351-27MHzPLLA884.736MHz-MS1div144-6.144MHzCLK1/STM32A0speakerreset/AW87559-ID5A-PAcheckedmute16.5dBgain/ES8311+ES7210MIC1-MIC3twoSTDslots24kHz/BCLK6-WS8-DIN5-DOUT7/softwareAECslot0. Targetbuild-evidence-separate.RGB/hotplug/physicalclocks/acoustics/deviceacceptance incomplete. GC9107one-timeboardinitusesSDKDCSoperations+originalcustomtable/preamble/ID-orADC-selection;noexternalGC9A01dependency/noadded-sleep-api;physicalnot_run."
+    },
+    "m5stack-stick-s3": {
+      "project_name": "assistant_sticks3",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_STICK_S3=1"
+      ],
+      "upstream_variant": "m5stack-stick-s3",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 8,
+      "implementation_scope": "8MBflash/OctalPSRAM/135x240RGB ST7789P3 SPI3-40MHz/no mirrors/gap52-40/PWM38HIGH. ManufacturerST7789correctsREADMECO5300. I2C0SDA47SCL48/ES8311mono24kHzBCLKderived/BCLK17-WS15-DIN16-DOUT14/MCLK18routed. PM1addr6E/G2LCDcodec/G3PA/RMWreadback100mstimeout/nochargeboostpoweroffchanges. BOOT11talkcards/user12input-only. Allhardwarevolume scaled60percent. User12action/battery/IMU/IR/sleep/physicalacceptance incomplete."
+    },
+    "chd-esp32s3-eye": {
+      "project_name": "assistant_chdeye",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_CHD_EYE=1"
+      ],
+      "upstream_variant": "chd-esp32s3-eye",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Defaultrelease16MBflash/OctalPSRAM/240x240RGB-ST7789-SPI3mode0-40MHz-MOSI47CLK21DC43CS44RSTNC-BL48HIGH/invert/noaxisrotation/gap0-0. SingleES8311I2C1SDA4SCL5/I2S0MCLK2BCLK42WS45DIN41DOUT46/16kHz-input-output/useMCLK/PA40HIGH-checkedmute. Boot0talkcards/softwareAEC. Upstreamconstructorport0correctedtoactualbus1. Camera/fiveclickNVSerase/physicalacceptance incomplete."
+    },
+    "dfrobot-df-s3-ai-cam": {
+      "project_name": "assistant_dfaicam",
+      "target": "esp32s3",
+      "bsp_component": "esp_codec_dev",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_HEADLESS=1",
+        "ASSISTANT_BOARD_DF_AI_CAM=1"
+      ],
+      "upstream_variant": "dfrobot-df-s3-ai-cam",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "DFR1154 voice candidate16MBflash/Octal8MBPSRAM/no screen/PDMCLK38DIN39monoLEFT16kHz/I2S1speakerBCLK45WS46DOUT42LEFT32bit24kHz/noPApin/GAIN41unused. WiFiPHYlimit10dBm. BOOT0long3sreopens600sphoneAPportal/wake-onlytalk/LED3activeHIGHheadlessstate. Camera/BOOTshorttoggle/gainpin/hardwareacceptance incomplete."
+    },
+    "freenove-esp32s3-display-2.8-lcd": {
+      "project_name": "assistant_freenove28",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_FREENOVE=1"
+      ],
+      "upstream_variant": "freenove-esp32s3-display-2.8-lcd",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Fixedrelease16MBflash/OctalPSRAM;320x240BGR-ILI9341-defaultinit-SPI3mode0-20MHz/MOSI11MISO13CLK12DC46CS10RSTNC-BL45HIGH/invert-swapXY-no-mirror-gap0-0. SingleES8311I2C0SDA16SCL15/I2S0MCLK4BCLK5WS7DIN6DOUT8/mono24kHz-input-output/useMCLK/PA1LOW-checkedmute. BOOT0andFT6336U0x38touch-presence-onlysharedkey/initialrelease/multitouch-chord-handoff-errorcancel/noLVGLpointer. Touchcoordinates/stockgestures/LED42/battery/physicalacceptance incomplete. CurrentpanelusesSDKDCSoperationswithILI9341-2.1.0exact18defaultcommands/BGR-RGB565-preamble/sleep120ms/externalILI9341dependencyremoved;targetbuild-evidence-separate/physicalnot_run."
+    },
+    "quandong-s3-dev": {
+      "project_name": "assistant_quandong",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_QUANDONG=1"
+      ],
+      "upstream_variant": "quandong-s3-dev",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Fixedrelease16MB/Octal;320x240ILI9341SPI2mode0-40MHz/MOSI11CLK12DC46CS10RSTNC-BL45HIGH/invert-swapXYmirrorY-gap0-0.19validvendorcommands/MADCTL08overridesRGBconstructorBGRbit;3malformedNOP1byte-with17or41lengthomitted;SDK-DCS-operations/board-init-keepsILI9341-RGB-preamble+SLPOUT100ms+19commands/BGRcachedstate08/sleep120ms/DISPONviaAPI. SingleES8311I2C0SDA16SCL15/I2S0MCLK4BCLK5WS7DIN6DOUT8/mono24kHz/useMCLK/PA1LOW-checkedmute/BOOT0sharedtalkcards. ConfigunusedPCA9557andES7210notinstantiated;no touch orLED. NoexternalILI9341dependency/targetbuild-evidence-separate;panelcorrectionandallphysicalacceptance pending."
+    },
+    "espressif-esp32s3-korvo2-v3": {
+      "project_name": "assistant_korvo2",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_KORVO2=1"
+      ],
+      "upstream_variant": "espressif-esp32s3-korvo2-v3",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "DefaultKconfigST7789only/280x240RGB-SPI3mode0-60MHz/MOSI0CLK1DC2CS46RSTexpP2/invert/swapXYmirrorYgap20-0. I2C1SDA17SCL18/TCA9554orA20-38/P1backlightONOFF/P2reset/P3LCDselect/P0preserved/readback100ms. ES8311+ES7210TDM4MIC1slot0softwareAEC24kHz/MCLK16BCLK9WS45DIN10DOUT8/PA48HIGHcheckedmute. ADC1CH4GPIO5calibratedmVREC2310-2510/VolUp280-480/VolDown720-920/initialrelease/otherwindowscancel;GPIO5notdigitalBOOT. ILI9341/touch/camera/SD/battery/stockmuteSETgestures/RNDIS/physicalacceptance incomplete."
+    },
+    "bread-compact-wifi-s3cam": {
+      "project_name": "assistant_bread_s3cam",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_TFT_DIGITAL=1",
+        "ASSISTANT_BOARD_BREAD_TFT=1",
+        "ASSISTANT_BOARD_BREAD_S3_CAM=1"
+      ],
+      "upstream_variant": "bread-compact-wifi-s3cam",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "FixedreleaseST7789-240x320RGB/SPI3mode0-40MHzMOSI20CLK19DC47CS45RST21BL38HIGH/invert/noaxisrotation/gap0-0. USB19-20displayconflict:UART0console43-44/USBconsoleandsecondarydisabled. DigitalMIC-I2S0WS1BCLK2DIN42LEFT32bit16kHz;I2S1speakerBCLK40WS41DOUT39LEFT32bit24kHz/softwaremute/noPA. BOOT0onlytalkcards/firstrelease;16MB-Octalreleaseinheritance. Camera/LED48/lamp14/allotherscreenoptions/fullstockclickgestures/physicalacceptance incomplete."
+    },
+    "zhengchen-cam": {
+      "project_name": "assistant_zhengchen_cam",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_ZHENGCHEN_CAM=1"
+      ],
+      "upstream_variant": "zhengchen-cam",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "FixeddefaultlandscapeST7789-320x240RGB/SPI3mode0-80MHzMOSI40CLK41DC39CSNC/RSTNC/LCDcontrol-PCA0/BL42LOW/invert/swapXYmirrorXgap0-0. I2C1SDA1SCL2/PCA9557addr19P0LCDcontrol-P1PA-high/P2cameraunmodified/readback;ES8311+ES7210addr82TDM4MIC1slot0softwareAEC24kHz/MCLK38BCLK14WS13DIN12DOUT45. BOOT0/VOLup3down46/initialrelease-multikeycancel;16MB-Octalreleaseinheritance. Camera/LED48/battery-temp/portraittoggle/stockdoubletapresetAEC/MCPextras/physicalacceptance incomplete."
+    },
+    "guition-jc4827w543": {
+      "project_name": "assistant_guition",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_GUITION=1"
+      ],
+      "upstream_variant": "guition-jc4827w543",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 4,
+      "implementation_scope": "SourcecandidateN4R8/4MBflash-OctalPSRAM/singlefactoryapp0x20000-0x400000/noOTA-nomodel-manualtouch/no localwake. NV3041A480x272RGB-QSPI2-40MHzCS45CLK47D0-21D1-48D2-40D3-39RSTNC/BL1HIGH/IPS-invert/0-180only. GT911I2C1SDA8SCL4INT3RST38driveraddr5Ddeterministic/noemptyfallback/notouchfailurestartup. INMP441externalLEFT16kHzSCK6WS7DIN15/outputLEFT24kHz:stockNS4168BCLK42WS2DOUT41;extBCLK9WS14DOUT16plusparkstock42-2-41LOW. Softwaremute/AEC-WebRTCVAD-noexternalmodels. BOOT0TEsharedunused;touchholdtalk/cards. MissingGT9111.2.1,targetnotcompiled;battery/BOOT/OTA/wake/physicalacceptance incomplete."
+    },
+    "guition-jc4827w543-ext-amp": {
+      "project_name": "assistant_guition_ext",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_GUITION=1",
+        "ASSISTANT_BOARD_GUITION_EXT_AMP=1"
+      ],
+      "upstream_variant": "guition-jc4827w543-ext-amp",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 4,
+      "implementation_scope": "SourcecandidateN4R8/4MBflash-OctalPSRAM/singlefactoryapp0x20000-0x400000/noOTA-nomodel-manualtouch/no localwake. NV3041A480x272RGB-QSPI2-40MHzCS45CLK47D0-21D1-48D2-40D3-39RSTNC/BL1HIGH/IPS-invert/0-180only. GT911I2C1SDA8SCL4INT3RST38driveraddr5Ddeterministic/noemptyfallback/notouchfailurestartup. INMP441externalLEFT16kHzSCK6WS7DIN15/outputLEFT16kHz(extMAX98357datasheetp19rejects24k/network24to16FIR):stockNS4168unused42-2-41;extBCLK9WS14DOUT16plusparkstock42-2-41LOW. Softwaremute/AEC-WebRTCVAD-noexternalmodels. BOOT0TEsharedunused;touchholdtalk/cards. MissingGT9111.2.1,targetnotcompiled;battery/BOOT/OTA/wake/physicalacceptance incomplete."
+    },
+    "waveshare-esp32-s3-cam-1.83": {
+      "project_name": "assistant_wscam183",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_WS_CAM=1",
+        "ASSISTANT_BOARD_WS_CAM_183=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-cam-1.83",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Sourcecandidatefixedrelease16MB-Octal/SPI2mode0-40MHzMOSI1CLK5DC3CS6MISONC-RSTviaCH32P1;1.83ST7789-240x284RGB/2and2.8ST7789-240x320RGB/3.5ST7796-320x480BGRmirrorX/allinvert/noaxes/gap0-0. I2C1SDA8SCL7/CH32V003addr24-public2.0.0constructorFULLPORTRESET(dirFF,out00)/P0TP-P1LCD10msreset/P4PAackonly-P6LEDHIGH/P2SD-P3CAM-P5BAT-P7CHGnotpreservedbyconstructor. PWM05inverted100-percent. ES8311+ES7210TDM4MIC1slot0softwareAEC24kHz/MCLK10BCLK11WS12DIN13DOUT14/PAp4offuntilactualDACunmute. BOOT0talkcards/initialrelease. NativeboardownedCH32protocol24/02dirFF-03out00-05PWM/inheritedwholeportreset/cachedACKonly/1000msIO-100msmutex/faultrequiresrestart;3.5reviewedST7796default12commands+SDKDCSothersST7789;buildtrackedseparately.Camera/battery/SD/stockfactoryswitch-AECtoggle/touch/physicalacceptance incomplete."
+    },
+    "waveshare-esp32-s3-cam-2": {
+      "project_name": "assistant_wscam2",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_WS_CAM=1",
+        "ASSISTANT_BOARD_WS_CAM_2=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-cam-2",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Sourcecandidatefixedrelease16MB-Octal/SPI2mode0-40MHzMOSI1CLK5DC3CS6MISONC-RSTviaCH32P1;1.83ST7789-240x284RGB/2and2.8ST7789-240x320RGB/3.5ST7796-320x480BGRmirrorX/allinvert/noaxes/gap0-0. I2C1SDA8SCL7/CH32V003addr24-public2.0.0constructorFULLPORTRESET(dirFF,out00)/P0TP-P1LCD10msreset/P4PAackonly-P6LEDHIGH/P2SD-P3CAM-P5BAT-P7CHGnotpreservedbyconstructor. PWM05inverted100-percent. ES8311+ES7210TDM4MIC1slot0softwareAEC24kHz/MCLK10BCLK11WS12DIN13DOUT14/PAp4offuntilactualDACunmute. BOOT0talkcards/initialrelease. NativeboardownedCH32protocol24/02dirFF-03out00-05PWM/inheritedwholeportreset/cachedACKonly/1000msIO-100msmutex/faultrequiresrestart;3.5reviewedST7796default12commands+SDKDCSothersST7789;buildtrackedseparately.Camera/battery/SD/stockfactoryswitch-AECtoggle/touch/physicalacceptance incomplete."
+    },
+    "waveshare-esp32-s3-cam-2.8": {
+      "project_name": "assistant_wscam28",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_WS_CAM=1",
+        "ASSISTANT_BOARD_WS_CAM_28=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-cam-2.8",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Sourcecandidatefixedrelease16MB-Octal/SPI2mode0-40MHzMOSI1CLK5DC3CS6MISONC-RSTviaCH32P1;1.83ST7789-240x284RGB/2and2.8ST7789-240x320RGB/3.5ST7796-320x480BGRmirrorX/allinvert/noaxes/gap0-0. I2C1SDA8SCL7/CH32V003addr24-public2.0.0constructorFULLPORTRESET(dirFF,out00)/P0TP-P1LCD10msreset/P4PAackonly-P6LEDHIGH/P2SD-P3CAM-P5BAT-P7CHGnotpreservedbyconstructor. PWM05inverted100-percent. ES8311+ES7210TDM4MIC1slot0softwareAEC24kHz/MCLK10BCLK11WS12DIN13DOUT14/PAp4offuntilactualDACunmute. BOOT0talkcards/initialrelease. NativeboardownedCH32protocol24/02dirFF-03out00-05PWM/inheritedwholeportreset/cachedACKonly/1000msIO-100msmutex/faultrequiresrestart;3.5reviewedST7796default12commands+SDKDCSothersST7789;buildtrackedseparately.Camera/battery/SD/stockfactoryswitch-AECtoggle/touch/physicalacceptance incomplete."
+    },
+    "waveshare-esp32-s3-cam-3.5": {
+      "project_name": "assistant_wscam35",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_WS_CAM=1",
+        "ASSISTANT_BOARD_WS_CAM_35=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-cam-3.5",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Sourcecandidatefixedrelease16MB-Octal/SPI2mode0-40MHzMOSI1CLK5DC3CS6MISONC-RSTviaCH32P1;1.83ST7789-240x284RGB/2and2.8ST7789-240x320RGB/3.5ST7796-320x480BGRmirrorX/allinvert/noaxes/gap0-0. I2C1SDA8SCL7/CH32V003addr24-public2.0.0constructorFULLPORTRESET(dirFF,out00)/P0TP-P1LCD10msreset/P4PAackonly-P6LEDHIGH/P2SD-P3CAM-P5BAT-P7CHGnotpreservedbyconstructor. PWM05inverted100-percent. ES8311+ES7210TDM4MIC1slot0softwareAEC24kHz/MCLK10BCLK11WS12DIN13DOUT14/PAp4offuntilactualDACunmute. BOOT0talkcards/initialrelease. NativeboardownedCH32protocol24/02dirFF-03out00-05PWM/inheritedwholeportreset/cachedACKonly/1000msIO-100msmutex/faultrequiresrestart;3.5reviewedST7796default12commands+SDKDCSothersST7789;buildtrackedseparately.Camera/battery/SD/stockfactoryswitch-AECtoggle/touch/physicalacceptance incomplete."
+    },
+    "lceda-course-examples-eda-super-bear": {
+      "project_name": "assistant_eda_bear",
+      "target": "esp32s3",
+      "bsp_component": "esp_codec_dev",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_HEADLESS=1",
+        "ASSISTANT_BOARD_EDA_BEAR=1"
+      ],
+      "upstream_variant": "lceda-course-examples-eda-super-bear",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "NoDisplay/sourcecandidate16MB-Octal/release16mdefault. StandardI2S0MIC16kHzLEFT32bitBCLK39WS40DIN41/I2S1speaker24kHzLEFT32bitBCLK48WS45DOUT47/softwaremute/noPA. GPIO38long3sphoneportal-taskbeforeaudio/wake-onlytalk/noLED. GPIO14TOUCHmacroconflictsrightfootservo-actualclassunused/notread;no servo11-14-13-12-21-10orcontrollercompiled. StockBOOTclickandallmotion/physicalacceptance incomplete."
+    },
+    "lceda-course-examples-eda-robot-pro": {
+      "project_name": "assistant_eda_robot",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_OLED=1",
+        "ASSISTANT_BOARD_OLED_64=1",
+        "ASSISTANT_BOARD_EDA_ROBOT=1"
+      ],
+      "upstream_variant": "lceda-course-examples-eda-robot-pro",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "SSD1306I2C0SDA12SCL13addr3C/128x64nomirrors/noreset/invertfalse/14pxtext. StandardI2S0MIC16kHzLEFT32bitBCLK16WS17DIN18/I2S1speaker24kHzLEFT32bitBCLK39WS38DOUT40/softwaremute/noPA. Actualtouchkey14initialrelease-talkcards;BOOT0unused;no genericOLEDkeys39-40because speakerpins. No servo47-21-9-10orcontrollercompiled. Fixed16MB-Octalrelease/notany8MBmodule/physicalacceptance incomplete."
+    },
+    "lceda-course-examples-eda-tv-pro": {
+      "project_name": "assistant_eda_tv",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_TFT_DIGITAL=1",
+        "ASSISTANT_BOARD_EDA_TV=1"
+      ],
+      "upstream_variant": "lceda-course-examples-eda-tv-pro",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "ST7789RGB240x240SPI3mode2-40MHzMOSI11CLK12DC47CSNC-RST48-BL38HIGH/invert-noaxesmirror-gap0-0. Actualheader2retaineddespite7PINmenuname. StandarddigitalMIC16kHzLEFT32bitBCLK5WS4DIN6/I2S1speaker24kHzLEFT32bitBCLK15WS16DOUT7/softwaremute/noPA. BOOT0initialrelease-talkcards;unusedTOUCH40/ASR21/LED2notinitialized. Fixed16MB-Octalrelease/physicalacceptance incomplete."
+    },
+    "otto-robot": {
+      "project_name": "assistant_otto",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_TFT_DIGITAL=1",
+        "ASSISTANT_BOARD_OTTO=1"
+      ],
+      "upstream_variant": "otto-robot",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Sourcecandidatefixedrelease16MB-Octal;runtimeGPIO15-16weakpulldown8stableHIGHsamples=CAMhardware,anyLOW=NONCAM/configerrorsstop/releasepullsafterdetect. ST7789RGB240x240SPI3mode3-40MHz/invert/nomirrors/gap0:CAMMOSI45CLK48DC47CSNCRST1BL38;NONMOSI10CLK9DC46CS12RST11BL3. MIC16kHzLEFT32bit;CAMI2S0duplexBCLK42WS40DIN41DOUT39/speaker16kHz-viaexisting24to16FIR-and-exactAECref;NONI2S0MICBCLK5WS4DIN6/I2S1speaker24kHzBCLK15WS16DOUT7. BOOT0initialrelease-talkcards. No cameraXCLK/I2Cprobe/init,servo/controller/movement,robotWS8080,battery/stockemojis. NONLCDCS12alsorighthandservo12macroconflict,hardwareacceptancepending;nodigitallycontrolledservosbutnotmechanicalsafetyacceptance."
+    },
+    "lcdwiki-es3c35p": {
+      "project_name": "assistant_lcdwiki",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_LCDWIKI=1"
+      ],
+      "upstream_variant": "lcdwiki-es3c35p",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "SourcecandidateES3C35P-N16R8/16MB-Octal8MBPSRAM;ST77922TDDIQSPI2mode0-80MHzCS10CLK12D0-11D1-13D2-14D3-9RSTNC-BL41HIGH/BGRconstructorbutvendorMADCTL00/noinvert/noaxesmirrors/gap0-0/4pixelrounder/driver2.0.2. TouchI2C0SDA38SCL39addr55-16bitBEregs0010info0009max0014points7byte/RESET48LOW10msHIGH100ms/INT47input/poll/singlepoint-inrange/initialrelease-multipoint-errorcancel/noFT5x06fallback. ES8311I2C0mono24kHzMCLK17BCLK18WS21DIN16DOUT15/useMCLK/PA1LOWcheckedmute. BOOT0talkcards/touchcards. Camera/SD/battery/RGB40/reconfigureMCP/physicalacceptance incomplete;FixednativeST77922/QSPI63table/pageF0-F1-F2/MADCTL08-COLMOD55preamblethenCMD1-MADCTL00-COLMOD01/software01reset120ms/nohardwareXYswap;targetbuildtrackedseparately."
+    },
+    "kevin-yuying-313lcd": {
+      "project_name": "assistant_kevin_rgb",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_KEVIN_RGB=1"
+      ],
+      "upstream_variant": "kevin-yuying-313lcd",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Sourcecandidate16MB-Octal/nativeportrait376x960RGB565/PCLK16MHzHS6VS5DE15CLK7/D0..15=47,21,14,13,12,11,10,9,46,3,20,19,8,18,17,16/BL4HIGH. GC9503Vfixedactiveinit viaexisting3wireIOCS48SCL17SDA16/SWRESET120ms/B1-10/COLMOD50/retainedvendorcommands;IOalwaysdeletedbeforeRGB17-16reuse/no freedIOpointer.2PSRAMframes10rowbounce/LVGLportRGBdirectinternalbuffers-framecompletewait/no HWswap-mirrorclaim. UART0console43-44/noUSB19-20console. SingleES8311I2C0SDA1SCL2/mono16kHzMCLK42BCLK41WS39DIN40DOUT38/useMCLK/PA45HIGHcheckedmute;existing24to16FIRreference. BOOT0initialrelease-talkcards/no touch. Upstream376x960+swapXYmirrorXdirectfbconflictresolvedtonativescan,physicalorientationunaccepted;allhardwareacceptancepending."
+    },
+    "waveshare-esp32-s3-touch-lcd-4.3c": {
+      "project_name": "assistant_ws43c",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_WS_RGB_C=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-touch-lcd-4.3c",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Sourcecandidate800x480nativeRGB565/PCLK16MHz/2PSRAMframes10rowbounce/directframefinishsync/GT9115Dtouch-required/BOOT0RGBDATA6notbutton. RGBdata4.3C=14,38,18,17,10,39,0,45,48,47,21,1,2,42,41,40;7CchangesD8-9=9,8. I2C0SDA8SCL9(43C)orSDA47SCL48(7C);CH32addr24vendor2.0.0WHOLEPORTRESETdirectionFF-output00/cachedstate-notreadback/P1touchreset200ms-P2BLenable-P3PAoffuntilDACunmute/PWMreversed/7CP6sourcehigh. ES7210TDM4MIC1slot0softwareAEC24kHz/MCLK6BCLK44WS16DIN43DOUT15/43CES8311monoout/7CES8389addr20DACstereooutmonoexpandedfixedbuffer-disableclosedfalse. SharednativeCH32output/PWM/wholeportresetACKcachefault-restart;GT911existingpoller/noGPIOresetafterselected5D/fivepointcount/ACKchecked/releasegate;buildtrackedseparately. NoBQ27220/chargeUSBpolicy/powersave/BOOT/physicalacceptance."
+    },
+    "waveshare-esp32-s3-touch-lcd-7c": {
+      "project_name": "assistant_ws7c",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_WS_RGB_C=1",
+        "ASSISTANT_BOARD_WS_RGB_7C=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-touch-lcd-7c",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 32,
+      "implementation_scope": "Sourcecandidate800x480nativeRGB565/PCLK16MHz/2PSRAMframes10rowbounce/directframefinishsync/GT9115Dtouch-required/BOOT0RGBDATA6notbutton. RGBdata4.3C=14,38,18,17,10,39,0,45,48,47,21,1,2,42,41,40;7CchangesD8-9=9,8. I2C0SDA8SCL9(43C)orSDA47SCL48(7C);CH32addr24vendor2.0.0WHOLEPORTRESETdirectionFF-output00/cachedstate-notreadback/P1touchreset200ms-P2BLenable-P3PAoffuntilDACunmute/PWMreversed/7CP6sourcehigh. ES7210TDM4MIC1slot0softwareAEC24kHz/MCLK6BCLK44WS16DIN43DOUT15/43CES8311monoout/7CES8389addr20DACstereooutmonoexpandedfixedbuffer-disableclosedfalse. SharednativeCH32output/PWM/wholeportresetACKcachefault-restart;GT911existingpoller/noGPIOresetafterselected5D/fivepointcount/ACKchecked/releasegate;buildtrackedseparately. NoBQ27220/chargeUSBpolicy/powersave/BOOT/physicalacceptance."
+    },
+    "waveshare-esp32-s3-touch-lcd-4b": {
+      "project_name": "assistant_ws4b",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_WS4B=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-touch-lcd-4b",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "SourcecandidateN16R8/16MB-Octal8MBPSRAM/ST7701native480x480RGB565/PCLK16MHzHS46VS3DE17CLK9/H10-10-20V10-10-10/2PSRAMframes20rowbounce/directRGBframefinishsync/noIOhandle-swap-mirrors. I2C0SDA47SCL48/TCA9554addr20-vendor2.0.3wholeportresetFF-FF/cachedoutput-direction/physicalinputreadback/P0CS-P2SCL-P1SDA3wire/reviewedST7701driver2.0.2~2SWRESET120ms-bank00-MADCTL00-COLMOD60-preamble+all35MITvendorcommands-finalCOLMOD66-retained18bitcontrollerparameter-notrewritten55/initializationIOalwaysdeleted. P3PAinitialoff-preloadbeforeoutput-enableonlyafteractualDACunmute/P5touchresetlow200ms-high200mswithP6INTlowtheninput-selectGT9115D/P7LCDRSThigh/P4SYS_OUTinput-notfactoryswitch. BL4activeLOW5kHz10bitPWMdarkuntilUI. AXP2101addr34ALDO1only3300mV-reg92=28-reg90OR1checkedreadback-nootherrails-charger-poweroffpolicy. ES8311DAC+ES7210TDM4MIC1slot0softwareAEC24kHz/MCLK5BCLK16WS7DIN15DOUT6/I2C0/useMCLK/monoout. BOOT0initialrelease-talkcards/touchsinglepoint-inrange-errorcancel. CurrentGT911-dependency-removed/targetbuild-evidence-separate;SD-RTC-IMU-battery-charger-powersave-stockMCP-factoryswitch-physicalacceptancepending. CurrentGT911usesboard-owned0x5Dreset+boundedfivepointpolling/lastackframe-onhealthy-notready/firstunknown-or-error-invalid/checkedreadyACK/duplicateID-keyflag-countreject/noGPIOreset-sleepIRQAPI;targetbuild-evidence-separate/physicalnot_run."
+    },
+    "waveshare-esp32-s3-touch-lcd-3.5": {
+      "project_name": "assistant_ws35",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_WS35=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-touch-lcd-3.5",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "SourcecandidateESP32-S3R8+W25Q12816MB-Octal8MBPSRAM/landscape480x320. ST77961.4.0/SPI3mode0-40MHzCSNCMOSI1MISO2CLK5DC3/BGR/invert/swapXYtrue/nomirrors/17MITvendorcommands-retainedCOLMOD05/actualST7796driver-replacesupstreamignoredST7789vendor_config. LVGLtwoDMA20rowbuffers/swapbytes. FT5x06addr38-officialinit+rawstatusfirstrecord/event-countchecked. MCLK12. BothI2C0SDA8SCL7/TCA9554addr20registerRMW-readbackonlyP1LCDRSTlow100ms-high100ms-P7PAoff-beforeoutput/physicalPAinputreadback/noFFconstructor-reset/unownedP0camera-P2touchINT-P3SDCS-P4RTC-P5AXP-P6SYSOUTpreserved. AXP2101ALDO1onlyreg92=28-reg90OR1readback/nootherrails-charger-policy. ES8311singlecodecmono24kHzBCLK13WS15DIN14DOUT16/useMCLK/softwareAEC/PA7enableonlyafteractualDACunmute. BL6HIGH5kHz10bitPWMdarkuntilUI. BOOT0initialrelease-talkcards. Touchphysical320x480mirrorboth-then-swap-with-zeroendpoints/rawcount>1-eventerror-outofrangecancel-andwaitrelease/physicalorientationunaccepted. No camera/SD/RTC/IMU/battery/chargersettings/sleep/poweron-autoreboot/stockMCP;Targetbuild-evidence-separate/physicalacceptancepending. ST7796one-timeboardstartupusesSDKDCSoperations+originalBGR-COLMOD05-preamble/selectedcustom17-or-default12table/reset120ms/noadded-sleepapi;physicalnot_run."
+    },
+    "waveshare-esp32-s3-touch-lcd-3.5b": {
+      "project_name": "assistant_ws35b",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_WS35=1",
+        "ASSISTANT_BOARD_WS35B=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-touch-lcd-3.5b",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "SourcecandidateESP32-S3R8+W25Q12816MB-Octal8MBPSRAM/landscape480x320. AXS15231B2.1.0/QSPI2mode3-40MHzCS12CLK5D0-1D1-2D2-3D3-4/RGB/native320x480/noHWaxes/34MITvendorcommands-retained. LVGLfullPSRAM307200bytes+fixedDMA12800bytes/20physicalrowstripes/software90mapping-and-byte-swap-on-copy/checkedCASET-RAMWRrow0-RAMWRCcontinue/completeframe1scompletionwindow/allstripesincludinglastawaited/errorstopsfutureDMAreuse-anddark. AXS3Braw11byte-readcommand/8bytereply-count-eventchecked/noonepointdriverfalse-release. MCLK44. BothI2C0SDA8SCL7/TCA9554addr20registerRMW-readbackonlyP1LCDRSTlow100ms-high100ms-P7PAoff-beforeoutput/physicalPAinputreadback/noFFconstructor-reset/unownedP0camera-P2touchINT-P3SDCS-P4RTC-P5AXP-P6SYSOUTpreserved. AXP2101ALDO1onlyreg92=28-reg90OR1readback/nootherrails-charger-policy. ES8311singlecodecmono24kHzBCLK13WS15DIN14DOUT16/useMCLK/softwareAEC/PA7enableonlyafteractualDACunmute. BL6HIGH5kHz10bitPWMdarkuntilUI. BOOT0initialrelease-talkcards. Touchphysical320x480mirrorboth-then-swap-with-zeroendpoints/rawcount>1-eventerror-outofrangecancel-andwaitrelease/physicalorientationunaccepted. No camera/SD/RTC/IMU/battery/chargersettings/sleep/poweron-autoreboot/stockMCP;nativefixedAXSQSPIpanel/originaltable/initpreamblepreserved/buildtrackedseparately/physicalacceptancepending."
+    },
+    "waveshare-esp32-s3-touch-lcd-3.49": {
+      "project_name": "assistant_ws349",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_WS349=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-touch-lcd-3.49",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Sourcecandidate16MB-Octal8MBPSRAM/AXS15231B2.1.0native172x640RGB565/QSPI3mode3-40MHzCS9CLK10D0-11D1-12D2-13D3-14/2fixedcommands11-100ms29-100ms/hardwareRESET30-250-30ms/noSWresetafterHWreset/nativeaxes/220160bytePSRAMFULLframe+22016byteDMA64row10stripes/checkedCASET+RAMWR-RAMWRC/lastcompletionawaited/errorstopsDMAreuse-dark. OriginalLCDRST21/BLPWM8LOW/TCA1-5notowned. I2C0SDA47SCL48codec-TCA20/maskedRMW-P6SYSholdHIGH-P7PAoff-before-directions/physicalPAinputreadback/noFFconstructorreset/otherbits-preserved. PWR16LOWfreshrelease2smanualshutdownclearsP6+P7/PAre-enableblockeduntilrestart/actualpoweroffunconfirmedespeciallyUSB. BOOT0initialrelease-talkcards. TouchI2C1SDA17SCL18-300kHz3B/repeatedstart11bytereadcommand-request14/receive14-not32/rawcount-event-inrangemultipoint-errorcancel/initialrelease/x=rawY,y=639-rawX/rawX640rawY172-no-clamp-to-edge. ES8311+ES7210I2C0TDM4MIC1slot0/mono24kHzMCLK7BCLK15WS46DIN6DOUT45/softwareAEC/PA7onlyafteractualDACunmute. NoAXP2101orchargerwrites/SD-RTC-IMU-BATADC-stockMCP-hardwareAEC-unimplemented. NativefixedAXSQSPIpanel/original2commands/initpreamblepreserved/buildtrackedseparately/nativewindow-touchorientation-throughput-power-acoustic-network-binding-reminder-OTAacceptancepending."
+    },
+    "waveshare-esp32-s3-touch-lcd-3.49-v2": {
+      "project_name": "assistant_ws349v2",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_WS349=1",
+        "ASSISTANT_BOARD_WS349_V2=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-touch-lcd-3.49-v2",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Sourcecandidate16MB-Octal8MBPSRAM/AXS15231B2.1.0native172x640RGB565/QSPI3mode3-40MHzCS9CLK10D0-11D1-12D2-13D3-14/2fixedcommands11-100ms29-100ms/hardwareRESET30-250-30ms/noSWresetafterHWreset/nativeaxes/220160bytePSRAMFULLframe+22016byteDMA64row10stripes/checkedCASET+RAMWR-RAMWRC/lastcompletionawaited/errorstopsDMAreuse-dark. V2LCDRST=TCA9554P5/BLPWM42LOW+P1enable-gatedonlyafterPWMsetup/GPIO8EXIO_INTnotBL/noGPIO21LCDwrites. I2C0SDA47SCL48codec-TCA20/maskedRMW-P6SYSholdHIGH-P7PAoff-before-directions/physicalPAinputreadback/noFFconstructorreset/otherbits-preserved. PWR16LOWfreshrelease2smanualshutdownclearsP6+P7/PAre-enableblockeduntilrestart/actualpoweroffunconfirmedespeciallyUSB. BOOT0initialrelease-talkcards. TouchI2C1SDA17SCL18-300kHz3B/repeatedstart11bytereadcommand-request14/receive14-not32/rawcount-event-inrangemultipoint-errorcancel/initialrelease/x=rawY,y=639-rawX/rawX640rawY172-no-clamp-to-edge. ES8311+ES7210I2C0TDM4MIC1slot0/mono24kHzMCLK7BCLK15WS46DIN6DOUT45/softwareAEC/PA7onlyafteractualDACunmute. NoAXP2101orchargerwrites/SD-RTC-IMU-BATADC-stockMCP-hardwareAEC-unimplemented. NativefixedAXSQSPIpanel/original2commands/initpreamblepreserved/buildtrackedseparately/nativewindow-touchorientation-throughput-power-acoustic-network-binding-reminder-OTAacceptancepending."
+    },
+    "waveshare-esp32-s3-touch-amoled-1.43c": {
+      "project_name": "assistant_ws143c",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_WS143C=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-touch-amoled-1.43c",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 8,
+      "implementation_scope": "Sourcecandidate8MBFlash-Octal8MBPSRAM/466roundCO5300manufacturer-chipdespiteSH8601namedsource/installedCO53002.2.0/QSPI2mode0-40MHzCS15CLK14D0-9D1-10D2-11D3-12RST13/RGB565/MADCTLC0bothmirrors/2pixelrounder/two20rowDMAbuffers/swapbytes. 12MITvendorcommands-only51brightness0startupchange;runtimegap8-0retaineddespiteinitCASET6..471/alignmentunaccepted. CST82015I2C0SDA47SCL48-400kHz/TPRST16high200-low200-high200viafamilyCST816S1.1.2reset+IDno-whitelist/INT17input-pollIRQdisabled/rawcount-event02..06/singlepoint-inrange/initialrelease-errorcancel/x465-rawX,y465-rawY. ES8311+ES7210TDM4MIC1slot0/mono24kHz/MCLK38BCLK39WS40DIN42DOUT41/I2C0/softwareAEC/PA46HIGHgatedafteractualDACunmute;LDO18unusedmacronotdriven. BOOT0initialrelease-talkcards. Existing8MBpartitions0x2A0000dualapp/model0x240000/NVS9000+4000preserved. NoSD/BATADC-chargeLED/powersave/stockMCP/hardwareAEC/TEsync;physicalalignment-orientation-touch-reset-power-clock-acoustics-network-binding-reminder-OTAunaccepted."
+    },
+    "m5stack-atoms3-echo-base": {
+      "project_name": "assistant_atoms3base",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_ATOM_S3_BASE=1",
+        "ASSISTANT_BOARD_INTERNAL_RAM=1"
+      ],
+      "upstream_variant": "m5stack-atoms3-echo-base",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 8,
+      "implementation_scope": "SourcecandidateAtomS3notS3R/8MBFlash-noPSRAM/manualaudio-only-noAFE-AEC-wake. Native128x128SPI3mode0-40MHzMOSI21CLK17CS15DC33RST34/PWM16HIGH8bit-darkuntilUI/single128x10DMA. SharedunchangedRDDIDreader16MHz3wire1dummy/knownGC9107id079100-g0,32-nomirror-noinvert/knownST7735low167683or897C-g2,3-mirrorboth-invert;unknownstops-notfallback. Reuses19MITGC9107commandsandGC9A01API2.0.4/ST7789compatibleST7735API. SharedIDreaderextractedfromS3Rwithoutbodychange/noLP5562I2C0. I2C1SDA38SCL39/atomicEchoBase0x18-0x43probe/PI4IOEID/P0-onlymaskedPA/mute-check/nofullscan-reset/hotplug. SingleES8311mono24kHzBCLK8WS6DIN7DOUT5MCLKNC-BCLKderived/3.3Vgain/PAonlyafteractualDACunmute. Screenkey41initialrelease-talkcards/textUI14CJK10header/binding-sixdigits/errors/reminders-DND/cardbodyandactionrowsseparated. Internalmanualsender33slots/playback8slots/overflow-readfail-discontinuitycancel/request-ready-end/noidlePCMupload. Reuses8MBdual0x2A0000app/model0x240000layout-modelnotloaded. MissingGC9A012.0.4,targetuncompiled/internalheapTLS-cue-OTApeak-unmeasured. NoIMU/IR/battery/sleep/voicewake/camera;hardwareacceptancepending."
+    },
+    "m5stack-cardputer-adv": {
+      "project_name": "assistant_cardadv",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_CARDPUTER_ADV=1",
+        "ASSISTANT_BOARD_INTERNAL_RAM=1"
+      ],
+      "upstream_variant": "m5stack-cardputer-adv",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 8,
+      "implementation_scope": "SourcecandidateCardputerAdvStampS3AESP32-S3FN8/8MB-noPSRAM/internalmanualFIR16/noAFE-AEC-wake. ST7789RGB240x135SPI3mode0-40MHzsioMOSI35CLK36CS37DC34RST33/BL38HIGH256Hz/invert-swapXY-mirrorX/gap40-53/single240x10DMA/fullwidthtext14CJK10header/bodyactionseparated. SingleES8311I2C0SDA8SCL9/BCLKderived-MCLKNC/mono24kHzBCLK41WS43DIN46DOUT42(useconfig+class-notREADMEreversedpins)/alwaysonNS4150B-noPApin/checkedactualDACmute-pluszeroPCM. TCA841834matrix7x8to4x14/pollINT11input/Entertalkcards-semicolonvolumeup-periodvolumedown/BOOT0fallback/initialrelease-chordcancel/FIFOoverflow-readerrorlatcheskeyboardoffuntilrestart-cancelscurrentpress-BOOTrearmsafterrelease. Nocharactertextchat/keyboardWiFientry/brightnesskeys/BMI270/SD/IR/BATADC-chargepolicy implemented. Reuses8MBdual0x2A0000app/model0x240000layout-modelnotloaded. Internalprotocol33sender8playback/overflow-readfail-discontinuitycancels/request-ready-end/noidleupload;realRAMTLS-cue-OTApeak-andkeyboard-state-recovery-clock-acoustic-screen-networkbindingreminderOTAacceptancepending."
+    },
+    "m5stack-stopwatch": {
+      "project_name": "assistant_stopwatch",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_STOPWATCH=1"
+      ],
+      "upstream_variant": "m5stack-stopwatch",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Sourcecandidate16MB-Octal8MBPSRAM/466roundCO53002.2.0/QSPI2mode0-40MHzCS39CLK40D0-41D1-42D2-46D3-45/TE38unused/RGB5652pixelrounder/two20rowDMA/nomirror/noswap/gap6-0/11MITcommandsretainzero-lengthquirks/only51FF->00startupdark. Shared143Cdisplayboardbranches/round466layout. M5IOE1addr4F100kHzREVWstrict/IO8bit7LCDpower-IO3bit2codec-IO5bit4LCDRST-IO4bit3TPRST-IO10highbit1PA/preload-beforeMODE1-output/DRV0pushpull/ownedpullsdisable/PWM2-4enablebitsclearedonly/RMWreadback+PAinputreadback/mutex100ms/noPM1writes/nocharger425mAor5Vboost/motorIO9unownedpreserved. LCDexternalreset10low-120high+componentSWreset/TPreset200low200high/CST820B15familyCST816SresetNCINT13inputpoll/rawcount-event-errorcancel/coordinatesnative-nohardwarecalibration. SingleES8311I2C0SDA47SCL48/MCLK18BCLK17WS15DIN16DOUT21/mono24kHz/useMCLKfalse-asfixedconstructor/PAIO10enableonlyafteractualDACunmute/default30dBsoftwareAEC. GPIO2talkcards/GPIO1VolumeUp(existingstepandrepeatinsteadofsourcecyclicvolume)/initialrelease-chordcancel. Touchcards/nofullgestures/batteryRTCIMUchargepolicyGrove5V-motorTEsyncunimplemented;physicalacceptancepending."
+    },
+    "espressif-esp-s3-lcd-ev-board-1p4": {
+      "project_name": "assistant_lcdev14",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_LCD_EV=1",
+        "ASSISTANT_BOARD_LCD_EV_14=1"
+      ],
+      "upstream_variant": "espressif-esp-s3-lcd-ev-board-1p4",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "SourcecandidateLCD-EV1p4/16MBFlash-OctalPSRAM. SUB2GC9503CVnative480x480/RGB16MHzH10-10-20V10-10-10/allpolarityflags0/VSYNC3HIGHbeforeinit/3wireTCA9554P1CS-P2SCL-P3SDO-mode0rising/43Apachecommandsunchanged/B1-10COLMOD60controller18bppvsRGB56516bus/alwaysdeleteinitIObeforeRGB-noLVGLdanglingIO/FT5x06addr38-100kHz-reg8. I2C0SDA8SCL18/RGBD6-47D7-48;RGBdata10-11-12-13-14-21-D6-D7-45-38-39-40-41-42-2-1/HS46VS3DE17PCLK9/twoPSRAMnativeRGB565frames+10rowbounce64burst/LVGLdirect-avoidtear-noswapbytes-nomirror. Manufacturerfixedbacklight:noGPIO19writes(USB_Dminusunusedupstreammacro),noPWM/nightdimming/screenoff;UIstartupskipsunsupportedbrightness/explicitpreferencesreturnnot_supported. TCA9554addr20-100kHz/publicexpanderadapter+existing3wireIO/ownedmaskedactualregisterRMW-readback-noreset/unownedbits-preserved/P0PAoffbeforeoutput-polarity0only/inputreadback/mutexruntimePAonlyafteractualDACunmute. ES8311+ES7210addrAPI82-physical41/MCLK5BCLK16WS7DIN15DOUT6/16kHznative/FIRnetwork24to16/sameactualPCMsoftwareAECreference/TDM4MIC1slot0-onlysoftwareAEC-nohardwareechoMIC3use. NativepolltouchresetNC-intNC/initialrelease-multicontact-outofbound-readerrorcancel/BOOT0initialrelease-talkcards/48pxscreenactions. NoUSBhost-UVCcamera/statusLED4/SD/sleep/batteryfeatures;noautomaticmoduledetection;correct1.4-1.5wiringentrymustbeselected. Physicalpinrevision/touchRGBsignal-quality-audioPA-acoustics-networkbindingreminderOTAunaccepted."
+    },
+    "espressif-esp-s3-lcd-ev-board-1p5": {
+      "project_name": "assistant_lcdev15",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_LCD_EV=1"
+      ],
+      "upstream_variant": "espressif-esp-s3-lcd-ev-board-1p5",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "SourcecandidateLCD-EV1p5/16MBFlash-OctalPSRAM. SUB2GC9503CVnative480x480/RGB16MHzH10-10-20V10-10-10/allpolarityflags0/VSYNC3HIGHbeforeinit/3wireTCA9554P1CS-P2SCL-P3SDO-mode0rising/43Apachecommandsunchanged/B1-10COLMOD60controller18bppvsRGB56516bus/alwaysdeleteinitIObeforeRGB-noLVGLdanglingIO/FT5x06addr38-100kHz-reg8. I2C0SDA47SCL48/RGBD6-8D7-18;RGBdata10-11-12-13-14-21-D6-D7-45-38-39-40-41-42-2-1/HS46VS3DE17PCLK9/twoPSRAMnativeRGB565frames+10rowbounce64burst/LVGLdirect-avoidtear-noswapbytes-nomirror. Manufacturerfixedbacklight:noGPIO19writes(USB_Dminusunusedupstreammacro),noPWM/nightdimming/screenoff;UIstartupskipsunsupportedbrightness/explicitpreferencesreturnnot_supported. TCA9554addr20-100kHz/publicexpanderadapter+existing3wireIO/ownedmaskedactualregisterRMW-readback-noreset/unownedbits-preserved/P0PAoffbeforeoutput-polarity0only/inputreadback/mutexruntimePAonlyafteractualDACunmute. ES8311+ES7210addrAPI82-physical41/MCLK5BCLK16WS7DIN15DOUT6/16kHznative/FIRnetwork24to16/sameactualPCMsoftwareAECreference/TDM4MIC1slot0-onlysoftwareAEC-nohardwareechoMIC3use. NativepolltouchresetNC-intNC/initialrelease-multicontact-outofbound-readerrorcancel/BOOT0initialrelease-talkcards/48pxscreenactions. NoUSBhost-UVCcamera/statusLED4/SD/sleep/batteryfeatures;noautomaticmoduledetection;correct1.4-1.5wiringentrymustbeselected. Physicalpinrevision/touchRGBsignal-quality-audioPA-acoustics-networkbindingreminderOTAunaccepted."
+    },
+    "espressif-esp-s3-lcd-ev-board-2": {
+      "project_name": "assistant_lcdev2",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_LCD_EV=1",
+        "ASSISTANT_BOARD_LCD_EV_2=1"
+      ],
+      "upstream_variant": "espressif-esp-s3-lcd-ev-board-2",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "SourcecandidateLCD-EV2/16MBFlash-OctalPSRAM. SUB3ST7262E43native800x480/directRGB18MHz/H40-40-48V23-32-13/pclkneg/GT1151addr14-100kHz-reg16;noGC9503commands-P1P2P3writes. I2C0SDA47SCL48/RGBD6-8D7-18;RGBdata10-11-12-13-14-21-D6-D7-45-38-39-40-41-42-2-1/HS46VS3DE17PCLK9/twoPSRAMnativeRGB565frames+10rowbounce64burst/LVGLdirect-avoidtear-noswapbytes-nomirror. Manufacturerfixedbacklight:noGPIO19writes(USB_Dminusunusedupstreammacro),noPWM/nightdimming/screenoff;UIstartupskipsunsupportedbrightness/explicitpreferencesreturnnot_supported. TCA9554addr20-100kHz/publicexpanderadapter+existing3wireIO/ownedmaskedactualregisterRMW-readback-noreset/unownedbits-preserved/P0PAoffbeforeoutput-polarity0only/inputreadback/mutexruntimePAonlyafteractualDACunmute. ES8311+ES7210addrAPI82-physical41/MCLK5BCLK16WS7DIN15DOUT6/24kHz/TDM4MIC1slot0-onlysoftwareAEC-nohardwareechoMIC3use. NativepolltouchresetNC-intNC/initialrelease-multicontact-outofbound-readerrorcancel/BOOT0initialrelease-talkcards/48pxscreenactions. NoUSBhost-UVCcamera/statusLED4/SD/sleep/batteryfeatures;noautomaticmoduledetection;correct1.4-1.5wiringentrymustbeselected. Physicalpinrevision/touchRGBsignal-quality-audioPA-acoustics-networkbindingreminderOTAunaccepted. FixedGT1151boardIO14/100kHz/16bit/100ms,original11byteproduct nonzero-sum/ASCIIprefix/sensorcheck,noGPIOreset;existingboundedreport/checksum/clear behavior retained;externalGT1151dependencyremoved,buildtrackedseparately/physicalunaccepted."
+    },
+    "espressif-esp-sparkbot": {
+      "project_name": "assistant_sparkbot",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_SPARKBOT=1"
+      ],
+      "upstream_variant": "espressif-esp-sparkbot",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "SourcecandidateSparkBot16MB-OctalPSRAM/basicWiFispeechterminal. ST7789RGB240x240/SPI3mode0-40MHzMOSI47CLK21CS44DC43RSTNC/inverttrue/nomirror-noswap-gap0/nativeRGB565swapbytes/two20rowDMAbuffers/noLCDtouch/BOOT0initialrelease-talkcards. SharedBL-PA46lowlatchbeforeoutput/highonlyafterpanelinit/noPWM/noindependenthardPAcut/codecpaNC-retainclockonclose/checkedactualDACmute+zeroPCM. DCS28/29panelblankonidle/activitywithouttoggling46;BLphysicallyremainslit/noelectricalscreenoff. UIinitial100/binarybrightness0or100only;intermediatelevelsornightmodeexplicitnot_supportedbeforecachedpreferenceschange. SingleES8311I2C0SDA4SCL5/MCLK45BCLK39WS41DIN40DOUT42/useMCLKtrue/native16kHz/FIRnetwork24to16/sameactualPCMsoftwareAECreference/default30dBgain. ManufacturerGiteeesp-friends/esp_sparkbot@d42c5b43e25168fa3592a9c3d113ab5631f47023confirms16kES8311andPA46/BSPbacklight46. CameraOV2640/top-sidecaptouch/BMI270/tankC2UART38-48-motorLED/MCP/battery-charger/sleepunimplemented;noUARTmovementcommandsorrailguessing. Sharednetturnonpop-mutedacoustic/displayblanking/networkbinding-reminderOTAandmodulecapacityunaccepted;onlyexistingWaveshare1.8physicalboardavailable."
+    },
+    "espressif-esp-vocat": {
+      "project_name": "assistant_vocat",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_VOCAT=1"
+      ],
+      "upstream_variant": "espressif-esp-vocat",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "SourcecandidateESP-VoCat16MBFlash-OctalPSRAM(releasedefault/notphysicalcapacityproof). RuntimePCB1.0DIN15PA4LCDRST3activeLOWvs1.2DIN3PA15LCDRST47activeHIGH. ColdonlyGPIO48LOW100ms/pairES831118+ES721040bothACK=>1.0;bothNACKonly=>48HIGH10x200ms/each100msprobes/bothACK=>1.2;mixedpresence-timeout-errorneverfallback. RTC_NOINIT16byteownmagic-complement-revision-complementcachewrittenaftercheckedGPIOsetup;warmcached1.2prelatch48HIGHno48LOWpulse/cachedPAoffbeforeprobe;unknownwarmresetkeeps48HIGH/stops-unownedPApinsuntouched/requiresrealpowercycle/noNVSreadwrite. PAonlyidentifiedcandidateINPUTOUTPUT/lowlatch/readphysicalpad/mutex100ms/1mssettle/enableonlyafteractualDACunmute. GPIO9LCD-sharedSDenableLOW/BL44dark-beforePWM;noSDorchargerwrites. ST77916RGB360round/QSPI2mode0-40MHzCS14CLK18D0-46D1-13D2-11D3-12/DCNC/cmd32param8/184MITcommandsallbytes-order-length-delayretainedends21-11-NOP120ms/runtimeRESETpolarity/native-no-swap-mirror/2pixelrounder/two20rowDMA/nativeRGB565swapbytes;reusessharedQSPIimplementation/noTCA/noWaveshareIDprobe. CST816S15-100kHz/resetNC/INT10inputIRQdisabled/raw02count-event-6bytepacket/poll-initialrelease-multicontact-OOB-readerrorcancel/nativecoordinatesunaccepted. BOOT0initialrelease-talkcards/round360layout. ES8311+ES7210APIdefault80-physical40/I2C0SDA2SCL1/MCLK42BCLK40WS39DOUT41/DINruntime/24kHzTDM4MIC1slot0/softwareAEC-nohardwareMIC3reference/checkedgain-DACmute/backendstatus/PApinNCexternalgate. NoLED43/captouch6-7/BMI270/charge55-battery-temperature-UVCcamera/SD/sleep/stockMCP. NativeQSPIcandidate,targetbuildrecordtrackedseparately;physicalrevision-ID-onfaultycodec/railresets/PAclocks/acoustics/touchRGB-networkbindingreminderOTAunaccepted. Shared reviewed360RGB565/QSPI lifecycle preserves184commands and runtimePCB-selected direct reset/polarity; no externalST77916package. Hardware/RTC/acoustic acceptance remains incomplete."
+    },
+    "lilygo-t-cameraplus-s3": {
+      "project_name": "assistant_tcamera11",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_TCAMERA=1"
+      ],
+      "upstream_variant": "lilygo-t-cameraplus-s3",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "SourcecandidateLilyGOT-CameraPlusS3/16MBFlash8MBQUADPSRAMmanufacturerdefault. V1.0-V1.1MSM261I2S16kHzBCLK18WS39DIN40/RIGHTfromR41toVDD-normalWS/notupstream16bitinvertedWS/32bitslots64fsBCLK1.024MHz/convertsignPCM16then20xboost/I2C0SDA1SCL2/SPI3MOSI35CLK36CS34RST33/touchRST48/MAXDOUT38. CommonST7789RGB240x240SPI3mode0-60MHzDC45/BL46activeHIGH5kHz10bit/inverttrue/noswap-nomirror-gap0/two20rowDMARGB565swapbytes. CST81615/I2C100kHz/6byteraw02count-event-nativeXY/initialrelease-multicontact-OOB-readerrorcancel/resetbycomponentasrevision/IRQNCpoll(GPIO47alsoSY6970INToldrevision)/noI2Cscan. BOOT0talkcards;KEY17reservedinput/camerafunctionunimplemented. SDCS21latchedHIGHbeforeSPItopreventunselectedcardcontention/noSDmount. Existingdigital_audio backendreused/I2S0RXandI2S1TX/MAX98357A16kHzstereo16mono duplicated32fsBCLK512kHz;datasheetp19rejects24kHzand11025Hz(upstreamdeclares24butinitializes11025)/network24to16FIRandsameactualPCMsoftwareAECreference. Input20xsoftwareboostsaturating-afterPCM16conversion/noanaloggain. NoPAenableGPIO/dummycodecnohardwaremute/actualzeroPCMwhenmuted/readpartialdeadline1sec. NoSY6970charge-ILIM-watchdogpolicymodification(no0008-02DD-078Dblindwrites)/noIRcut16-powersave-shutdown/battery-camera-OV2640features;physicalchargerwatchdog-defaultbehaviorunaccepted. PinmapsmanuallycheckedagainstfixedvendorGPLschematic/sourcefacts,nocodeheaderimplementationcopied. Physicalmodule-revision/touchorigin-micchannel-gainPDMCLK/MAXaudio-pop/acoustics/networkbindingreminderOTAunaccepted."
+    },
+    "lilygo-t-cameraplus-s3-v1.2": {
+      "project_name": "assistant_tcamera12",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_TCAMERA=1",
+        "ASSISTANT_BOARD_TCAMERA_V12=1"
+      ],
+      "upstream_variant": "lilygo-t-cameraplus-s3-v1.2",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "SourcecandidateLilyGOT-CameraPlusS3/16MBFlash8MBQUADPSRAMmanufacturerdefault. V1.2MP34DT05-APDM32kHzclock40data38/LEFT(defaultR54GND,R52NC)64fsCLK2.048MHz/32to16commonFIR;MICandMAX98357sharedactiveLOWpower18(Q4/Q6CJ2333)heldLOW10msstartup/nevermutegatesit/I2C0SDA33SCL37/SPI3MOSI34CLK35CS36RSTNC/touchRSTNC/MAXDOUT39. CommonST7789RGB240x240SPI3mode0-60MHzDC45/BL46activeHIGH5kHz10bit/inverttrue/noswap-nomirror-gap0/two20rowDMARGB565swapbytes. CST81615/I2C100kHz/6byteraw02count-event-nativeXY/initialrelease-multicontact-OOB-readerrorcancel/resetbycomponentasrevision/IRQNCpoll(GPIO47alsoSY6970INToldrevision)/noI2Cscan. BOOT0talkcards;KEY17reservedinput/camerafunctionunimplemented. SDCS21latchedHIGHbeforeSPItopreventunselectedcardcontention/noSDmount. Existingdigital_audio backendreused/I2S0RXandI2S1TX/MAX98357A16kHzstereo16mono duplicated32fsBCLK512kHz;datasheetp19rejects24kHzand11025Hz(upstreamdeclares24butinitializes11025)/network24to16FIRandsameactualPCMsoftwareAECreference. Input20xsoftwareboostsaturating-afterPCM16conversion/noanaloggain. NoPAenableGPIO/dummycodecnohardwaremute/actualzeroPCMwhenmuted/readpartialdeadline1sec. NoSY6970charge-ILIM-watchdogpolicymodification(no0008-02DD-078Dblindwrites)/noIRcut16-powersave-shutdown/battery-camera-OV2640features;physicalchargerwatchdog-defaultbehaviorunaccepted. PinmapsmanuallycheckedagainstfixedvendorGPLschematic/sourcefacts,nocodeheaderimplementationcopied. Physicalmodule-revision/touchorigin-micchannel-gainPDMCLK/MAXaudio-pop/acoustics/networkbindingreminderOTAunaccepted."
+    },
+    "lilygo-t-display-s3-pro-mvsrlora": {
+      "project_name": "assistant_mvsrlora",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_MVSRLORA=1"
+      ],
+      "upstream_variant": "lilygo-t-display-s3-pro-mvsrlora",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "SourcecandidateLilyGOT-Display-S3-Pro-MVSRLoRa/defaultWiFivariant16MBFlash-OctalPSRAM/noNO_BATTERYvariantinvented. ST7796BGR222x480SPI3mode0-40MHzMOSI17CLK18CS39DC9RST47/inverttrue/mirrorX-noswap-gap49-0/BL48HIGH5kHz10bit/two20rowDMARGB565swapbytes/fullheightlayout44pxtargets. CST226SE5A/I2C0SDA5SCL6-100kHz/reset13HIGH100LOW10HIGH200/IRQ21shared-inputpoll/nofullbusscan;bounded7bytereg00report/ABmarker-byte6/button-bitcancel/raw7bitcount-singleonly/event6press/checked00ABsync/correctXlow-nibble-rightshift/Ylownibble/mirrorX221-x/native222x480bounds/no49touchsubtraction/initialrelease-multicontact-invalid-OOB-read-syncerrorcancel. MITprotocolreferenceSensorLib43120dee04f3054e2ce4fe9715e46a82557dee2e/TouchLibregistercrosscheck/locallicenseonly/noGPLimplementationcopy. RT908042HIGHandsharedSDCS14+LR1121CS7HIGHbeforeSPI/MIC3LOWpowersbothMP34Q1-Q2after20msrailsettle+10msmicsettle/MAXboost41activeHIGHdefaultLOW/inputoutput-padreadback1ms/mutex100ms/mute-disablesboost-beforePCMzero/enableafterdummyunmute/actualcallbackresultcheckedseparatelyfromcodec_devdiscard. PDM32kHzI2S0CLK1DIN2/LEFTselectsMIC2LRGND(R19;MIC1R10VDDoppositephase)/64fs2.048MHz/oneMICmono-no20xboost-nohardwareecho/noDOA;32to16commonFIR/softwareAEC. MAX98357A I2S1BCLK4WS15DOUT11/stereo16-at16kHzmono-duplicated/network24to16FIR/sameactualPCMsoftwareAEC;correctsunsupportedconfig24kHz/constructor11025Hz;PApinNCdummywithcheckedboardboostwrapper. NoLoRa-radio-init/RTC-IMU/motor45/SDmount/chargerSY6970-ILIMADCwatchdog-BATFET-no-batterywrites/battery/powersave-shutdown. Targetbuild-evidence-separate;onlyexistingWaveshare1.8physicalavailable;touchorigin/frame-sync/panelcolors-clock/enablevoltage-pop-acoustics/networkbindingreminderOTAunaccepted. ST7796one-timeboardstartupusesSDKDCSoperations+originalBGR-COLMOD05-preamble/selectedcustom17-or-default12table/reset120ms/noadded-sleepapi;physicalnot_run."
+    },
+    "dfrobot-df-k10": {
+      "project_name": "assistant_dfk10",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_K10=1"
+      ],
+      "upstream_variant": "dfrobot-df-k10",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "SourcecandidateDFRobotK10/16MBFlash-OctalPSRAMmanufacturerdefault/ILI9341BGR240x320SPI3mode0-40MHzMOSI21CLK12CS14DC13RSTNC/invertfalse-mirrorY-noswap-gap0/two20rowDMARGB565swapbytes/portraitlayout. I2C1SDA47SCL48/TCA955520maskedactualregisterRMW-readback/noreset/noP1cameraresetpulse;P0BLbinary0-100/P15AmpGainLOW(manufacturerpresetnotPAenable)/P12keyA-P2keyBinputs-polaritynormal/initialrelease-chord-readerrorcancel/ABbothcommontalkcards/noGPIO0keysetup(GPIO0=BCLK)/noA-Blongvolumeimplemented. ADCcandidate7bit15or11fromfixedmanufacturerlibmodulesinit_board(writerleftshifts7bit);probeonlythose/oneACKrequired-ambiguousmissingerrorstops/API8bit2Aor22explicit-notliteral23. ReusesdigitalbackendwithES7243Ecodecinputanddummy-digitaloutput;manufacturerstandardduplexI2S0stereo16at16kHz/MCLK3=256fs4.096MHzBCLK0=32fs512kHzWS38DIN39DOUT45/RXselectleftmono/TXduplicatedmono16/dataformatfixedrates/openTXbeforeRX/sharedclock/checkedactualADCgain37.5dB+PGA20-21readback1E/nohardwareecho/beamforming. Input16passthrough/network24to16FIR/sameactualPCMsoftwareAECreference/actualzeroPCMmutespeaker/nohardPAcut/noanalogoutputcodec. Fixedupstream24kTDM4-andzero-initializedTXMCLK0risknotcopied. NoRGB46/cameraGC2145/SD/sensors/sleep/stockMCP. ADCaddress-gain-targetbuild-evidence-separate;manufacturerbinarywasstaticinspectednotexecutedinstalledorlinked. PhysicalPCBrevision/ADCidentity-clockframes-leftMIC/backlightpolarity/keys-audio-acoustics/networkbindingreminderOTAunaccepted. CurrentpanelusesSDKDCSoperationswithILI9341-2.1.0exact18defaultcommands/BGR-RGB565-preamble/sleep120ms/externalILI9341dependencyremoved;targetbuild-evidence-separate/physicalnot_run."
+    },
+    "electron-bot": {
+      "project_name": "assistant_electron",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_TFT_DIGITAL=1",
+        "ASSISTANT_BOARD_ELECTRON=1"
+      ],
+      "upstream_variant": "electron-bot",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "SourcecandidateelectronBotAIbasicWiFispeechterminal/16MBFlash-Octal8MBPSRAM(N16R8fromauthorBOM). GC9A01BGR240round/SPI3mode0-40MHzMOSI10CLK11CS12DC13RST9/BL46HIGH5kHz10bit/startdark/inverttrue/nomirrorX-finalmirrorY-noswap-gap0(owningclassinitialmirrorXoverwrittenbySpiLcdDisplayconfig)/two20rowDMARGB565swapbytes/round240layout. BOOT0initialrelease-talkcards/noLCDtouch/noI2Ccontrollercreated. ICS43434-or-ZTS6672authorBOM-I2S0LEFT32bits16kHzBCLK42WS40DIN41/convertPCM16+16xsoftwareboostlikefixedNoAudioCodecSimplex/MAX98357AauthorBOM/I2S1LEFT32bits16kHzBCLK18WS8DOUT17/validratecorrectsfixed24kHzunsupportedbyMAXdatasheetp19/network24to16FIR/sameactualPCMsoftwareAECreference/noPAenableGPIO/actualzeroPCMmute/noanaloggain. NoMotioninitialization/servoLEDC4-5-6-7-15-16writes/stockMCP-controller/WebSocket8080service/calibration-NVSwrites;6DOFfeaturesremainunimplementednotmechanicalacceptance. BatteryADC3andcharge14unconfigured/currentbatteryunknown;nostockpercent2150-2450guess/sleep/powerpolicy. Currenttargetbuild-evidence-separate;onlyexistingWaveshare1.8hardwareavailable. Physicalorientation-circlealignment/MICchannel/MAX16kclock-noise/acoustics/networkbindingreminderOTAunaccepted. CurrentGC9A01defaultusesSDKDCSoperations+exact2.0.4BGR-RGB565-preamble/42commands/originalreset/backlight/posttuning;noexternalGC9A01dependency/noadded-sleep-api;build-evidence-separate/physicalnot_run."
+    },
+    "waveshare-esp32-s3-epaper-1.54-v2": {
+      "project_name": "assistant_wspaper2",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_WS_EPAPER=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-epaper-1.54-v2",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 8,
+      "implementation_scope": "SourcecandidateV2N8R8-OctalPSRAM/8MBdualapp-modelpartition. Fixed200x2001bit/SPI3mode0-40MHzMOSI13CLK12CS11DC10RST9BUSY8HIGH/159bytefull-partialwaveformtailregisters/RAM24+26fullbase/C7full-CFpartial/Y199descending/directMSBbitpacking. Existingboundedpaperworker/coalescing/generations/1sminimumrefresh/20partialthenfull/BUSYassert-deassert-timeoutstop/noLVGLblocking;whitepapertext184pxbody-paging/44pxbuttons/BOOT0initialreleasecards-talk. SingleES8311I2C0SDA47SCL48/MCLK14BCLK15WS38DIN16DOUT45/PA46/24kHz/softwareAEC. EPD6LOWaudio42LOWlatch17HIGHpreload-padreadback/PAinitialLOW;PWR18reserved/noinfinitebootwait/nosleep/poweroff/batteryADC/RTC-SHTC3-SD-touchinitialization. V1notincludedpending4MB2MBmanualversiondecision;V2buildstatusseematrix;physicalacceptancenot_run."
+    },
+    "zectrix-s3-epaper-4.2": {
+      "project_name": "assistant_zectrix",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_ZECTRIX=1"
+      ],
+      "upstream_variant": "zectrix-s3-epaper-4.2",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "SourcecandidateblackwhiteZECTRIXNOTE4/notNOTE4C. Manufacturerreferencefixedca285c98ed0641f86780edb1f5ec77b0335fe649/16MBFlash-OctalPSRAM(actualcapacityunmeasured)/root16MBNVS-preserveddualapp-modelmap. SSD2683400x300/1bitLVGL240000byteRGB565PSRAM/native2bit30000wirebytes/15000byte1bitsnapshots/SPI3mode0-20MHzwrite8MHztemperatureMOSI13CLK12CS11DC10RST9BUSY8LOW/nativeIDF3WIRE-HALFDUPLEX-singlepersistentqueue-noSPIbusrecreation. OTP002F0E/E901beforeeachframe/full40temperature-E0-E6-A5-10/currentlowbitpacked/partial50=77-E0=00-A5-83wholewindow-10oldhigh-newlowbits/04-1200BUSYassert-deassert-0200/nooffafterfailure. Boundedsharedpaperworker/1sminimum/10partialorthirtypercentdiffthenfull/physicalgenerationcomplete/timeoutstopswithoutfreeingtransactionpayload. 384pxpagedbody/44pxbuttons/BOOT0initialrelease-talkcards/UP39DOWN18reserved-noOTA-switch-key-shutdown. SingleES831116kHzI2C0SDA47SCL48MCLK14BCLK15WS38DIN16DOUT45PA46/network24to16FIRactualPCMsoftwareAEC;rails17-6-42HIGHpreload-holdrelease-readback-hold/PA46initialLOW-holdreleased-codecowns. NoLED3charge1-2ADC4RTC51INT5NFC55FD7power21initialization/nosleeppoweroff/wholeNOTE4consumerfeaturesnotimplemented. Buildstatusseematrix;physicalacceptancenot_run."
+    },
+    "waveshare-esp32-s3-epaper-3.97": {
+      "project_name": "assistant_wspaper397",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_WS_EPAPER397=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-epaper-3.97",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "SourcecandidateWaveshare3.97N16R8/16MBFlash8MBOctalPSRAM/rootNVS-preserveddualapp-modelmap. ManufacturerpanelmanualconfirmsSSD1677/800x480logicalRGB565768000bytePSRAM+3x48000byte1bitsnapshots+48000internalDMA/persistentSPI3mode0-20MHzMOSI12CLK11CS10DC9RST46BUSY3HIGH. SSD1677X16bitpixel0..799/Y479..0/cursor479/entry01/fixedsourceX*8-helperandcursor0corrected;full24+26base/F7thenpartialwithoutreset-retainoldRAM/FFandpostBUSY26nextbase/update21planes/booster0CAE-C7-C3-C0-80/temperature18=80/noMazaLUT/noZectrix2bitcoding. Existingboundedpaperworker/1sminimum/20partialthenfull/BUSYassertdeassert/timeoutstop-persistentDMA/noLVGLblocking;31pxexistingprojectfont20pxheader/768pxpagedbody/56pxbuttons/BOOT0initialrelease-talkcards/PWR1inputonly. SingleES831124kHzI2C0SDA41SCL42MCLK13BCLK14WS47DIN21DOUT48PA39HIGHinitialLOW/3V3ampgain/softwareAEC. SchematicTG28AXPcompatible34/ALDO2Audio_VCCandALDO3EPDcontrol3V3regs93-94low5bits/90mask06RMW-readback;ALDO1R74NC/39viaR23fitted-controlonly/noDC1-DCDC-otherLDO-charger-PWRtimewrites. NoADCfakebattery/RTC-SHTC3-SD-IMU-LED/dial/autooff-sleepinit. Buildstatusseematrix;physicalacceptancenot_run."
+    },
+    "waveshare-esp32-s3-rlcd-4.2": {
+      "project_name": "assistant_wsrlcd42",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_WS_RLCD=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-rlcd-4.2",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "SourcecandidateWaveshareST7305RLCD400x300/N16R8/16MBFlash8MBOctalPSRAM/rootNVS-preserveddualappmodel. DistinctreflectiveLCDnotepaper/ownnative2x4bytebitmapping15000bytes/240000byteRGB565PSRAM+3x15000byteboundedmonosnapshots+15000internalDMA/no360kLUT. Sharedlatestframeworker10Hzcap-noanimation/persistenttransactiontimeoutstopsfuturewrites;SPI3mode0-20MHz(Min30nsdatasheetrejectsfixed40MHz)/MOSI12CLK11CS40DC5RST41/TE6GPIOISR-IDFcriticalsectioncounter/VBlank35=00/waitoneprewriteandtwoTEedgesafterSPI500msdeadline-beforegenerationcomplete. Fixed27commandvendorinitand200mssleepoutdelaypreserved/36=48-3A11-2A12..2A-2B00..C7/2Cframe/notpaperBUSY-LUT-F7CFprotocol. Reflectivepaged384pxbody16pxCJK14pxheader44pxbuttons/BOOT0initialreleasecards-talk/noTOUCH. ES7210TDM4MIC1+ES8311DAC24kHzI2C0SDA13SCL14MCLK16BCLK9WS45DIN10DOUT8PA46HIGHinitialLOW/actualPCMsoftwareAEC/nohardwareloopbackclaim. PA46releaseoldhold/padreadback/KEY18reservedinput/hardwareBC2104RTClatchuntouched;noADCchargingpercent/RTC-SHTC3-SDtouch/sleep-poweroff-AECdoubleclickinit. Buildstatusseematrix;physicalacceptancenot_run."
+    },
+    "waveshare-esp32-s3-rgb-matrix": {
+      "project_name": "assistant_wsmatrix",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_MATRIX=1"
+      ],
+      "upstream_variant": "waveshare-esp32-s3-rgb-matrix",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 32,
+      "implementation_scope": "SourcecandidateWaveshareRGBMatrix/official32MBFlash16MBOctalPSRAM/root16MBboundedpartitionmap-upper16MBunused/NVS-preserved. HUB7564x64onepanel/STANDARD_TWO_SCAN/FM6126A/pinsRGB1-4-5-6RGB2-7-15-16A18B8C3D42E9CLK41LAT40OE2/startOEHIGHbrightness0/20MHzmin240Hzconfiguration(notmeasured)/singlebufferesp-hub75pinned0.3.6-S3LCD_CAM-GDMA(noI2Sdisplay)/8192byteRGB565PSRAM-fullLVGLbuffer/synchronouspublicdraw_pixels;initializationfailurequiesceOEroute. 64textUI14CJK10header14digitssixcodefits/remindertitle-detail-scroll/nolocalbuttons-voiceandconsoleactions/nofakeBOOTgesture/noapplicationkeyassumed. ES7210TDM4MIC1+ES8311DAC16kHzI2C0SDA47SCL48MCLK12BCLK43WS38DIN39DOUT21PA11initialLOWGPIOreadback/24to16FIRactualPCMsoftwareAEC/USBconsoleavoidsUARTTX43BCLKconflict. Doesnotoverwritevolume70NVS/credentials/sleepbattery-RGBmatrixchain/camera-RTC-SD-IMUfeatures. MissingHUB75component/newtargetnotcompiled;cachedoldregressionscannotproveGDMA/64UIbranchesoractualrefresh-brightness-acoustics;physicalnot_run."
+    },
+    "sensecap-watcher": {
+      "project_name": "assistant_sensecap",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_SENSECAP=1"
+      ],
+      "upstream_variant": "sensecap-watcher",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 32,
+      "preserved_flash_ranges": [
+        {
+          "offset": 36864,
+          "size": 204800
+        },
+        {
+          "offset": 241664,
+          "size": 16384
+        }
+      ],
+      "implementation_scope": "SourcecandidateSenseCAPWatcherbasicWiFispeechterminal/32MBFlash8MBOctalPSRAM;notHX6538AIcameraorwholeSenseCAPfirmware. Protectedrawreadonlynvsfactory9000/32000andnewdefaultNVS3B000/4000;partitionlayoutgatebeforeNVSorboardwrites;OTA3F000/apps50000-350000x300000/modelC00000x400000;upper16MBunused. TCA9555at21maskedownedP9LCD-P10system-P12PA-P3knobpush/readback/preload/noportreset;AI-SD-Grove-ADCotherpinsuntouched/firstreleasekeyerrorcancel/noeraseorautoshutdown. SPD2010RGB412round/QSPI3mode3-40MHzCS45CLK7D0-9D1-1D2-14D3-13RSTNC/4pixelXrounder/2x20rowDMA-swapRGB565/BL8PWM5k10bit/roundlayout44pxknobcardinput. ES8311DAC+ES7243Einputphysical14API28/I2C0SDA47SCL48/I2S0MCLK10BCLK11WS12DIN15DOUT16stereo16-RIGHTinput24kHz/27dBactualdrivergain/PAexpanderP12/softwarePCM-AEC/sharedclockretained. TouchI2C1/knobrotation/HX6538-SSCMA-camera-SPI2-LED40-battery-RTC-SD-Grove/chargerpoliciesnotinitialized. NativeSPD2010fixed412RGB565QSPI/default402commands/FF201000userpage/mirrorbits1-0/NCsoftware01reset20ms/swap_xyunsupported-SWrotation0withoneextrastipe/startupreadyonlyafterPWMsuccess;buildtrackedseparately/physicalnot_run."
+    },
+    "espressif-esp32s3-korvo2-v3-rndis": {
+      "project_name": "assistant_korvo_rndis",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_KORVO2=1",
+        "ASSISTANT_BOARD_RNDIS=1"
+      ],
+      "upstream_variant": "espressif-esp32s3-korvo2-v3-rndis",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Korvo2 V3 RNDIS source candidate with independent assistant_korvo_rndis identity; reuses the existing ST7789 280x240 display, checked expander RMW, ADC1CH4 keys, ES8311/ES7210 TDM4 MIC1 24kHz and software PCM AEC. USB OTG GPIO19/20 host uses iot_usbh_rndis=0.3.1, CDC and IOT_ETH esp_netif DHCP, key XY_RNDIS. SDK5.5 root_port_unpowered gates early enumeration: install host and event worker, CDC skip host init, install RNDIS and netif/glue, register immutable handle state, start ETH, then enable root port. ETH callbacks filter by handle; GOT_IP and LOST_IP use ip_event_got_ip_t and filter by netif. Disconnect invalidates the address; replug waits for a new DHCP event. Persistent match-list and callback/driver state are retained after partial failure; reboot required to retry. No NVS erasure and no synchronous indefinite network wait; main retains its 60second wait. device_network selects WiFi or RNDIS; RNDIS configuration requires a ws/wss URL only and preserves existing SSID/password. WiFi AP remains the local configuration transport. UART0 console replaces USB console to avoid the shared PHY. Existing WebSocket/HTTP pairing, DNS, reconnect and OTA remain in the common path. Module must already expose a working RNDIS DHCP uplink: no AT dial, SIM or APN manager. Target preflight exit1: missing iot_usbh_rndis0.3.1, no stage or compilation. Camera, ILI9341 option, touch, SD, battery/charge/sleep and original MUTE/PLAY/SET features are not implemented. No target or physical acceptance."
+    },
+    "bread-compact-nt26": {
+      "project_name": "assistant_nt26",
+      "target": "esp32s3",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_OLED=1",
+        "ASSISTANT_BOARD_NT26=1"
+      ],
+      "upstream_variant": "bread-compact-nt26",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "NT26sourcecandidatewithactualUART1Ethernet3MbpsTX12RX11MRDY9SRDY10;78/uart-eth-modem0.7.0requiresIDF>=6.0.1,isolatedboardmanifest>=6.0.1<6.2;notbuiltwithlocalIDF5.5.6. Persistentdriver/callbackbeforeStart/ISRservicechecked/noStopordestructfromcallback/addressfromdriverConnectedplusatomicIsInitialized/noGetNetifborrowduringrecovery;boundedTXpoolPSRAM. Independentassistant_nt26/SSD1306128x32I2C0SDA41SCL42mirroredXY/noLVGLtouch;existingdigitalI2S0MICWS4BCLK5DIN6left32slot16kHzandI2S1speakerBCLK15WS16DOUT7/upstream24kHz;existingPCMsoftwareAECandfullwake/OTApathsretained. ExistingBOOT0/touchkey47/volume40-39releasefirstcancel/cardinteraction;WiFiAPserver-onlyconfigpreservesSSIDpassword;runtimeUARTcellularnotWiFialias. MissingdriverandSDK6.0.1+;sourceonly/nohardware. ModemfirmwareSIM/APN/3Mbpshandshake/recovery/DHCPDNS/PSRAMandinternalmemorybudget/audioandphysicalacceptancepending;lamp18/LED48/explicitmodulepower/reset/flightRFtestandoriginallowpowerfeaturesunimplemented."
+    },
+    "espressif-esp32-p4-function-ev-board": {
+      "project_name": "assistant_p4func",
+      "target": "esp32p4",
+      "bsp_component": "esp32_p4_function_ev_board",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_P4_FUNCTION=1",
+        "ASSISTANT_BOARD_P4_REV_LT3=1"
+      ],
+      "upstream_variant": "espressif-esp32-p4-function-ev-board",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "P4FunctionEVsourcecandidateusingofficialBSP5.2.3/EK790071024x600RGB565twoDSIlanes/GT911XYmirror/PWM26reset27/I2C1SDA7SCL8;retainBSPtouch/display/LDO3andSDcacheLDO4-nonformatmount;cameraunimplemented. SingleES8311BOTHhandleinexistingengineI2S0MCLK13BCLK12WS10DIN11DOUT9PA53/24kHzMICandSPK/softwarePCM-AEC;doesnotcallBSPseparatecodecconstructorsor22050Hzdefault. P4mn7_cnmodelrequired,noS3mn5/mn6fallback;existingfullwakephrase/AFEandprotocolkeptbutnewmodelacousticacceptancepending. Hosted2.12.11+WiFiRemote1.6.4C6SDIO4bitfunctionboardpreset;existingWiFiAP/STA/HTTPpair/WebSocketmedia/OTApath,requiresalreadycompatibleC6firmware,nocoprocflashperformed. Common-chip-boardSDKdefaultorder/P4HEX200MHzPSRAM400MHzCPU/16MBrootpartitions,NVSpreserved;P4oldrevLT3min1.0versusP4Xrev>=3.0distinctimageandlibraryselection. NewRISC-VtargetsourceportallowedonlyS3orP4inreaders/build;flashhelperusesselectedchipbutnotexecuted. ExactSDK>=5.5.6<5.6 targetnotcompiled:missingBSP/Hosted/Remoteandtransitives;preflightandoldS3regressionsseparatelyrecorded. Chiprevision/coprocessorprotocol/SDIOpins-firmware/MIPI-touch/power24kHzclocks/PA/AECwake/largeUI/SD/OTA/sizebudget/physicalacceptanceremainpending."
+    },
+    "espressif-esp32-p4x-function-ev-board": {
+      "project_name": "assistant_p4xfunc",
+      "target": "esp32p4",
+      "bsp_component": "esp32_p4_function_ev_board",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_P4_FUNCTION=1"
+      ],
+      "upstream_variant": "espressif-esp32-p4x-function-ev-board",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "P4FunctionEVsourcecandidateusingofficialBSP5.2.3/EK790071024x600RGB565twoDSIlanes/GT911XYmirror/PWM26reset27/I2C1SDA7SCL8;retainBSPtouch/display/LDO3andSDcacheLDO4-nonformatmount;cameraunimplemented. SingleES8311BOTHhandleinexistingengineI2S0MCLK13BCLK12WS10DIN11DOUT9PA53/24kHzMICandSPK/softwarePCM-AEC;doesnotcallBSPseparatecodecconstructorsor22050Hzdefault. P4mn7_cnmodelrequired,noS3mn5/mn6fallback;existingfullwakephrase/AFEandprotocolkeptbutnewmodelacousticacceptancepending. Hosted2.12.11+WiFiRemote1.6.4C6SDIO4bitfunctionboardpreset;existingWiFiAP/STA/HTTPpair/WebSocketmedia/OTApath,requiresalreadycompatibleC6firmware,nocoprocflashperformed. Common-chip-boardSDKdefaultorder/P4HEX200MHzPSRAM400MHzCPU/16MBrootpartitions,NVSpreserved;P4oldrevLT3min1.0versusP4Xrev>=3.0distinctimageandlibraryselection. NewRISC-VtargetsourceportallowedonlyS3orP4inreaders/build;flashhelperusesselectedchipbutnotexecuted. ExactSDK>=5.5.6<5.6 targetnotcompiled:missingBSP/Hosted/Remoteandtransitives;preflightandoldS3regressionsseparatelyrecorded. Chiprevision/coprocessorprotocol/SDIOpins-firmware/MIPI-touch/power24kHzclocks/PA/AECwake/largeUI/SD/OTA/sizebudget/physicalacceptanceremainpending."
+    },
+    "waveshare-esp32-p4-wifi6-touch-lcd-3.5": {
+      "project_name": "assistant_ws_p435",
+      "target": "esp32p4",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_P4_SPI35=1",
+        "ASSISTANT_BOARD_P4_REV_LT3=1"
+      ],
+      "upstream_variant": "waveshare-esp32-p4-wifi6-touch-lcd-3.5",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "P4WiFi6TouchLCD3.5sourcecandidatewithseparateoldmin1.0/P4Xmin3.0imageidentityandmn7/P4libraries. ActualowningboardusesST7796SPI2mode3/80MHz320x480BGR/inverttrue/mirrorXtrue/gap0;CLK21MOSI20CS23DC26RST27BL28PWMstarts0;20lineinternalDMAstripes. FT5x06at0x38onI2C1SDA7SCL8/400kHzRST29IRQ50/swapXY+mirrorX,checkedcoordinates/cancelthroughsharedpointer. BOOT35usesexistingrelease-firsthold-talk/cardpath;doesnotcopyunconditionalstartupListeningorrebootgesture. SingleES8311BOTHI2S0MCLK13BCLK12WS10DIN11DOUT9PA53/24kHzMIC-SPK/sharedcodec/softwarePCMAEC;headerES7210andREFERENCE macrosarenotinstantiatedbyfixedGetAudioCodec. ExactST7796=1.4.0FT5x06=1.1.1Hosted2.12.11Remote1.6.4/SDK5.5.6/C6SDIOslot1withupstreamcomponentP4defaultGPIO14-19reset54,presetNONE;coprocfirmwareandphysicalnetsunverified. Reusecommon-chip-boarddefaults/mn7customwake/APSTA-pairing-WebSocketmedia/OTA;NVSrangeand16MBbackupguardpreserved. NativeUSBSerialJTAGGPIO24-25separatefromSPI20-21;USBOTG26-27notinitializedbecauseLCDownsDC-reset. MissingST7796/Hosted/Remote,noP4targetstageorcompile. Camera/SDcache/battery/Bluetooth/originalBOOTreboot-notimplemented;display/touch/clock80MHz/PA-micgain/AEC/wake/SDIO/OTAandphysicalacceptancepending."
+    },
+    "waveshare-esp32-p4x-wifi6-touch-lcd-3.5": {
+      "project_name": "assistant_ws_p4x35",
+      "target": "esp32p4",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_COMMUNITY_TFT=1",
+        "ASSISTANT_BOARD_P4_SPI35=1"
+      ],
+      "upstream_variant": "waveshare-esp32-p4x-wifi6-touch-lcd-3.5",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "P4WiFi6TouchLCD3.5sourcecandidatewithseparateoldmin1.0/P4Xmin3.0imageidentityandmn7/P4libraries. ActualowningboardusesST7796SPI2mode3/80MHz320x480BGR/inverttrue/mirrorXtrue/gap0;CLK21MOSI20CS23DC26RST27BL28PWMstarts0;20lineinternalDMAstripes. FT5x06at0x38onI2C1SDA7SCL8/400kHzRST29IRQ50/swapXY+mirrorX,checkedcoordinates/cancelthroughsharedpointer. BOOT35usesexistingrelease-firsthold-talk/cardpath;doesnotcopyunconditionalstartupListeningorrebootgesture. SingleES8311BOTHI2S0MCLK13BCLK12WS10DIN11DOUT9PA53/24kHzMIC-SPK/sharedcodec/softwarePCMAEC;headerES7210andREFERENCE macrosarenotinstantiatedbyfixedGetAudioCodec. ExactST7796=1.4.0FT5x06=1.1.1Hosted2.12.11Remote1.6.4/SDK5.5.6/C6SDIOslot1withupstreamcomponentP4defaultGPIO14-19reset54,presetNONE;coprocfirmwareandphysicalnetsunverified. Reusecommon-chip-boarddefaults/mn7customwake/APSTA-pairing-WebSocketmedia/OTA;NVSrangeand16MBbackupguardpreserved. NativeUSBSerialJTAGGPIO24-25separatefromSPI20-21;USBOTG26-27notinitializedbecauseLCDownsDC-reset. MissingST7796/Hosted/Remote,noP4targetstageorcompile. Camera/SDcache/battery/Bluetooth/originalBOOTreboot-notimplemented;display/touch/clock80MHz/PA-micgain/AEC/wake/SDIO/OTAandphysicalacceptancepending."
+    },
+    "waveshare-esp32-p4-wifi6-touch-lcd-7b": {
+      "project_name": "assistant_ws_p47b",
+      "target": "esp32p4",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_P4_7B=1",
+        "ASSISTANT_BOARD_P4_REV_LT3=1",
+        "ASSISTANT_BOARD_P4_MIPI=1"
+      ],
+      "upstream_variant": "waveshare-esp32-p4-wifi6-touch-lcd-7b",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 32,
+      "implementation_scope": "WaveshareP4WiFi6TouchLCD7Bsourcecandidate/1024x600EK79007RGB565DSI0two900Mbpslanes/DPI52MHzH10-160-160V1-23-12/one1228800bytePSRAMframe/DMA2D;RST33BL32activeLOWPWMdark1023beforeinitialization,LDO3=2500checked. LVGLtwo20linePSRAMdrawbuffersplusone20linerotationbuffer=122880bytes/PPAexplicitoff,noinvalidDPIpaneldisp_on_offcall,backlightscreenoff. GT911known0x5Dthen0x14only/I2C1SDA7SCL8/400kHz/noresetIRQ/finalswapmirrorfalse/requiredpointer;errors,multicontact,out-of-rangecancelandwaitrelease. BOOT35release-firstholdtalk/cardinput. ExistingdualcodecES7210TDM4MIC1slot0andES8311DAC24kHzI2S0MCLK13BCLK12WS10DIN11DOUT9PA53INPUT_OUTPUTreadback/codecpaNCpreventGPIOsetupdisablingreadback/digitalmuteverifiedthencheckedPAenable/softwarePCM-AEC;doesnotclaimhardware-reference. mn7customwake/oldP4min1.0vsP4Xmin3.0distinctidentity/32MBadaptedpartitions:200Kreadonlynvsfactory,840Knvs,4MBapp0+4MBapp1,18MBstorage,4MBmodellabel;preserveNVS/modelloadercontract;Hosted2.12.11Remote1.6.4C6SDIOslot1defaultpins14-19reset54notphysicalacceptance;APSTA/HTTPbinding/WSmedia/OTAretained. Partialdisplayfailurekeepsobjectsretainedforcallbacks/darkensPAoff/rebootretry;noendlessretryorNVSreset. ExactEK79007=2.0.2~1GT911=1.2.1missing,newtargetnotcompiled;camera/SDcache/Bluetooth/batterypowerfeaturesnotimplemented. Physicalpanel-porches900Mbps/touch-PA-clock-ADCslots/mn7AEC/SDIOC6firmware/OTA-memory-andacousticacceptancepending;onlyexistingWaveshare1.8available. Shared runtime nowwaveshare_p4_mipi_display.cpp;panelsettingsinwaveshare_p4_mipi_board.h;padspreparedbeforeUImemory;oldduplicateddisplayfilesretired. StillnotP4compiled.",
+      "preserved_flash_ranges": [
+        {
+          "offset": 36864,
+          "size": 204800
+        },
+        {
+          "offset": 241664,
+          "size": 860160
+        }
+      ]
+    },
+    "waveshare-esp32-p4x-wifi6-touch-lcd-7b": {
+      "project_name": "assistant_ws_p4x7b",
+      "target": "esp32p4",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_P4_7B=1",
+        "ASSISTANT_BOARD_P4_MIPI=1"
+      ],
+      "upstream_variant": "waveshare-esp32-p4x-wifi6-touch-lcd-7b",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 32,
+      "implementation_scope": "WaveshareP4WiFi6TouchLCD7Bsourcecandidate/1024x600EK79007RGB565DSI0two900Mbpslanes/DPI52MHzH10-160-160V1-23-12/one1228800bytePSRAMframe/DMA2D;RST33BL32activeLOWPWMdark1023beforeinitialization,LDO3=2500checked. LVGLtwo20linePSRAMdrawbuffersplusone20linerotationbuffer=122880bytes/PPAexplicitoff,noinvalidDPIpaneldisp_on_offcall,backlightscreenoff. GT911known0x5Dthen0x14only/I2C1SDA7SCL8/400kHz/noresetIRQ/finalswapmirrorfalse/requiredpointer;errors,multicontact,out-of-rangecancelandwaitrelease. BOOT35release-firstholdtalk/cardinput. ExistingdualcodecES7210TDM4MIC1slot0andES8311DAC24kHzI2S0MCLK13BCLK12WS10DIN11DOUT9PA53INPUT_OUTPUTreadback/codecpaNCpreventGPIOsetupdisablingreadback/digitalmuteverifiedthencheckedPAenable/softwarePCM-AEC;doesnotclaimhardware-reference. mn7customwake/oldP4min1.0vsP4Xmin3.0distinctidentity/32MBadaptedpartitions:200Kreadonlynvsfactory,840Knvs,4MBapp0+4MBapp1,18MBstorage,4MBmodellabel;preserveNVS/modelloadercontract;Hosted2.12.11Remote1.6.4C6SDIOslot1defaultpins14-19reset54notphysicalacceptance;APSTA/HTTPbinding/WSmedia/OTAretained. Partialdisplayfailurekeepsobjectsretainedforcallbacks/darkensPAoff/rebootretry;noendlessretryorNVSreset. ExactEK79007=2.0.2~1GT911=1.2.1missing,newtargetnotcompiled;camera/SDcache/Bluetooth/batterypowerfeaturesnotimplemented. Physicalpanel-porches900Mbps/touch-PA-clock-ADCslots/mn7AEC/SDIOC6firmware/OTA-memory-andacousticacceptancepending;onlyexistingWaveshare1.8available. Shared runtime nowwaveshare_p4_mipi_display.cpp;panelsettingsinwaveshare_p4_mipi_board.h;padspreparedbeforeUImemory;oldduplicateddisplayfilesretired. StillnotP4compiled.",
+      "preserved_flash_ranges": [
+        {
+          "offset": 36864,
+          "size": 204800
+        },
+        {
+          "offset": 241664,
+          "size": 860160
+        }
+      ]
+    },
+    "waveshare-esp32-p4-wifi6-touch-lcd-7": {
+      "project_name": "assistant_ws_p47",
+      "target": "esp32p4",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_P4_ILI9881C=1",
+        "ASSISTANT_BOARD_P4_REV_LT3=1",
+        "ASSISTANT_BOARD_P4_MIPI=1"
+      ],
+      "upstream_variant": "waveshare-esp32-p4-wifi6-touch-lcd-7",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "P4/P4XWiFi6TouchLCD7ILI9881Csourcecandidate720x1280RGB565DSI2x1000MbpsDPI80MHzH50-239-33V30-20-2;RST27/BL26activeHIGH/GT911I2C1SDA7SCL8knownaddresses/noRSTIRQ;ILI9881Cvendorinitcommandssourcedfrompinnedupstreamlcd_init_cmds;dualES7210+ES8311I2S0MIC1slot0/24kHz/PA53/softwareAEC;mn7/HostedC6/partitionNVScontract/commonHTTPWSOTA. Separateoldmin1.0/P4Xmin3.0profiles. Camera/SD/battery/Bluetooth/physicalacceptancepending. MissingILI9881C1.1.0/GT911/Hosted/Remote;targetnotcompiled. Follow-up corrected active-HIGH BL26 and16MB board defaults,P4 guards/PPA-off/minimum2touchpoints,196literalILIcommandsonlywithstaticC++lifetimes. Driver1.1.0doesimplementdisp_on_off;backlightcontrolisusedforscreenoff. New target remains uncompiled. Shared runtime nowwaveshare_p4_mipi_display.cpp;panelsettingsinwaveshare_p4_mipi_board.h;padspreparedbeforeUImemory;oldduplicateddisplayfilesretired. StillnotP4compiled."
+    },
+    "waveshare-esp32-p4x-wifi6-touch-lcd-7": {
+      "project_name": "assistant_ws_p4x7",
+      "target": "esp32p4",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_P4_ILI9881C=1",
+        "ASSISTANT_BOARD_P4_MIPI=1"
+      ],
+      "upstream_variant": "waveshare-esp32-p4x-wifi6-touch-lcd-7",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "P4/P4XWiFi6TouchLCD7ILI9881Csourcecandidate720x1280RGB565DSI2x1000MbpsDPI80MHzH50-239-33V30-20-2;RST27/BL26activeHIGH/GT911I2C1SDA7SCL8knownaddresses/noRSTIRQ;ILI9881Cvendorinitcommandssourcedfrompinnedupstreamlcd_init_cmds;dualES7210+ES8311I2S0MIC1slot0/24kHz/PA53/softwareAEC;mn7/HostedC6/partitionNVScontract/commonHTTPWSOTA. Separateoldmin1.0/P4Xmin3.0profiles. Camera/SD/battery/Bluetooth/physicalacceptancepending. MissingILI9881C1.1.0/GT911/Hosted/Remote;targetnotcompiled. Follow-up corrected active-HIGH BL26 and16MB board defaults,P4 guards/PPA-off/minimum2touchpoints,196literalILIcommandsonlywithstaticC++lifetimes. Driver1.1.0doesimplementdisp_on_off;backlightcontrolisusedforscreenoff. New target remains uncompiled. Shared runtime nowwaveshare_p4_mipi_display.cpp;panelsettingsinwaveshare_p4_mipi_board.h;padspreparedbeforeUImemory;oldduplicateddisplayfilesretired. StillnotP4compiled."
+    },
+    "waveshare-esp32-p4-wifi6-touch-lcd-4.3": {
+      "project_name": "assistant_ws_p443",
+      "target": "esp32p4",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_P4_ST7701=1",
+        "ASSISTANT_BOARD_P4_REV_LT3=1",
+        "ASSISTANT_BOARD_P4_MIPI=1"
+      ],
+      "upstream_variant": "waveshare-esp32-p4-wifi6-touch-lcd-4.3",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "4.3inch ST7701 MIPI source candidate.480x800 RGB565,DSI2x500Mbps,DPI30MHz H12/42/42 V8/2/60;RST27,activeLOW BL26 initially dark1023;39 fixed source vendor commands held in static C++ byte arrays;ST7701 use_mipi_interface=true,no lane_num member. Single PSRAM framebuffer768000 and three20row draw buffers57600 bytes,software rotation/PPA off. GT911 I2C1 7/8 known5D/14 only,no reset/IRQ/no coordinate transforms;read/multitouch/out-of-range cancels until release. BOOT35 release before talk/cards. ES7210TDM4 MIC1slot0/ES8311 DAC24kHz I2S0 MCLK13 BCLK12 WS10 DIN11 DOUT9;PA53 input-output readback,codec PA NC,digital mute then checked PA.SoftwareAEC/fullmn7wake/C6Hosted SDIO/HTTPbinding/WSmedia/OTA retained.Source16MB root partitions,oldP4min1.0/P4Xmin3.0 distinct ABI/identity. SDK>=5.5.6<5.6,ST7701=2.0.2~2,GT911=1.2.1,Hosted2.12.11,Remote1.6.4;target uncompiled and hardware unaccepted.Camera/SDcache/Bluetooth/battery/original gestures unimplemented. Shared runtime nowwaveshare_p4_mipi_display.cpp;panelsettingsinwaveshare_p4_mipi_board.h;padspreparedbeforeUImemory;oldduplicateddisplayfilesretired. StillnotP4compiled."
+    },
+    "waveshare-esp32-p4x-wifi6-touch-lcd-4.3": {
+      "project_name": "assistant_ws_p4x43",
+      "target": "esp32p4",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_P4_ST7701=1",
+        "ASSISTANT_BOARD_P4_MIPI=1"
+      ],
+      "upstream_variant": "waveshare-esp32-p4x-wifi6-touch-lcd-4.3",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "4.3inch ST7701 MIPI source candidate.480x800 RGB565,DSI2x500Mbps,DPI30MHz H12/42/42 V8/2/60;RST27,activeLOW BL26 initially dark1023;39 fixed source vendor commands held in static C++ byte arrays;ST7701 use_mipi_interface=true,no lane_num member. Single PSRAM framebuffer768000 and three20row draw buffers57600 bytes,software rotation/PPA off. GT911 I2C1 7/8 known5D/14 only,no reset/IRQ/no coordinate transforms;read/multitouch/out-of-range cancels until release. BOOT35 release before talk/cards. ES7210TDM4 MIC1slot0/ES8311 DAC24kHz I2S0 MCLK13 BCLK12 WS10 DIN11 DOUT9;PA53 input-output readback,codec PA NC,digital mute then checked PA.SoftwareAEC/fullmn7wake/C6Hosted SDIO/HTTPbinding/WSmedia/OTA retained.Source16MB root partitions,oldP4min1.0/P4Xmin3.0 distinct ABI/identity. SDK>=5.5.6<5.6,ST7701=2.0.2~2,GT911=1.2.1,Hosted2.12.11,Remote1.6.4;target uncompiled and hardware unaccepted.Camera/SDcache/Bluetooth/battery/original gestures unimplemented. Shared runtime nowwaveshare_p4_mipi_display.cpp;panelsettingsinwaveshare_p4_mipi_board.h;padspreparedbeforeUImemory;oldduplicateddisplayfilesretired. StillnotP4compiled."
+    },
+    "waveshare-esp32-p4-wifi6-touch-lcd-5": {
+      "project_name": "assistant_ws_p45",
+      "target": "esp32p4",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_P4_HX8394=1",
+        "ASSISTANT_BOARD_P4_MIPI=1",
+        "ASSISTANT_BOARD_P4_REV_LT3=1"
+      ],
+      "upstream_variant": "waveshare-esp32-p4-wifi6-touch-lcd-5",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "5inchHX8394sourcecandidate720x1280RGB565DSI2x700Mbps/DPI58MHz/H20-20-40V4-10-24/RST27activeHIGH/BL26activeHIGH.PHY LDO3=2500 and sharedI2C1 SDA7SCL8;GT9115D/14knownaddresses/multitouch-errorcancel/BOOT35releasefirst. SharedMIPI displayruntime with panel-specific settings;prepareBLoffPAoffbeforeUImemory. Driverwaveshare/esp_lcd_hx8394=2.1.0usesdefault5inchcommands;SKIP_I2C_INIT=y followsmanufacturerBSP1.0.4andavoidssecondI2C1/unchecked0x45writes;noexplicitmirrorcallbecauseHXdriverhasnone. One1843200bytePSRAMframe+three20rowbuffers86400bytes;PPAoff. ES7210TDM4 MIC1slot0/ES8311DAC24kHz/I2S0 MCLK13BCLK12WS10DIN11DOUT9/PA53inputoutputcheckedafterdigitalmute,codecPANC/softwareAEC/fullmn7wake. C6Hosted2.12.11/Remote1.6.4SDIOslot1/HTTPpairingWSmediaOTA retained;SDK>=5.5.6<5.6/16MBrootpartitions/NVSpreserved. IndependentoldP4min1.0/P4Xmin3.0identity. Newdriverandtransitivesnotinstalled;targetnotcompiledandphysicalacceptancenot_run. Camera/SDcache/Bluetooth/battery/originalgesturesunimplemented;onlyexistingWaveshare1.8hardware."
+    },
+    "waveshare-esp32-p4x-wifi6-touch-lcd-5": {
+      "project_name": "assistant_ws_p4x5",
+      "target": "esp32p4",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_P4_HX8394=1",
+        "ASSISTANT_BOARD_P4_MIPI=1"
+      ],
+      "upstream_variant": "waveshare-esp32-p4x-wifi6-touch-lcd-5",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "5inchHX8394sourcecandidate720x1280RGB565DSI2x700Mbps/DPI58MHz/H20-20-40V4-10-24/RST27activeHIGH/BL26activeHIGH.PHY LDO3=2500 and sharedI2C1 SDA7SCL8;GT9115D/14knownaddresses/multitouch-errorcancel/BOOT35releasefirst. SharedMIPI displayruntime with panel-specific settings;prepareBLoffPAoffbeforeUImemory. Driverwaveshare/esp_lcd_hx8394=2.1.0usesdefault5inchcommands;SKIP_I2C_INIT=y followsmanufacturerBSP1.0.4andavoidssecondI2C1/unchecked0x45writes;noexplicitmirrorcallbecauseHXdriverhasnone. One1843200bytePSRAMframe+three20rowbuffers86400bytes;PPAoff. ES7210TDM4 MIC1slot0/ES8311DAC24kHz/I2S0 MCLK13BCLK12WS10DIN11DOUT9/PA53inputoutputcheckedafterdigitalmute,codecPANC/softwareAEC/fullmn7wake. C6Hosted2.12.11/Remote1.6.4SDIOslot1/HTTPpairingWSmediaOTA retained;SDK>=5.5.6<5.6/16MBrootpartitions/NVSpreserved. IndependentoldP4min1.0/P4Xmin3.0identity. Newdriverandtransitivesnotinstalled;targetnotcompiledandphysicalacceptancenot_run. Camera/SDcache/Bluetooth/battery/originalgesturesunimplemented;onlyexistingWaveshare1.8hardware."
+    },
+    "waveshare-esp32-p4-wifi6-touch-lcd-4b": {
+      "project_name": "assistant_ws_p44b",
+      "target": "esp32p4",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_P4_ST7703=1",
+        "ASSISTANT_BOARD_P4_MIPI=1",
+        "ASSISTANT_BOARD_P4_REV_LT3=1"
+      ],
+      "upstream_variant": "waveshare-esp32-p4-wifi6-touch-lcd-4b",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "4BsourcecandidateST7703MIPI720x720RGB565/DSI2x480Mbps/DPI46MHz/H20-80-80V4-12-30/RST27activeLOW/BL26activeLOW. SharedMIPIruntimeusesdriver2.0.0defaultpanelcommands/use_mipi_interface=true/no lane_num;mirrorfalse-false,swoffviaBL,unsupportedaxis-swapavoidedbyLVGLsoftwaremode/PPAoff. One1036800bytePSRAMframe+three20rowbuffers86400bytes. I2C1SDA7SCL8GT9115D-14knownaddresses;singleinrange/error-multitouchcancel/waitrelease;BOOT35holdtalkcards. ExistingES7210TDM4MIC1slot0+ES8311DAC24kHzI2S0MCLK13BCLK12WS10DIN11DOUT9/PA53inputoutputreadback/codecPANC/digitalmuteverifiedbeforePA/softwareAEC/fullmn7wake. C6Hosted2.12.11Remote1.6.4SDIOslot1/HTTPpairingWSmediaOTA/16MBrootpartitionsandNVSpreservation;oldP4min1.0/P4Xmin3.0distinctappandABI. MissingST77032.0.0andtransitives,targetuncompiled;hardwareacceptancenot_run. Camera/SDcache/Bluetooth/battery/originalgesturesnotimplemented;onlyWaveshare1.8hardwareavailable."
+    },
+    "waveshare-esp32-p4x-wifi6-touch-lcd-4b": {
+      "project_name": "assistant_ws_p4x4b",
+      "target": "esp32p4",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_P4_ST7703=1",
+        "ASSISTANT_BOARD_P4_MIPI=1"
+      ],
+      "upstream_variant": "waveshare-esp32-p4x-wifi6-touch-lcd-4b",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "4BsourcecandidateST7703MIPI720x720RGB565/DSI2x480Mbps/DPI46MHz/H20-80-80V4-12-30/RST27activeLOW/BL26activeLOW. SharedMIPIruntimeusesdriver2.0.0defaultpanelcommands/use_mipi_interface=true/no lane_num;mirrorfalse-false,swoffviaBL,unsupportedaxis-swapavoidedbyLVGLsoftwaremode/PPAoff. One1036800bytePSRAMframe+three20rowbuffers86400bytes. I2C1SDA7SCL8GT9115D-14knownaddresses;singleinrange/error-multitouchcancel/waitrelease;BOOT35holdtalkcards. ExistingES7210TDM4MIC1slot0+ES8311DAC24kHzI2S0MCLK13BCLK12WS10DIN11DOUT9/PA53inputoutputreadback/codecPANC/digitalmuteverifiedbeforePA/softwareAEC/fullmn7wake. C6Hosted2.12.11Remote1.6.4SDIOslot1/HTTPpairingWSmediaOTA/16MBrootpartitionsandNVSpreservation;oldP4min1.0/P4Xmin3.0distinctappandABI. MissingST77032.0.0andtransitives,targetuncompiled;hardwareacceptancenot_run. Camera/SDcache/Bluetooth/battery/originalgesturesnotimplemented;onlyWaveshare1.8hardwareavailable."
+    },
+    "waveshare-esp32-p4-wifi6-touch-lcd-3.4c": {
+      "project_name": "assistant_ws_p434c",
+      "target": "esp32p4",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_P4_JD9365_34C=1",
+        "ASSISTANT_BOARD_P4_JD9365=1",
+        "ASSISTANT_BOARD_P4_MIPI=1",
+        "ASSISTANT_BOARD_P4_REV_LT3=1"
+      ],
+      "upstream_variant": "waveshare-esp32-p4-wifi6-touch-lcd-3.4c",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "3.4cJD9365sourcecandidate800x800RGB565/DSI2x1500Mbps/DPI46MHz/H20-20-40V4-12-24/RST27activeLOW/BL26activeLOW. Exact owning command table,driverespressif/esp_lcd_jd9365=2.0.2/lane_num2;sharedMIPI GT911I2C1SDA7SCL8at5D-14/singlepoint-errorcancel/BOOT35;PAoffBLoffbeforeUI;PPAoff/swrotate/one1280000byteframe+three20rowbuffers96000. Centered460pxcontent/circular-safeUIflagprovisionalpendingphysicalbezelacceptance. ES7210TDM4MIC1slot0/ES8311DAC24kHz/I2S0MCLK13BCLK12WS10DIN11DOUT9/PA53readbackanddigitalmute/softwareAEC/mn7;C6Hosted2.12.11Remote1.6.4SDIOslot1/bindingWSmediaOTA/16MBrootpartitions/NVS. IndependentoldP4min1.0/P4Xmin3.0identity. Driverandtransitivesmissing;targetuncompiled/device_not_run. Camera/SDcache/Bluetooth/battery/originalgesturesunimplemented;onlyWaveshare1.8hardware."
+    },
+    "waveshare-esp32-p4-wifi6-touch-lcd-4c": {
+      "project_name": "assistant_ws_p44c",
+      "target": "esp32p4",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_P4_JD9365_4C=1",
+        "ASSISTANT_BOARD_P4_JD9365=1",
+        "ASSISTANT_BOARD_P4_MIPI=1",
+        "ASSISTANT_BOARD_P4_REV_LT3=1"
+      ],
+      "upstream_variant": "waveshare-esp32-p4-wifi6-touch-lcd-4c",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "4cJD9365sourcecandidate720x720RGB565/DSI2x1500Mbps/DPI46MHz/H20-20-40V4-12-24/RST27activeLOW/BL26activeLOW. Exact owning command table,driverespressif/esp_lcd_jd9365=2.0.2/lane_num2;sharedMIPI GT911I2C1SDA7SCL8at5D-14/singlepoint-errorcancel/BOOT35;PAoffBLoffbeforeUI;PPAoff/swrotate/one1036800byteframe+three20rowbuffers86400. Centered460pxcontent/circular-safeUIflagprovisionalpendingphysicalbezelacceptance. ES7210TDM4MIC1slot0/ES8311DAC24kHz/I2S0MCLK13BCLK12WS10DIN11DOUT9/PA53readbackanddigitalmute/softwareAEC/mn7;C6Hosted2.12.11Remote1.6.4SDIOslot1/bindingWSmediaOTA/16MBrootpartitions/NVS. IndependentoldP4min1.0/P4Xmin3.0identity. Driverandtransitivesmissing;targetuncompiled/device_not_run. Camera/SDcache/Bluetooth/battery/originalgesturesunimplemented;onlyWaveshare1.8hardware."
+    },
+    "waveshare-esp32-p4-wifi6-touch-lcd-8": {
+      "project_name": "assistant_ws_p48",
+      "target": "esp32p4",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_P4_JD9365_8=1",
+        "ASSISTANT_BOARD_P4_JD9365=1",
+        "ASSISTANT_BOARD_P4_MIPI=1",
+        "ASSISTANT_BOARD_P4_REV_LT3=1"
+      ],
+      "upstream_variant": "waveshare-esp32-p4-wifi6-touch-lcd-8",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "8JD9365sourcecandidate800x1280RGB565/DSI2x1500Mbps/DPI52MHz/H20-20-40V4-10-30/RST27activeLOW/BL26activeHIGH. Exact owning command table,driverespressif/esp_lcd_jd9365=2.0.2/lane_num2;sharedMIPI GT911I2C1SDA7SCL8at5D-14/singlepoint-errorcancel/BOOT35;PAoffBLoffbeforeUI;PPAoff/swrotate/one2048000byteframe+three20rowbuffers96000. ExistingrectangularUIretained;largepaneldensitypendingacceptance. ES7210TDM4MIC1slot0/ES8311DAC24kHz/I2S0MCLK13BCLK12WS10DIN11DOUT9/PA53readbackanddigitalmute/softwareAEC/mn7;C6Hosted2.12.11Remote1.6.4SDIOslot1/bindingWSmediaOTA/16MBrootpartitions/NVS. IndependentoldP4min1.0/P4Xmin3.0identity. Driverandtransitivesmissing;targetuncompiled/device_not_run. Camera/SDcache/Bluetooth/battery/originalgesturesunimplemented;onlyWaveshare1.8hardware."
+    },
+    "waveshare-esp32-p4-wifi6-touch-lcd-10.1": {
+      "project_name": "assistant_ws_p4101",
+      "target": "esp32p4",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_P4_JD9365_101=1",
+        "ASSISTANT_BOARD_P4_JD9365=1",
+        "ASSISTANT_BOARD_P4_MIPI=1",
+        "ASSISTANT_BOARD_P4_REV_LT3=1"
+      ],
+      "upstream_variant": "waveshare-esp32-p4-wifi6-touch-lcd-10.1",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "10.1JD9365sourcecandidate800x1280RGB565/DSI2x1500Mbps/DPI52MHz/H20-20-40V4-10-30/RST27activeLOW/BL26activeHIGH. Exact owning command table,driverespressif/esp_lcd_jd9365=2.0.2/lane_num2;sharedMIPI GT911I2C1SDA7SCL8at5D-14/singlepoint-errorcancel/BOOT35;PAoffBLoffbeforeUI;PPAoff/swrotate/one2048000byteframe+three20rowbuffers96000. ExistingrectangularUIretained;largepaneldensitypendingacceptance. ES7210TDM4MIC1slot0/ES8311DAC24kHz/I2S0MCLK13BCLK12WS10DIN11DOUT9/PA53readbackanddigitalmute/softwareAEC/mn7;C6Hosted2.12.11Remote1.6.4SDIOslot1/bindingWSmediaOTA/16MBrootpartitions/NVS. IndependentoldP4min1.0/P4Xmin3.0identity. Driverandtransitivesmissing;targetuncompiled/device_not_run. Camera/SDcache/Bluetooth/battery/originalgesturesunimplemented;onlyWaveshare1.8hardware."
+    },
+    "waveshare-esp32-p4x-wifi6-touch-lcd-3.4c": {
+      "project_name": "assistant_ws_p4x34c",
+      "target": "esp32p4",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_P4_JD9365_34C=1",
+        "ASSISTANT_BOARD_P4_JD9365=1",
+        "ASSISTANT_BOARD_P4_MIPI=1"
+      ],
+      "upstream_variant": "waveshare-esp32-p4x-wifi6-touch-lcd-3.4c",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "3.4cJD9365sourcecandidate800x800RGB565/DSI2x1500Mbps/DPI46MHz/H20-20-40V4-12-24/RST27activeLOW/BL26activeLOW. Exact owning command table,driverespressif/esp_lcd_jd9365=2.0.2/lane_num2;sharedMIPI GT911I2C1SDA7SCL8at5D-14/singlepoint-errorcancel/BOOT35;PAoffBLoffbeforeUI;PPAoff/swrotate/one1280000byteframe+three20rowbuffers96000. Centered460pxcontent/circular-safeUIflagprovisionalpendingphysicalbezelacceptance. ES7210TDM4MIC1slot0/ES8311DAC24kHz/I2S0MCLK13BCLK12WS10DIN11DOUT9/PA53readbackanddigitalmute/softwareAEC/mn7;C6Hosted2.12.11Remote1.6.4SDIOslot1/bindingWSmediaOTA/16MBrootpartitions/NVS. IndependentoldP4min1.0/P4Xmin3.0identity. Driverandtransitivesmissing;targetuncompiled/device_not_run. Camera/SDcache/Bluetooth/battery/originalgesturesunimplemented;onlyWaveshare1.8hardware."
+    },
+    "waveshare-esp32-p4x-wifi6-touch-lcd-4c": {
+      "project_name": "assistant_ws_p4x4c",
+      "target": "esp32p4",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_P4_JD9365_4C=1",
+        "ASSISTANT_BOARD_P4_JD9365=1",
+        "ASSISTANT_BOARD_P4_MIPI=1"
+      ],
+      "upstream_variant": "waveshare-esp32-p4x-wifi6-touch-lcd-4c",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "4cJD9365sourcecandidate720x720RGB565/DSI2x1500Mbps/DPI46MHz/H20-20-40V4-12-24/RST27activeLOW/BL26activeLOW. Exact owning command table,driverespressif/esp_lcd_jd9365=2.0.2/lane_num2;sharedMIPI GT911I2C1SDA7SCL8at5D-14/singlepoint-errorcancel/BOOT35;PAoffBLoffbeforeUI;PPAoff/swrotate/one1036800byteframe+three20rowbuffers86400. Centered460pxcontent/circular-safeUIflagprovisionalpendingphysicalbezelacceptance. ES7210TDM4MIC1slot0/ES8311DAC24kHz/I2S0MCLK13BCLK12WS10DIN11DOUT9/PA53readbackanddigitalmute/softwareAEC/mn7;C6Hosted2.12.11Remote1.6.4SDIOslot1/bindingWSmediaOTA/16MBrootpartitions/NVS. IndependentoldP4min1.0/P4Xmin3.0identity. Driverandtransitivesmissing;targetuncompiled/device_not_run. Camera/SDcache/Bluetooth/battery/originalgesturesunimplemented;onlyWaveshare1.8hardware."
+    },
+    "waveshare-esp32-p4x-wifi6-touch-lcd-8": {
+      "project_name": "assistant_ws_p4x8",
+      "target": "esp32p4",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_P4_JD9365_8=1",
+        "ASSISTANT_BOARD_P4_JD9365=1",
+        "ASSISTANT_BOARD_P4_MIPI=1"
+      ],
+      "upstream_variant": "waveshare-esp32-p4x-wifi6-touch-lcd-8",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "8JD9365sourcecandidate800x1280RGB565/DSI2x1500Mbps/DPI52MHz/H20-20-40V4-10-30/RST27activeLOW/BL26activeHIGH. Exact owning command table,driverespressif/esp_lcd_jd9365=2.0.2/lane_num2;sharedMIPI GT911I2C1SDA7SCL8at5D-14/singlepoint-errorcancel/BOOT35;PAoffBLoffbeforeUI;PPAoff/swrotate/one2048000byteframe+three20rowbuffers96000. ExistingrectangularUIretained;largepaneldensitypendingacceptance. ES7210TDM4MIC1slot0/ES8311DAC24kHz/I2S0MCLK13BCLK12WS10DIN11DOUT9/PA53readbackanddigitalmute/softwareAEC/mn7;C6Hosted2.12.11Remote1.6.4SDIOslot1/bindingWSmediaOTA/16MBrootpartitions/NVS. IndependentoldP4min1.0/P4Xmin3.0identity. Driverandtransitivesmissing;targetuncompiled/device_not_run. Camera/SDcache/Bluetooth/battery/originalgesturesunimplemented;onlyWaveshare1.8hardware."
+    },
+    "waveshare-esp32-p4x-wifi6-touch-lcd-10.1": {
+      "project_name": "assistant_ws_p4x101",
+      "target": "esp32p4",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_P4_JD9365_101=1",
+        "ASSISTANT_BOARD_P4_JD9365=1",
+        "ASSISTANT_BOARD_P4_MIPI=1"
+      ],
+      "upstream_variant": "waveshare-esp32-p4x-wifi6-touch-lcd-10.1",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "10.1JD9365sourcecandidate800x1280RGB565/DSI2x1500Mbps/DPI52MHz/H20-20-40V4-10-30/RST27activeLOW/BL26activeHIGH. Exact owning command table,driverespressif/esp_lcd_jd9365=2.0.2/lane_num2;sharedMIPI GT911I2C1SDA7SCL8at5D-14/singlepoint-errorcancel/BOOT35;PAoffBLoffbeforeUI;PPAoff/swrotate/one2048000byteframe+three20rowbuffers96000. ExistingrectangularUIretained;largepaneldensitypendingacceptance. ES7210TDM4MIC1slot0/ES8311DAC24kHz/I2S0MCLK13BCLK12WS10DIN11DOUT9/PA53readbackanddigitalmute/softwareAEC/mn7;C6Hosted2.12.11Remote1.6.4SDIOslot1/bindingWSmediaOTA/16MBrootpartitions/NVS. IndependentoldP4min1.0/P4Xmin3.0identity. Driverandtransitivesmissing;targetuncompiled/device_not_run. Camera/SDcache/Bluetooth/battery/originalgesturesunimplemented;onlyWaveshare1.8hardware."
+    },
+    "waveshare-esp32-p4-nano-10.1-a": {
+      "project_name": "assistant_ws_p4nano",
+      "target": "esp32p4",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_P4_NANO=1",
+        "ASSISTANT_BOARD_P4_JD9365=1",
+        "ASSISTANT_BOARD_P4_MIPI=1",
+        "ASSISTANT_BOARD_P4_REV_LT3=1"
+      ],
+      "upstream_variant": "waveshare-esp32-p4-nano-10.1-a",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Nano10.1Asourcecandidate800x1280RGB565/JD9365separate200commands/DSI2x1500Mbps/DPI80MHz/H20-20-40V10-4-30/RSTNC/BLNC. ReuseespressifJD93652.0.2publicAPI;manufacturer10_1driver2.0.0examinedbutnotlinkedbecauseitrecreatesI2C1andunchecked0x45writes. BoardownsI2C1SDA7SCL8one0x45device100kHz/writes95-11,95-17,96-00/50mstimeouts/1000mssettle;defer96FFuntilUIbrightnesspercent0..100mapped0..255,ACKonly/notreadback. GT911100kHz5D-14/noresetIRQ/knownaddress/singlepoint-errorcancel;BOOT35. One2048000bytePSRAMframe+three20rowbuffers96000;PPAoff/swrotation. SingleES8311BOTHmono16/24kHzI2S0MCLK13BCLK12WS10DIN11DOUT9/oneIN_OUTcodecdevice/sharedcheckeddata/noES7210orTDM4;PA53INPUT_OUTPUTownedbycheckedmute/codecPANC/MICcallback/softwareAEC/mn7. C6Hosted2.12.11Remote1.6.4SDIOslot1/WiFiAPbindingWSmediaOTA/16MBrootpartition/NVSretained;oldP4min1.0vsP4Xmin3.0identity. Ethernet/camera/SDcache/Bluetooth/battery/originalgesturesnotimplemented. Driverandtransitivesmissing,targetuncompiled/physicalnot_run;onlyWaveshare1.8available."
+    },
+    "waveshare-esp32-p4x-nano-10.1-a": {
+      "project_name": "assistant_ws_p4xnano",
+      "target": "esp32p4",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_P4_NANO=1",
+        "ASSISTANT_BOARD_P4_JD9365=1",
+        "ASSISTANT_BOARD_P4_MIPI=1"
+      ],
+      "upstream_variant": "waveshare-esp32-p4x-nano-10.1-a",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Nano10.1Asourcecandidate800x1280RGB565/JD9365separate200commands/DSI2x1500Mbps/DPI80MHz/H20-20-40V10-4-30/RSTNC/BLNC. ReuseespressifJD93652.0.2publicAPI;manufacturer10_1driver2.0.0examinedbutnotlinkedbecauseitrecreatesI2C1andunchecked0x45writes. BoardownsI2C1SDA7SCL8one0x45device100kHz/writes95-11,95-17,96-00/50mstimeouts/1000mssettle;defer96FFuntilUIbrightnesspercent0..100mapped0..255,ACKonly/notreadback. GT911100kHz5D-14/noresetIRQ/knownaddress/singlepoint-errorcancel;BOOT35. One2048000bytePSRAMframe+three20rowbuffers96000;PPAoff/swrotation. SingleES8311BOTHmono16/24kHzI2S0MCLK13BCLK12WS10DIN11DOUT9/oneIN_OUTcodecdevice/sharedcheckeddata/noES7210orTDM4;PA53INPUT_OUTPUTownedbycheckedmute/codecPANC/MICcallback/softwareAEC/mn7. C6Hosted2.12.11Remote1.6.4SDIOslot1/WiFiAPbindingWSmediaOTA/16MBrootpartition/NVSretained;oldP4min1.0vsP4Xmin3.0identity. Ethernet/camera/SDcache/Bluetooth/battery/originalgesturesnotimplemented. Driverandtransitivesmissing,targetuncompiled/physicalnot_run;onlyWaveshare1.8available."
+    },
+    "m5stack-tab5": {
+      "project_name": "assistant_tab5",
+      "target": "esp32p4",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_M5_TAB5=1",
+        "ASSISTANT_BOARD_P4_REV_LT3=1"
+      ],
+      "upstream_variant": "m5stack-tab5",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Tab5sourcecandidate720x1280RGB565/threepanelidentityafterPI4IOreset:STtouch55firmware1=ST7121,3=ST7123/twomatchingreads;onlyNOT_FOUNDselectsILI9881C+GT91114;unknown/readfaultstopsdark,noerrorfallback. ILI2x900Mbps/DPI60MHz/H40-140-40V4-20-20/twoframes;ST2x965Mbps/DPI70MHz/H2-40-40/ST7121V20-24-200/ST7123V2-8-220/oneframe;STdriverbits24withRGB565DPIasowningclass/PPAoff/swrotate/three20rowbuffers86400. ILI195commands/ST712327staticcommands;A3/E8upstream40/15byteoverreadcorrectedtoactual39/14inexplicitanddefaulttables,hardwarecommandlengthunconfirmed. I2C1SDA31SCL32PI4IOE43/44ownedbitsantenna0=internal,PA1off,LCDRST4/TPRST5andWLANpower0;RMWreadback100mstimeouts/lock/preservechargeUSBcameraEXT5V;LCDreleaseinputpulluppermanufacturerwarning;BL22PWMoffbeforeUI. ES7210TDM4MIC1slot0+ES8388DAC24kHz/I2S0MCLK30BCLK27WS29DIN28DOUT26/ESPmasterDACslave;PAexpandercheckedafteractualdigitalmute;softwareAEC/mn7/BOOT0releasefirst. C6Hosted2.12.11Remote1.6.4SDIOslot1CMD13CLK12D0-3=11/10/9/8/reset15activeLOWpermanufacturerdemo/mempoolPSRAM. 16MBrootpartitions/NVS;HEX200MHzpermanufacturerSDK/oldP4min1.0vsP4Xmin3.0identity. BindingWSmediaOTAretained;targetuncompiled/missingdrivers/device_not_run. Camera/SDcache/RS485/USBhost/chargecontrols/Bluetooth/battery/originalgesturesunimplemented;onlyWaveshare1.8hardware. PinnedSTtouch1.0.2vendoredwithmax_touches<=10guardbefore70bytestackbufferread;requiresesp_lcd_touch1.2.1,noregistrySTdriverduplicates."
+    },
+    "m5stack-tab5-p4x": {
+      "project_name": "assistant_tab5x",
+      "target": "esp32p4",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_M5_TAB5=1"
+      ],
+      "upstream_variant": "m5stack-tab5-p4x",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "Tab5sourcecandidate720x1280RGB565/threepanelidentityafterPI4IOreset:STtouch55firmware1=ST7121,3=ST7123/twomatchingreads;onlyNOT_FOUNDselectsILI9881C+GT91114;unknown/readfaultstopsdark,noerrorfallback. ILI2x900Mbps/DPI60MHz/H40-140-40V4-20-20/twoframes;ST2x965Mbps/DPI70MHz/H2-40-40/ST7121V20-24-200/ST7123V2-8-220/oneframe;STdriverbits24withRGB565DPIasowningclass/PPAoff/swrotate/three20rowbuffers86400. ILI195commands/ST712327staticcommands;A3/E8upstream40/15byteoverreadcorrectedtoactual39/14inexplicitanddefaulttables,hardwarecommandlengthunconfirmed. I2C1SDA31SCL32PI4IOE43/44ownedbitsantenna0=internal,PA1off,LCDRST4/TPRST5andWLANpower0;RMWreadback100mstimeouts/lock/preservechargeUSBcameraEXT5V;LCDreleaseinputpulluppermanufacturerwarning;BL22PWMoffbeforeUI. ES7210TDM4MIC1slot0+ES8388DAC24kHz/I2S0MCLK30BCLK27WS29DIN28DOUT26/ESPmasterDACslave;PAexpandercheckedafteractualdigitalmute;softwareAEC/mn7/BOOT0releasefirst. C6Hosted2.12.11Remote1.6.4SDIOslot1CMD13CLK12D0-3=11/10/9/8/reset15activeLOWpermanufacturerdemo/mempoolPSRAM. 16MBrootpartitions/NVS;HEX200MHzpermanufacturerSDK/oldP4min1.0vsP4Xmin3.0identity. BindingWSmediaOTAretained;targetuncompiled/missingdrivers/device_not_run. Camera/SDcache/RS485/USBhost/chargecontrols/Bluetooth/battery/originalgesturesunimplemented;onlyWaveshare1.8hardware. PinnedSTtouch1.0.2vendoredwithmax_touches<=10guardbefore70bytestackbufferread;requiresesp_lcd_touch1.2.1,noregistrySTdriverduplicates."
+    },
+    "m5stack-corep4x": {
+      "project_name": "assistant_corep4x",
+      "target": "esp32p4",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_M5_COREP4=1"
+      ],
+      "upstream_variant": "m5stack-corep4x",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "CoreP4Xsourcecandidate/IDF>=6.0.2<6.1/oldP4notaliased. ST7102480x480RGB565/DSI2x600Mbps/DPI24MHz/H2-40-40V4-8-200/SDKDPI2frames921600bytes+three20rowbuffers57600/PPAoff/SWrotate180andLVGLinputrotationperM5GFXmetadata. 25STcommandsfromM5GFXtree28d47949bdc84f30881623476f555398e2194313/SWreset120msbeforeDPI/startDPIbeforecommands/noKSDIYrestrictedcomponentorvideo_dependency. CST3530known58I2C1SDA11SCL9/400kHz/fivemanufacturersetupcommands/first9bytes+boundedcontinuation/report50bytes/total<=9/only1finger0keys/range0..479/error-multicancel-release/ACKchecked;touchcontrols,GPIO0IMUIRQnotusedasPTT. PM1known6EID2050/referencepowerbit06-08;IOEknown4F/RMWreadback100mstimeout/lock/onebasedPIN1audio=bit0/PIN3PA=bit2/PIN8TP=bit7/PIN9BLPWM=bit8/PIN10LCDPWR=bit9/PIN11RST=bit10/preserveotherbits/PWM1zero-beforepads/1000Hz12bitpercentreadback/20+150mssettle. ES7210TDM4MIC1slot0+ES8311DAC24kHz/I2S0MCLK2BCLK6WS4DIN5DOUT3/codecPANC/PAIOE3checkedafteractualdigitalmute/softwareAEC/mn7. C6Hosted2.12.11Remote1.6.4SDIOslot1CMD44CLK43D0..3=45/46/47/48/reset42activeHIGH;HTTPbindingWSmediaOTA/NVSpreserved16MB. SDK6notinstalled,targetuncompiled/physicalnot_run;source8MBvsnewmanufacturer32MBPSRAMconflictretainedforphysicalrevisionacceptance. Camera/SDcache/IMU/RTC/physicalkeys/battery/charge/Bluetooth/originalgesturesunimplemented;onlyWaveshare1.8hardware."
+    },
+    "espressif-esp32-s31-function-coreboard-1": {
+      "project_name": "assistant_s31core",
+      "target": "esp32s31",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_S31_CORE=1",
+        "ASSISTANT_BOARD_HEADLESS=1"
+      ],
+      "upstream_variant": "espressif-esp32-s31-function-coreboard-1",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "S31functioncoreboard1sourcecandidate/IDF>=6.1.0<6.2/pinnedpreviewupstream/16MB/OCT200MHzPSRAM/320MHz/wifi. HeadlessphoneportalAPbinding6digitcode-beforeaudio/BOOT61releasefirsthold3secviewportreopen/fullmn7customwake-nihaoxiaoyanzi/PCMsoftwareAEC/WSmediaOTA/NVSpreserved;noS3modelorrammanualfallback. SingleES8311BOTH/oneIN_OUTcodec/STDmono16-24kHz/I2S0MCLK52BCLK53WS55DIN54DOUT56/I2C0SDA51SCL50/PA57INPUT_OUTPUTreadback/codecPANC/digitalmutecallbackcheckedbeforePA/set_fmt-enableerrorpropagation/MICgaincallback. LED60WS2812notdriven;EthernetYT8531/LED/SD/camera/battery/originalgesturesnotimplemented. CachedESP-SR2.4.7S31mn7headerslibrary/KconfigandSDK6.1pinnedpublicsoc-capsshown2coresGPIO0..61;SDK6.1notinstalled/targetuncompiled/hardware_not_run;onlyWaveshare1.8available."
+    },
+    "maza-ai-esp32-s31": {
+      "project_name": "assistant_maza31",
+      "target": "esp32s31",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_MAZA_S31=1",
+        "ASSISTANT_BOARD_MAZA=1"
+      ],
+      "upstream_variant": "maza-ai-esp32-s31",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "MazaS31sourcecandidate/IDF>=6.1<6.2/OCT200MHzPSRAM320MHz/16MBsource-defaultnotphysicalmeasurement/fullmn7-nihaoxiaoyanzi-WiFiWSmediaOTA/NVS. A012.9EPD128x296RAM/296x128landscapeUI/sharedC22125Cwaveforms30bytefull+30bytepartial/4736byteframe/SPI3mode040MHzMOSI33CLK34CS17DC35RST14BUSY13activeHIGH. Existingboundedlatest-frameworker/LVGLlockoutsideSPI-BUSY/10secBUSY/1secSPIqueue-result/1secrefreshmin/20partialfullrefresh/errorstoppersistentDMA/textcardsbinding-DNDunreadreceiptretained;noLUTortemperatureexpansion. SingleES8311BOTHcheckedoneIN_OUTdevice/mono16-24kHzI2S0MCLK7BCLK11WS9DIN10DOUT8/I2C1SDA3SCL0(matchactualbusnotupstreamconstructorport0)/PA2INPUT_OUTPUTreadback/codecPANC/actualmute-gaincallback/softwareAEC. POWER6HIGHbeforeUI,BOOT1andtouchkey12/volume4-61releasefirstmultikeycancel/cards;notcoordinate-touch. LED5/battery/poweroff/SD/parallelEPD/otherFPCpanels/originalgesturesunimplemented;targetuncompiled/SDK6.1missing/physicalnot_run/onlyWaveshare1.8hardware."
+    },
+    "espressif-esp-mosaico": {
+      "project_name": "assistant_mosaico",
+      "target": "esp32s31",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_MOSAICO=1"
+      ],
+      "upstream_variant": "espressif-esp-mosaico",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "required_idf_commit": "7b9cc1ac79f865983f59bb8ff3ff43eb74ff1dbe",
+      "implementation_scope": "Mosaicopreviewsourcecandidate/S31/IDF>=6.2<6.3exactcommit7b9cc1ac79f865983f59bb8ff3ff43eb74ff1dbeCMakeHEADgate;source16MBdefault/OCT250MHzPSRAM320MHz. ReadonlyeFuseUSER_DATA16bits:0100=v1.0,0101-0102=v1.2wiring/unknownerrornofallbackbeforeGPIO. v1.0I2C0SDA0SCL1/QSPIclock44reset42/codecPW56HIGH;v1.1-1.2I2C0SDA56SCL3/QSPIclock42reset44/nocodecPW56write. VCC60LOW/shutdown57ODreleasedHIGH/PA45INPUT_OUTPUToffbeforeUI+readback;LED3notdriven. CO5300480x480RGB565QSPI2mode040MHzCS50D0..3=36/51/35/9/14staticcommands/brightness51changedFFto00untildisplayready/percentviaexact2.1.0API/2x20rowinternalDMA38400bytes/boundedtransfer. CST92200.1.0known5A/400kHz/I2Ccommands8bit/resetNC/IRQ6configuredbutpolled/legacy-HYN212driveridentity-ACK/multiple-errorcancel-release/singlepoint0..479. ES8311singleBOTHmono24kHz/oneIN_OUTcheckedcodec/I2Caddress19shifted32/STD I2S0MCLK54BCLK37WS49DIN40DOUT52/PAcodecNC/digitalmutegaincallback+boardreadback. AIkey7releasefirstPTTcards/fullmn7customwake/softwareAEC/WiFibindingWSmediaOTA/NVSretained. Camera-moduleEEPROM/flash/camera/SPI-NAND/batteryBQ27220sealing-gauging/IMU/magnetometers/LED/poweroff/originalgesturesunimplemented;SDK6.2notinstalled/targetuncompiled/physicalnot_run/onlyWaveshare1.8hardware."
+    },
+    "espressif-esp32-s31-korvo-1": {
+      "project_name": "assistant_s31korvo",
+      "target": "esp32s31",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_S31_KORVO=1"
+      ],
+      "upstream_variant": "espressif-esp32-s31-korvo-1",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "implementation_scope": "S31Korvo1V1.1previewsourcecandidate/IDF>=6.1<6.2/16MBFlash16MBOCTPSRAMmanufacturerREADME/200MHz320MHz/wholemn7customwake-WiFiWSmediaOTA-NVSpreserved. ST7262E43RGB16 800x480/16MHz/H4-8-8V4-8-8/PCLKnegative/VS45HS44DE43CLK40DISP38/D0..15=8..19,33..36/twoRGB565frames1536000bytes/8rowbounce2x12800/directLVGLBBavoidtearing;backlighthardwiredon,DISPbinaryscancontrolnotPWM. GT1151knownaddressdefault/400kHzI2C0SDA0SCL1/noRSTIRQ/checked11bytepacketCRC-count-clear/error-multicancelwaitrelease. ES8389BOTHtwoIN-OUTdevices/sharedcodec/STDmonoINstereoOUT16bit16kHz/MCLK2BCLK3WS4DIN6DOUT5/use_mclkfalseBCLK/ESPmaster-codecslave/codecPANC/PA7INPUT_OUTPUTreadbackafterdigitalmute/MICleft40dBcallback/monooutputduplicatedinstereoatboundary/softwareAECnotmicbeamforming/keepTXopen. BOOT61plusGPIO42ADC1CH0atten0dB/fixedsoftwarecalibration17bit/4sampleaverage/3stable-read-debounce/volUP160..600-DOWN600..1080-MODE1080..1605mV/idle>1935/boundarySETambiguouscancel/releasefirstmulti-keycancel;SETnetwork-reconfigureunimplemented. CameraOV3660/WS2812LED37/SD/USBhost/battery/originalgesturesunimplemented;targetuncompiledSDK6.1missing/physicalnot_run/onlyWaveshare1.8hardware."
+    },
+    "waveshare-esp32-c5-touch-lcd-1.69": {
+      "project_name": "assistant_c5lcd169",
+      "target": "esp32c5",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_C5_LCD169=1",
+        "ASSISTANT_BOARD_FIXED_WAKE=1"
+      ],
+      "upstream_variant": "waveshare-esp32-c5-touch-lcd-1.69",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "wake_phrase": "你好小智",
+      "wake_model": "wn9s_nihaoxiaozhi",
+      "implementation_scope": "C5LCD1.69sourcecandidate/IDF>=5.5.6<5.6/currentSDKAPIcandidate/Flash16MBupstreamglobaldefaultnotphysicalmeasurement/QUAD80MHzPSRAMboardconfig/240MHzsinglecore. ST7789RGB565240x280SPI2mode024MHzCS27MOSI7CLK23DC24resetNC/gap0,20/inverttrue/noaxesmirror/2x20rowinternalDMA19200bytes/LVGLcore0. I2C0SDA8SCL9sharedES8311-TCA9554-CST816S;TCA0x20P0PAoff-latch-direction-inputreadback/P1touchreset100mslow100mshigh/onlyownedbitsRMW;BL26PWMdarkuntilUI. CST816S0x15IRQ5polledraw5bytecount-event-12bitcoords/100msI2C/initial-release/multi-outofrange-errorcancel. SingleES8311BOTHonecheckedIN_OUTmono24kHzI2S0MCLK0BCLK1WS3DOUT10DIN2/codecPANC/externalP0gateafteractualdigitalmute/actualmicgain. FIRcapture16kHz/AFETYPE_SRcore0/softwareAEC16kfilter2SR_LOW_COST32ms/noS3FD-NLPAPI/noAECsilentfallback;performanceandacousticsnot_run. FixedWakeNet9snihaoxiaozhi-你好小智exactmodelandmetadata16kmono/1024boundedframe+2048input/consumerthresholdbaselineplusuncalibratedplayback0.05/UIworddiffexplicit;BOOT28releasefirstPTTcards/WiFibindingWSmediaHTTPSOTA/NVSpreserved. BQ27220gaugeconfiguration/battery/sleep/vendorMCPnotported. Targetbuildtrackedinbuildledgerseparately/allphysicalnot_run/onlyexistingWaveshare1.8available."
+    },
+    "movecall-moji2-esp32c5": {
+      "project_name": "assistant_moji2c5",
+      "target": "esp32c5",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_MOJI2_C5=1",
+        "ASSISTANT_BOARD_FIXED_WAKE=1"
+      ],
+      "upstream_variant": "movecall-moji2-esp32c5",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "wake_phrase": "你好小智",
+      "wake_model": "wn9s_nihaoxiaozhi",
+      "implementation_scope": "Moji2C5sourcecandidate/READMEIDF5.5reviewedmanifest>=5.5.6<5.6/Flash16MBupstreamglobaldefaultnotphysicalmeasurement/QUAD80MHzPSRAMconfig/CPU240MHzsinglecore. ST77916RGB565360x360QSPI2mode040MHzCS3CLK0D0..3=9/8/7/6RST1/noaxesmirror/gap0/32bitcmd8bitparam/twopixelrounder/2x20rowinternalDMA28800bytes/LVGLcore0;all184initcommandsidenticaltoexistingVOCAT_PANEL_COMMANDSverifiedandreused/noWaveshareIDprobe/expander/no-touchdeclaredbyboardclass/noinventedtouchinput/rounded360layoutinset. BL2PWMdarkuntilUI/PA5INPUT_OUTPUTreadbackafteractualDACunmute/codecPANC/LED10andbatteryADC4notinitialized. I2C0SDA26SCL27/singleES8311BOTHcheckedIN_OUTmono24kHzI2S0MCLK25BCLK11WS24DOUT23DIN12/actualgain-mutecallbacks/FIR16kHz/AFETYPE_SRcore0/C5SR_LOW_COSTAECfilter2softwareplaybackreference/noS3FDNLP/noAECsilentfallback. FixedWakeNet9snihaoxiaozhi-你好小智/UIactualword/requiredmodelgatebeforeaudio+protocol/BOOT28releasefirstPTTandcards/WiFibindingWSmediaHTTPSdualOTA/NVS. UART0TX11RX12conflictI2S;USBSerialJTAG13/14selectedandCMakeguarded/physicalUSBwiringunconfirmed. Reviewedshared360RGB565QSPIpanel/original184table/GPIO1LOW10ms-HIGH120ms;noexternalST77916package;targetbuildrecordtrackedseparately/allphysicalnot_run/onlyexistingWaveshare1.8available. VendorbatteryADCtelemetry/sleep/LED/MCPunimplemented;peakRAM/timing/echo/physicalpanelcapacityunaccepted."
+    },
+    "espressif-esp-spot-c5": {
+      "project_name": "assistant_spotc5",
+      "target": "esp32c5",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_SPOT_C5=1",
+        "ASSISTANT_BOARD_HEADLESS=1",
+        "ASSISTANT_BOARD_FIXED_WAKE=1"
+      ],
+      "upstream_variant": "espressif-esp-spot-c5",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 8,
+      "wake_phrase": "你好小智",
+      "wake_model": "wn9s_nihaoxiaozhi",
+      "implementation_scope": "SpotC5sourcecandidate/IDF>=5.5.6<5.6/READMEESP32-C5-WROOM-1-N8R8/source8MBFlash8MBPSRAMnotphysicalmeasurement/QUAD80MHz/CPU240MHz. Headlessphoneportal6digitbindingcodebeforeaudio/cardsandseenreceipt/DNDunreadpreserved. MCU2HIGH/peripheral0HIGHpreload-hold-disINPUT_OUTPUTreadback-hold-enbeforeNVS/network;PA23offfirst+INPUT_OUTPUTreadback+100msmutex/actualDACmutecheckedbeforeenable/codecPANC/noautomaticshutdown. I2C0SDA25SCL26/singleES8311BOTHcheckedIN_OUTmono16kHzI2S0MCLKNCBCLK7WS8DOUT9DIN6/use_mclkfalseclockfromBCLK/actualmicgain/FIRnetworkPCM24kHz/AFE_SRcore0/C5SR_LOW_COSTAECfilter2softwareplaybackreference/noS3FD-NLP/noAECsilentfallback. FixedWakeNet9snihaoxiaozhi-你好小智requiredmodelbeforeaudio/protocol/default+uncalibratedplayback0.05/phonehintactualword. KEY5activeHIGHreleasefirstPTT/BOOT28activeLOWphoneportalhold3secwithKEYreleased/multi-buttoncancel;BOOTdoesnoterasecredentials. 8MBlocalpartitionNVS9000-4000/OTA3MiB+3MiB/storage896KiB/model1MiB/currentwn9s125951bytesfits/noactualappbudgetproof. ExistingUART11/12notusedbyaudio7/8/6/9. RGB27/BMI270andINT3/batteryADC4/charging/deepsleep/vendorMCPnotported;notargetcompile/physicalnot_run/onlyexistingWaveshare1.8available."
+    },
+    "espressif-esp-sensairshuttle": {
+      "project_name": "assistant_sensairc5",
+      "target": "esp32c5",
+      "bsp_component": "esp_lvgl_port",
+      "compile_definitions": [
+        "ASSISTANT_BOARD_SENSAIR_C5=1",
+        "ASSISTANT_BOARD_FIXED_WAKE=1"
+      ],
+      "upstream_variant": "espressif-esp-sensairshuttle",
+      "legacy": false,
+      "qspi_panel": null,
+      "flash_size_mb": 16,
+      "wake_phrase": "你好小智",
+      "wake_model": "wn9s_nihaoxiaozhi",
+      "implementation_scope": "SensairC5sourcecandidate/IDF>=5.5.6<5.6/README-N16R8notmeasurement/QUAD80MHzPSRAM/CPU240MHzsinglecore. Native284x240RGB565SDK-ST7789-DCS-operations+board-init-callback-preserving-ILI9341-preamble-and-19exactST7789-declaredcommands/SPI2mode040MHzMOSI23CLK24DC26CS25resetNC/gap36,0/swapXYmirrorY/invert/2x20rowDMA22720bytes/LVGLcore0. NoPWMbacklightpinreported;panelblank0/100only/intermediatepreferencesandnightdimreject;nofakebrightness. I2C0SDA2SCL3/CST816D0x15sixbyterawtouchkey-onlynotmappedXY/single-eventchecks/error-multikeycancel/waitrelease/BOOT28PTTcards. ADC1CH5nativecodecADC16k12bit12dBtype2/singlepattern/externalSDKhandle;oneownercreate-config-setfmt-start-read-stop-checkeddeinit/onecommand/copiedformat+1024PCM/3000mscallerwait/late-state-refsafe/no-caller-bufferretain/timeoutpoisonrequiresrestart/nojoinhandle. I2S0PCM16mono24k->PDMpositive7+matrixinverse8(notupstreammux10)/up_sample_fs480restoredoneveryset_fmt/fourscaleMUL4/secondlaneNC/drive0/PA1offpadreadbackandexplicitunmutegate/one-secondboundedTX+silencebuffers/latchedfault/noimplicitretry/nativeSWvolumeviaexistingcodec_dev. IndependentADC16k/output24k/FIRsoftwareplaybackreference/AFE_SRcore0/C5SRAECfilter2/fixednihaoxiaozhi-modelgate+UI/existingWiFiWSmediaHTTPSdualOTA-NVS. Localmodelwn9sreplacesexternalwn9-font-emoteasset;noexternalassetdownload. NoexternalILI9341dependency/targetbuild-evidence-separate/physicalnot_run;peakRAM/stack/taskteardown/ADC/PDMwaveforms/acoustics/visiblewindowunaccepted. Sensorchildboards/IMU/RGB/battery/vendorMCP-gesturesunported;onlyexistingWaveshare1.8hardware."
+    }
+  }
+}

@@ -4,6 +4,9 @@
 
 enum class UiState : uint8_t { Idle, Listening, Speaking, Thinking, Executing, Connecting, Alert, Error, Notification, Updating };
 esp_err_t display_ui_init();
+esp_err_t display_ui_enable_manual_input();
+bool display_ui_handle_hardware_button(bool pressed);
+bool display_ui_cancel_hardware_button();
 void display_ui_log_diagnostics();
 void display_ui_state(UiState state, const char *detail = nullptr, bool media = false);
 bool display_ui_notification(const char *title, const char *due_at);

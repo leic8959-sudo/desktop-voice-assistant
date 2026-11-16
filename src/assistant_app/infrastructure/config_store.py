@@ -15,6 +15,12 @@ from gmail_service import DpapiTokenVault, GmailError
 
 
 CONNECTOR_CONFIG_FIELDS: dict[str, tuple[dict[str, Any], ...]] = {
+    "mcp": (
+        {"key": "mcp_url", "label": "外部工具服务地址（单个服务）", "secret": False, "help": "Streamable HTTP 的固定地址；仅管理员设置。远程地址需 HTTPS，本机可 HTTP。"},
+        {"key": "mcp_token", "label": "服务访问令牌（可选）", "secret": True, "help": "仅服务端加密保存，不回显。需要交互 OAuth 的服务暂不支持。"},
+        {"key": "mcp_approved_tools", "label": "允许的能力", "secret": False, "managed_by": "connection_center", "help": "检查连接后在下方逐项允许；外部服务的只读提示不会自动授权。"},
+    ),
+    "connections": ({"key": "disabled_connectors", "label": "已撤销访问的连接器", "secret": False, "managed_by": "connection_center", "help": "由连接中心的允许访问 / 撤销访问管理。"},),
     "gmail": (
         {"key": "gmail_client_id", "label": "Google OAuth Client ID", "secret": True, "managed_by": "gmail", "help": "沿用 Gmail 专用 DPAPI 配置与 OAuth 回调。"},
         {"key": "gmail_client_secret", "label": "Google OAuth Client Secret", "secret": True, "managed_by": "gmail", "help": "只在本机 Gmail 配置表单提交，不回显。"},
@@ -52,7 +58,7 @@ CONNECTOR_CONFIG_FIELDS: dict[str, tuple[dict[str, Any], ...]] = {
 }
 
 CONFIG_KEYS = frozenset(field["key"] for group, fields in CONNECTOR_CONFIG_FIELDS.items() if group != "gmail" for field in fields)
-ENV_KEYS = {key: f"ASSISTANT_{key.upper()}" for key in CONFIG_KEYS | {"device_token", "provisioning_token", "gmail_client_id", "gmail_client_secret", "gmail_redirect_uri", "gmail_proxy_url", "gmail_send_enabled", "enable_search"}}
+ENV_KEYS = {key: f"ASSISTANT_{key.upper()}" for key in (CONFIG_KEYS - {"mcp_approved_tools", "disabled_connectors"}) | {"device_token", "provisioning_token", "gmail_client_id", "gmail_client_secret", "gmail_redirect_uri", "gmail_proxy_url", "gmail_send_enabled", "enable_search"}}
 _TOKEN_PATTERN = re.compile(r"^[^\s\r\n]{8,8192}$")
 
 
@@ -69,7 +75,7 @@ def config_field_metadata(connector_id: str, config: Mapping[str, Any]) -> list[
         editable = source != "environment" and (not field.get("managed_by") or field.get("managed_by") == "gmail")
         present = bool(config.get(key)) if field["secret"] else key in config
         row = {"key": key, "label": field["label"], "secret": bool(field["secret"]), "help": field["help"], "configured": present, "source": source, "editable": editable, "managed_by": field.get("managed_by")}
-        if not field["secret"]:
+        if not field["secret"] and field.get("managed_by") != "connection_center":
             row["value"] = config.get(key, {} if key == "home_entities" else "")
         row.update({name: field[name] for name in ("kind", "minimum", "maximum", "options") if name in field})
         if key == "chat_tts_voice":
@@ -112,10 +118,14 @@ def validate_connector_values(connector_id: str, values: Mapping[str, Any], curr
                 if parsed.scheme != "https" or parsed.hostname not in expected or parsed.username or parsed.password or parsed.query or parsed.fragment or not parsed.path.startswith(prefix) or not parsed.path[len(prefix):]:
                     raise ConfigStoreError("Webhook 必须是对应提供商的 HTTPS 机器人地址")
             result[key] = raw
-        elif key == "home_assistant_url":
+        elif key in {"home_assistant_url", "mcp_url"}:
             if not isinstance(raw, str):
-                raise ConfigStoreError("home_assistant_url 必须是字符串")
+                raise ConfigStoreError(f"{key} 必须是字符串")
             result[key] = _validate_url(raw, key) if raw else ""
+            if key == "mcp_url" and raw:
+                parsed = urlsplit(raw)
+                if parsed.scheme != "https" and parsed.hostname not in {"localhost", "127.0.0.1", "::1"}:
+                    raise ConfigStoreError("外部工具的远程地址必须使用 HTTPS；仅本机地址允许 HTTP")
         elif key == "home_entities":
             candidate = raw
             if isinstance(raw, str):
@@ -188,7 +198,7 @@ class SecureConfigStore:
         current.update(values)
         for key in clear:
             # 空值是显式清除的覆盖标记，防止重启后旧配置文件的秘密重新出现。
-            current[key] = {} if key == "home_entities" else ""
+            current[key] = {} if key in {"home_entities", "mcp_approved_tools"} else [] if key == "disabled_connectors" else ""
         try:
             self._vault().save(current)
         except (RuntimeError, GmailError, OSError) as error:

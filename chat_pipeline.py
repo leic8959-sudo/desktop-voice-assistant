@@ -289,7 +289,7 @@ class ChatBackend:
         self.client = self.session.http
         memory_service = getattr(self.session, "memory_service", None)
         memories = await memory_service.context() if memory_service else await asyncio.to_thread(self.session.store.recall_memory, limit=10)
-        self._instructions = build_instructions(config, json.dumps(memories, ensure_ascii=False))
+        self._instructions = build_instructions(config, json.dumps(memories, ensure_ascii=False), wake_phrase=self.session.wake_phrase)
         self._tools = chat_tool_schemas(self.session.active_tool_schemas())
         self._history = []
         self._events = asyncio.Queue(maxsize=MAX_EVENT_QUEUE)

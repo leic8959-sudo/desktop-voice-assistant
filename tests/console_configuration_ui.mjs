@@ -11,6 +11,7 @@ class Node {
   addEventListener(name, handler) { const list = this.listeners.get(name) || []; list.push(handler); this.listeners.set(name, list); }
   async emit(name) { for (const handler of this.listeners.get(name) || []) await handler({ preventDefault() {} }); }
   get isConnected() { return Boolean(this.root || this.parent?.isConnected); }
+  get firstChild() { return this.children[0] || null; }
   querySelectorAll(selector) { return descendants(this).filter(node => selector.startsWith('.') ? String(node.className || '').split(' ').includes(selector.slice(1)) : node.tagName.toLowerCase() === selector); }
   querySelector(selector) { return this.querySelectorAll(selector)[0] || null; }
 }
@@ -59,7 +60,14 @@ const registry = ['gmail', 'amap', 'google_calendar', 'microsoft_calendar', 'mic
 const fetches = [];
 globalThis.fetch = async (path, options) => {
   fetches.push({path, ...options});
-  const data = path === '/api/connectors' ? {items: registry} : path.endsWith('/status') ? {configured: false} : {status: 'verified', checked_at: '2026-11-04T00:00:00Z'};
+  let data = path === '/api/connectors' ? {items: registry} : path.endsWith('/status') ? {configured: false} : {status: 'verified', checked_at: '2026-11-04T00:00:00Z'};
+  if (path === '/api/connectors/mcp/permissions') {
+    const item = registry.find(item => item.id === 'mcp');
+    item.tools[0].mode = JSON.parse(options.body).tools['offline-switch'];
+    item.actions = [{name: 'tool_test', description: '离线开关', requires_confirmation: true, input_schema: {type: 'object', properties: {enabled: {type: 'boolean'}}, required: ['enabled'], additionalProperties: false}}];
+    data = {saved: true};
+  } else if (path === '/api/connectors/mcp/tool_test/prepare') data = {status: 'pending_confirmation', preview: JSON.parse(options.body).arguments, confirmation_id: 'offline-confirmation'};
+  else if (path === '/api/connectors/mcp/tool_test') data = {status: 'completed', result: {changed: true}};
   return new Response(JSON.stringify(data), {status: 200});
 };
 await import('../web/connectors.js');
@@ -68,12 +76,39 @@ const list = ids.get('list'); assert.equal(list.querySelectorAll('.connector-car
 const amap = list.children.find(node => node.id === 'amap');
 assert.equal(amap.querySelector('select').children[0].value, '110000');
 await amap.querySelectorAll('button').find(node => node.textContent === '执行只读连接检查').emit('click');
-assert.equal(fetches.at(-1).path, '/api/connectors/amap/check'); assert.deepEqual(JSON.parse(fetches.at(-1).body), {arguments: {city: '110000'}});
+const amapCheck = [...fetches].reverse().find(item => item.path === '/api/connectors/amap/check');
+assert.ok(amapCheck); assert.deepEqual(JSON.parse(amapCheck.body), {arguments: {city: '110000'}});
+assert.ok(!list.querySelectorAll('button').some(node => node.textContent === '撤销小燕子访问'), '旧后端不能显示新权限操作');
 for (const id of ['slack', 'feishu']) {
   const card = list.children.find(node => node.id === id);
   assert.ok(!card.querySelectorAll('button').some(node => node.textContent === '执行只读连接检查'));
   assert.match(card.textContent, /不支持无副作用测试/);
 }
+registry.push({id: 'mcp', name: '外部工具服务', configured: true, status: 'available', config_available: true, tools: [{name: 'offline-switch', description: '离线开关', mode: 'blocked'}], tool_revision: 'offline-list-revision', actions: []});
+await ids.get('load').emit('click');
+let mcp = list.children.find(node => node.id === 'mcp');
+const permissions = mcp.querySelectorAll('details').find(node => node.textContent.includes('允许外部能力'));
+const permissionSelect = permissions.querySelector('select');
+assert.equal(permissionSelect.value, 'blocked');
+permissionSelect.value = 'confirm';
+await permissions.querySelectorAll('button').find(node => node.textContent === '保存允许的能力').emit('click');
+const approval = [...fetches].reverse().find(item => item.path === '/api/connectors/mcp/permissions');
+assert.deepEqual(JSON.parse(approval.body), {tools: {'offline-switch': 'confirm'}, revision: 'offline-list-revision'});
+mcp = list.children.find(node => node.id === 'mcp');
+const actionForm = mcp.querySelectorAll('form').find(node => node.textContent.includes('生成操作预览'));
+assert.ok(actionForm);
+const boolean = actionForm.querySelector('select'); boolean.value = 'false';
+await actionForm.emit('submit');
+const actionPreview = [...fetches].reverse().find(item => item.path === '/api/connectors/mcp/tool_test/prepare');
+assert.deepEqual(JSON.parse(actionPreview.body).arguments, {enabled: false});
+assert.equal(fetches.filter(item => item.path === '/api/connectors/mcp/tool_test').length, 0);
+const confirm = actionForm.querySelectorAll('button').find(node => node.textContent === '确认执行本次操作');
+await actionForm.emit('input'); await confirm.emit('click');
+assert.equal(fetches.filter(item => item.path === '/api/connectors/mcp/tool_test').length, 0, '参数改变后旧确认必须失效');
+await actionForm.emit('submit'); await confirm.emit('click'); await confirm.emit('click');
+const executions = fetches.filter(item => item.path === '/api/connectors/mcp/tool_test');
+assert.equal(executions.length, 1);
+assert.deepEqual(JSON.parse(executions[0].body), {arguments: {enabled: false}, confirmation_id: 'offline-confirmation'});
 await ids.get('token').emit('input'); assert.equal(list.querySelectorAll('.connector-card').length, 0);
 const { createSettingsPanel } = await import('../web/console_settings.js');
 const settingsRoot = new Node(); settingsRoot.root = true;
@@ -95,4 +130,4 @@ for (const [index, path] of [[2, '/api/llm'], [3, '/api/voice']]) {
 }
 settings.clear(); assert.equal(settingsRoot.children.length, 0);
 globalThis.setInterval = originalInterval;
-console.log('UI mock checks passed: real form events, secret cleanup, environment read-only, Gmail reuse, model API, 11 cards, Amap city selector, no Webhook sending, auth cleanup, settings/search/model/voice forms.');
+console.log('UI mock checks passed: forms, secret cleanup, old backend gating, MCP explicit approval/revision, false parameter, preview invalidation, single confirmation, Amap check, auth cleanup, settings forms.');

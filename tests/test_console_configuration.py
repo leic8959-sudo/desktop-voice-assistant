@@ -50,7 +50,9 @@ class ConsoleConfigurationTests(unittest.IsolatedAsyncioTestCase):
     async def test_registry_exposes_eleven_real_forms_without_secret_values(self):
         response = await self.client.get("/api/connectors", headers=self.headers)
         data = await response.json()
-        self.assertEqual(len(data["items"]), 11)
+        self.assertEqual(len(self.runtime.connector_registry.manifests()), 11)
+        self.assertEqual(len(data["items"]), 12)
+        self.assertEqual(next(item for item in data["items"] if item["id"] == "mcp")["status"], "not_configured")
         self.assertTrue(all(item["config_fields"] for item in data["items"]))
         self.assertNotIn(self.config["device_token"], json.dumps(data))
 

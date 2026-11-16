@@ -5,6 +5,7 @@ from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
 
 from gateway import CONFIG_KEY, RUNTIME_KEY, VoiceSession
+from src.assistant_app.integrations.registry import ConnectorRegistry
 
 
 class StopLoop(Exception):
@@ -13,8 +14,11 @@ class StopLoop(Exception):
 
 class ResponseProgressTests(unittest.IsolatedAsyncioTestCase):
     def voice(self):
-        runtime = SimpleNamespace(memory_service=None, media_service=None, device_music=None, connector_registry=SimpleNamespace(manifests=lambda: []), operation_screen_feedback=AsyncMock())
-        voice = VoiceSession({CONFIG_KEY: {"session_seconds": 600, "idle_seconds": 30, "enable_search": False}, RUNTIME_KEY: runtime}, SimpleNamespace(send_json=AsyncMock(), closed=False), browser=True)
+        config = {"session_seconds": 600, "idle_seconds": 30, "enable_search": False}
+        registry = ConnectorRegistry()
+        registry.configure(config)
+        runtime = SimpleNamespace(config=config, memory_service=None, media_service=None, device_music=None, connector_registry=registry, operation_screen_feedback=AsyncMock())
+        voice = VoiceSession({CONFIG_KEY: config, RUNTIME_KEY: runtime}, SimpleNamespace(send_json=AsyncMock(), closed=False), browser=True)
         voice.state = AsyncMock()
         voice.created = voice.last_activity = 0
         voice.backend = SimpleNamespace(name="qwen_realtime", connected=True, cancel_response=AsyncMock(), update_instructions=AsyncMock(), request_response=AsyncMock())
@@ -138,12 +142,17 @@ class ResponseProgressTests(unittest.IsolatedAsyncioTestCase):
         from src.assistant_app.application.errors import LocalToolRejectedError
         voice = self.voice()
         registry = voice.app[RUNTIME_KEY].connector_registry
-        registry.get = lambda _: SimpleNamespace(manifest=ConnectorManifest("gmail", "Gmail", "1", (ConnectorAction("send", "send", frozenset({PermissionScope.SEND}), True),)))
+        voice.app[RUNTIME_KEY].config.update(gmail_client_id="fake-client", gmail_client_secret="fake-secret")
+        registry.register(SimpleNamespace(manifest=ConnectorManifest("gmail", "Gmail", "1", (ConnectorAction("send", "send", frozenset({PermissionScope.SEND}), True),))))
+        registry.record_check("gmail")
         registry.invoke = AsyncMock()
         with self.assertRaises(LocalToolRejectedError):
             await voice.execute_tool("invoke_connector", {"connector_id": "gmail", "action": "send", "arguments": {}, "confirmation_id": "model-cannot-confirm"})
         registry.invoke.assert_not_awaited()
         self.assertFalse(voice.tools_paused)
+        with self.assertRaises(LocalToolRejectedError):
+            await voice.execute_tool("invoke_connector", {"connector_id": "gmail", "action": "send", "arguments": {}})
+        registry.invoke.assert_not_awaited()
         with self.assertRaises(LocalToolRejectedError):
             await voice.execute_tool("invoke_workflow", {"workflow_id": "github-issue", "arguments": {}})
         self.assertFalse(voice.tools_paused)
@@ -152,10 +161,12 @@ class ResponseProgressTests(unittest.IsolatedAsyncioTestCase):
         from src.assistant_app.integrations.contracts import ConnectorAction, ConnectorManifest
         voice = self.voice()
         registry = voice.app[RUNTIME_KEY].connector_registry
-        registry.get = lambda _: SimpleNamespace(manifest=ConnectorManifest("known", "Known", "1", (ConnectorAction("read", "read"),)))
+        voice.app[RUNTIME_KEY].config["todoist_access_token"] = "fake-offline-token"
+        registry.register(SimpleNamespace(manifest=ConnectorManifest("todoist", "Todoist", "1", (ConnectorAction("read", "read"),))))
+        registry.record_check("todoist")
         registry.invoke = AsyncMock(side_effect=PermissionError("external-provider-may-have-acted"))
         with self.assertRaises(PermissionError):
-            await voice.execute_tool("invoke_connector", {"connector_id": "known", "action": "read", "arguments": {}})
+            await voice.execute_tool("invoke_connector", {"connector_id": "todoist", "action": "read", "arguments": {}})
         self.assertTrue(voice.tools_paused)
         registry.invoke.assert_awaited_once()
 

@@ -15,10 +15,15 @@
 #endif
 
 static const char *TAG = "wake";
-static constexpr char kWakePhrase[] = "ni hao xiao yan zi";
+static constexpr char kWakePhrase[] = "ni hao yi di si";
 // mn6_cn 识别率高于量化 mn5q8；模型分区烧录 srmodels-mn6_cn-sr247.bin 后自动生效，
 // 未烧录时回退 mn5q8_cn，行为与历史版本一致。
+#if CONFIG_IDF_TARGET_ESP32P4 || CONFIG_IDF_TARGET_ESP32S31
+// ESP-SR2.4.7 exposes Chinese mn7 on P4/S31; this port requires that model.
+static constexpr char kPreferredModelName[] = "mn7_cn";
+#else
 static constexpr char kPreferredModelName[] = "mn6_cn";
+#endif
 static constexpr char kFallbackModelName[] = "mn5q8_cn";
 static constexpr int kModelDurationMs = 3000;
 static constexpr float kDetectionThreshold = 0.20f;
@@ -50,6 +55,9 @@ esp_err_t wake_word_init() {
     // 模型分区可能同时包含 mn7_cn；历史实机证据表明当前口令应使用 mn5q8_cn。
     // esp_srmodel_filter 按分区列表顺序返回首个匹配项，不能依赖打包顺序选择模型。
     g_model_name = esp_srmodel_filter(g_models, ESP_MN_PREFIX, kPreferredModelName);
+#if CONFIG_IDF_TARGET_ESP32P4 || CONFIG_IDF_TARGET_ESP32S31
+    if (!g_model_name) { ESP_LOGE(TAG, "P4/S31 requires the Chinese mn7 model partition"); return ESP_ERR_NOT_FOUND; }
+#endif
     bool preferred_model = g_model_name != nullptr;
     if (!g_model_name) g_model_name = esp_srmodel_filter(g_models, ESP_MN_PREFIX, kFallbackModelName);
     if (!g_model_name) g_model_name = esp_srmodel_filter(g_models, ESP_MN_PREFIX, "cn");
@@ -63,7 +71,7 @@ esp_err_t wake_word_init() {
     // 按小智顺序先设置检测阈值，再生成命令图，避免命令图保留默认阈值。
     g_iface->set_det_threshold(g_model, g_threshold.load());
     if (esp_mn_commands_alloc(g_iface, g_model) != ESP_OK || esp_mn_commands_clear() != ESP_OK || esp_mn_commands_add(1, kWakePhrase) != ESP_OK || esp_mn_commands_update() != nullptr) {
-        ESP_LOGE(TAG, "小燕子离线口令注册失败");
+        ESP_LOGE(TAG, "伊迪斯离线口令注册失败");
         esp_mn_commands_free(); g_iface->destroy(g_model); g_model = nullptr; return ESP_FAIL;
     }
     g_iface->print_active_speech_commands(g_model);
@@ -73,7 +81,7 @@ esp_err_t wake_word_init() {
         g_iface->destroy(g_model); g_model = nullptr;
         return ESP_ERR_INVALID_SIZE;
     }
-    ESP_LOGI(TAG, "local_phrase_ready phrase=ni_hao_xiao_yan_zi model=%s preferred=%d chunk=%d rate=%d threshold=%.2f duration_ms=%d", g_model_name, preferred_model, g_chunk, g_iface->get_samp_rate(g_model), static_cast<double>(g_threshold.load()), kModelDurationMs);
+    ESP_LOGI(TAG, "local_phrase_ready phrase=ni_hao_yi_di_si model=%s preferred=%d chunk=%d rate=%d threshold=%.2f duration_ms=%d", g_model_name, preferred_model, g_chunk, g_iface->get_samp_rate(g_model), static_cast<double>(g_threshold.load()), kModelDurationMs);
     wake_word_reset();
     return g_iface->get_samp_rate(g_model) == 16000 ? ESP_OK : ESP_ERR_NOT_SUPPORTED;
 }

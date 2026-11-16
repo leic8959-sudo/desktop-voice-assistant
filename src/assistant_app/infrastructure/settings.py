@@ -39,6 +39,7 @@ def connector_configuration(values: dict) -> dict[str, bool]:
         "feishu": bool(values.get("feishu_webhook_url")),
         "amap": bool(values.get("amap_web_service_key")),
         "home_assistant": bool(values.get("home_assistant_url") and values.get("home_assistant_token")),
+        "mcp": bool(values.get("mcp_url")),
     }
 
 

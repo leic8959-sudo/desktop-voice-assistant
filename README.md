@@ -30,6 +30,8 @@ python gateway.py --config config.local.json
 
 浏览器打开 <http://127.0.0.1:8765>。真实密钥只放在不被 Git 跟踪的 `config.local.json` 或 `.env`，示例见 `config.example.json` 和 `.env.example`。
 
+操作演示：<https://leic8959-sudo.github.io/desktop-voice-assistant/>。演示只模拟启动和对话，不连接任何网关，也不接收密钥。
+
 没有模型密钥时，不要期待语音对话可用。管理页面、手工待办和记忆是否能在无密钥时完整使用，仍需你在自己的环境确认。
 
 ## 安全与贡献

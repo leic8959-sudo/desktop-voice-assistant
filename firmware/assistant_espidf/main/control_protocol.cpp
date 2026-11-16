@@ -13,7 +13,7 @@
 #include "esp_timer.h"
 #include "esp_wifi.h"
 #include "esp_websocket_client.h"
-#include "esp_crt_bundle.h"
+#include "device_websocket_client.h"
 #include "cJSON.h"
 #include "mbedtls/base64.h"
 #include "freertos/FreeRTOS.h"
@@ -28,15 +28,18 @@
 #include "notification_cues.h"
 #include "esp_app_desc.h"
 #include "esp_ota_ops.h"
+#include "board_profile.h"
 #if defined(ASSISTANT_WAKE_PCM_PROBE)
-#include "bsp/esp-bsp.h"
 #include "lvgl.h"
 #endif
 
 static const char *TAG = "protocol";
 static esp_websocket_client_handle_t g_ws;
+static DeviceWebSocketClient g_ws_client;
 static std::atomic<bool> g_listening{false};
 static std::atomic<bool> g_speaking{false};
+static std::atomic<bool> g_natural_barge_in{false};
+static char g_voice_session_id[65];
 static std::atomic<UiState> g_requested_ui{UiState::Idle};
 static std::atomic<bool> g_auto_session{false};
 static std::atomic<bool> g_wake_reset_pending{false};
@@ -80,7 +83,10 @@ static std::atomic<int64_t> g_wake_tx_total_us{0};
 static std::atomic<int64_t> g_wake_tx_max_us{0};
 // 前缀4秒加最多4秒积压；满队列结束本候选，不覆盖或跳过语音。
 struct WakeTxChunk { uint32_t generation; uint32_t audio_bytes; uint32_t ended_ms; uint16_t length; bool limited; bool manual_start; bool manual_end; uint8_t data[640]; };
-static constexpr size_t WAKE_TX_AUDIO_CAPACITY = 400;
+// Internal mode reserves32 audio frames plus one control slot. At20ms per
+// frame this bounds pre-ready/backpressure buffering to640ms; existing queue
+// overflow handling cancels the request instead of silently dropping PCM.
+static constexpr size_t WAKE_TX_AUDIO_CAPACITY = board_profile::manual_audio_only ? 32 : 400;
 static constexpr size_t WAKE_TX_BATCH_BYTES = 3840;
 static QueueHandle_t g_wake_tx_queue;
 static StaticQueue_t g_wake_tx_queue_control;
@@ -190,7 +196,7 @@ static constexpr uint32_t kLoudInterruptHoldUs = 400000;
 // 唤醒词路径都完整保留）；物理按键 control_protocol_listen_start() 不受此开关影响。
 static constexpr bool kEnableBargeIn = false;
 static uint32_t g_loud_hold_us;
-static constexpr int AUDIO_QUEUE_CAPACITY = 32;
+static constexpr int AUDIO_QUEUE_CAPACITY = board_profile::manual_audio_only ? 8 : 32;
 enum class MediaCommandKind : uint8_t { Start, Pause, Stop, End, Wake, Manual, Error };
 struct MediaCommand { MediaCommandKind kind; char playback_id[64]; char title[193]; uint32_t position_samples; char error[32]; uint32_t manual_request; };
 struct MediaReceipt { char state[12]; char playback_id[64]; char reason[16]; char error[32]; uint32_t played_samples; uint32_t underruns; uint32_t queue_used; bool listen; bool manual; uint32_t manual_request; };
@@ -260,6 +266,16 @@ static bool send_json(cJSON *root) {
 
 static void send_hello() {
     cJSON *root = cJSON_CreateObject();
+    cJSON_AddStringToObject(root, "board", board_profile::name);
+#if defined(ASSISTANT_BOARD_FIXED_WAKE)
+    cJSON_AddStringToObject(root, "wake_phrase", "你好小智");
+#else
+    cJSON_AddStringToObject(root, "wake_phrase", "你好，伊迪斯");
+#endif
+    cJSON *display = cJSON_AddObjectToObject(root, "display");
+    cJSON_AddNumberToObject(display, "width", board_profile::width);
+    cJSON_AddNumberToObject(display, "height", board_profile::height);
+    cJSON_AddBoolToObject(display, "round", board_profile::round);
     cJSON_AddStringToObject(root, "type", "hello"); cJSON_AddNumberToObject(root, "version", 1); cJSON_AddStringToObject(root, "transport", "websocket");
     #ifdef ASSISTANT_FW_VERSION
     cJSON_AddStringToObject(root, "firmware_version", ASSISTANT_FW_VERSION);
@@ -267,15 +283,27 @@ static void send_hello() {
     cJSON_AddStringToObject(root, "firmware_version", esp_app_get_description()->version);
 #endif
     cJSON *audio = cJSON_AddObjectToObject(root, "audio_params"); cJSON_AddStringToObject(audio, "format", "pcm_s16le"); cJSON_AddNumberToObject(audio, "sample_rate", 16000); cJSON_AddNumberToObject(audio, "channels", 1); cJSON_AddNumberToObject(audio, "frame_duration", 20);
-    cJSON *features = cJSON_AddObjectToObject(root, "features"); cJSON_AddBoolToObject(features, "custom_ui", true); cJSON_AddBoolToObject(features, "screen_cards", true); cJSON_AddBoolToObject(features, "two_stage_barge_in", true);
+    cJSON *features = cJSON_AddObjectToObject(root, "features"); cJSON_AddBoolToObject(features, "custom_ui", true); cJSON_AddBoolToObject(features, "screen_cards", true);
+#if defined(ASSISTANT_BOARD_GUITION) || defined(ASSISTANT_BOARD_INTERNAL_RAM)
+    cJSON_AddBoolToObject(features, "two_stage_barge_in", false);
+    cJSON_AddStringToObject(features, "barge_in_trigger", "manual");
+#else
+    cJSON_AddBoolToObject(features, "two_stage_barge_in", true);
     cJSON_AddStringToObject(features, "barge_in_trigger", "wake_word");
+#endif
+    cJSON_AddBoolToObject(features, "natural_barge_in_v1", audio_echo_cancellation_ready());
     cJSON_AddBoolToObject(features, "media_stream", true);
     cJSON_AddBoolToObject(features, "media_wake_word", g_wake_word_ready && audio_echo_cancellation_ready());
-    cJSON *power = cJSON_AddObjectToObject(root, "power"); cJSON_AddStringToObject(power, "status", "unknown"); cJSON_AddStringToObject(power, "source", "AXP2101_readback_unavailable");
+    cJSON *power = cJSON_AddObjectToObject(root, "power"); cJSON_AddStringToObject(power, "status", "unknown"); cJSON_AddStringToObject(power, "source", "board_power_readback_unavailable");
+#if defined(ASSISTANT_BOARD_GUITION) || defined(ASSISTANT_BOARD_INTERNAL_RAM)
+    cJSON_AddBoolToObject(features, "wake_clip_v1", false);
+    cJSON_AddBoolToObject(features, "wake_input_ready_v1", false);
+#else
     cJSON_AddBoolToObject(features, "wake_clip_v1", true);
     cJSON_AddBoolToObject(features, "wake_input_ready_v1", true);
+#endif
     cJSON_AddBoolToObject(features, "manual_input_ready_v1", true);
-    cJSON_AddBoolToObject(features, "software_aec", audio_echo_cancellation_ready()); cJSON_AddStringToObject(features, "aec_reference", "software_pcm24"); send_json(root);
+    cJSON_AddBoolToObject(features, "software_aec", audio_echo_cancellation_ready()); cJSON_AddStringToObject(features, "aec_reference", board_profile::manual_audio_only ? "none" : "software_pcm24"); send_json(root);
 }
 
 static void send_control(const char *type, const char *state = nullptr, const char *mode = nullptr) {
@@ -305,7 +333,7 @@ static void send_wake_detect() {
     cJSON *root = cJSON_CreateObject();
     cJSON_AddStringToObject(root, "type", "listen");
     cJSON_AddStringToObject(root, "state", "detect");
-    cJSON_AddStringToObject(root, "text", "你好，小燕子");
+    cJSON_AddStringToObject(root, "text", "你好，伊迪斯");
     cJSON_AddStringToObject(root, "wake_id", g_wake_id);
     send_json(root);
 }
@@ -553,7 +581,7 @@ static bool start_cue(NotificationCue cue) {
     if (g_speaking || g_listening || g_auto_session || g_dnd_active || ota_update_busy()) return false;
     bool idle = false;
     if (!g_chime_playing.compare_exchange_strong(idle, true)) return false;
-    if (!g_chime_pcm) g_chime_pcm = static_cast<int16_t *>(heap_caps_malloc(kCueMaxSamples * sizeof(int16_t), MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT));
+    if (!g_chime_pcm) g_chime_pcm = static_cast<int16_t *>(heap_caps_malloc(kCueMaxSamples * sizeof(int16_t), board_profile::working_memory_caps));
     if (!g_chime_pcm) { g_chime_playing = false; ESP_LOGW(TAG, "notification_cue_allocation_failed"); return false; }
     const CueSpec &spec = kCueSpecs[static_cast<uint8_t>(cue)];
     size_t index = 0;
@@ -570,7 +598,7 @@ static bool start_cue(NotificationCue cue) {
         for (uint32_t position = 0; position < gap; ++position) g_chime_pcm[index++] = 0;
     }
     g_chime_samples = index;
-    if (xTaskCreateWithCaps(chime_task, "notification_cue", 8192, nullptr, 4, nullptr, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT) != pdPASS) { g_chime_playing = false; ESP_LOGW(TAG, "notification_cue_task_failed"); return false; }
+    if (xTaskCreateWithCaps(chime_task, "notification_cue", 8192, nullptr, 4, nullptr, board_profile::working_memory_caps) != pdPASS) { g_chime_playing = false; ESP_LOGW(TAG, "notification_cue_task_failed"); return false; }
     ESP_LOGI(TAG, "notification_cue_started kind=%u samples=%u", static_cast<unsigned>(cue), static_cast<unsigned>(index));
     return true;
 }
@@ -632,12 +660,25 @@ static void handle_text(const char *text, size_t length) {
     if (!cJSON_IsString(type)) { cJSON_Delete(root); return; }
     if (strcmp(type->valuestring, "hello") == 0) {
         const cJSON *capabilities = cJSON_GetObjectItem(root, "capabilities");
-        g_wake_clip_supported = cJSON_IsObject(capabilities) && cJSON_IsTrue(cJSON_GetObjectItem(capabilities, "wake_clip_v1"));
-        g_wake_input_ready_supported = cJSON_IsObject(capabilities) && cJSON_IsTrue(cJSON_GetObjectItem(capabilities, "wake_input_ready_v1"));
+        g_wake_clip_supported = !board_profile::manual_audio_only && cJSON_IsObject(capabilities) && cJSON_IsTrue(cJSON_GetObjectItem(capabilities, "wake_clip_v1"));
+        g_wake_input_ready_supported = !board_profile::manual_audio_only && cJSON_IsObject(capabilities) && cJSON_IsTrue(cJSON_GetObjectItem(capabilities, "wake_input_ready_v1"));
         g_manual_input_ready_supported = cJSON_IsObject(capabilities) && cJSON_IsTrue(cJSON_GetObjectItem(capabilities, "manual_input_ready_v1"));
         const cJSON *audio = cJSON_GetObjectItem(root, "audio_params");
         if (cJSON_IsObject(audio)) { const cJSON *rate = cJSON_GetObjectItem(audio, "sample_rate"); if (cJSON_IsNumber(rate) && rate->valueint != 24000) ESP_LOGW(TAG, "服务端输出采样率为 %d，当前播放链固定 24000", rate->valueint); }
         cJSON *memory = cJSON_CreateObject(); cJSON_AddStringToObject(memory, "type", "memory_request"); cJSON_AddStringToObject(memory, "request_id", "boot"); send_json(memory);
+    } else if (strcmp(type->valuestring, "conversation_mode") == 0) {
+        const cJSON *session_id = cJSON_GetObjectItem(root, "session_id");
+        if (!cJSON_IsString(session_id) || !g_voice_session_id[0] || strcmp(session_id->valuestring, g_voice_session_id) != 0) { cJSON_Delete(root); return; }
+        const bool aec_ready = audio_echo_cancellation_ready();
+        const bool enabled = cJSON_IsTrue(cJSON_GetObjectItem(root, "natural_barge_in")) && g_auto_session && !g_manual_active && aec_ready;
+        // [人工决策-2026-11-09 13:12:23] 牛牛要求自然插话；端云确认后持续上传AEC输出，旧本地强打断仍关闭。
+        cJSON *ack = cJSON_CreateObject();
+        cJSON_AddStringToObject(ack, "type", "conversation_mode_ack");
+        cJSON_AddStringToObject(ack, "session_id", g_voice_session_id);
+        cJSON_AddBoolToObject(ack, "natural_barge_in", enabled);
+        cJSON_AddBoolToObject(ack, "aec_ready", aec_ready);
+        g_natural_barge_in = send_json(ack) && enabled;
+        ESP_LOGI(TAG, "natural_barge_in enabled=%d aec_ready=%d", enabled, aec_ready);
     } else if (strcmp(type->valuestring, "manual_input_ready") == 0) {
         const cJSON *manual_id = cJSON_GetObjectItem(root, "manual_id");
         if (cJSON_IsString(manual_id)) (void)accept_manual_input_ready(manual_id->valuestring);
@@ -763,6 +804,7 @@ static void handle_text(const char *text, size_t length) {
             ESP_LOGI(TAG, "barge interrupt acknowledged playback_id=%s", g_playback_id);
         } else {
             reset_barge_state(false);
+            g_drop_old_audio = true;
             g_navigation_id[0] = '\0';
             ++g_generation; note_playback_stopped(); g_requested_ui = UiState::Listening; display_ui_audio_level(0); display_ui_nav_icon(0); g_abort_requested = true; if (g_audio_queue) xQueueReset(g_audio_queue); display_ui_state(UiState::Listening); send_control("device_state", "listening");
         }
@@ -770,6 +812,13 @@ static void handle_text(const char *text, size_t length) {
         if (g_media_active) { cJSON_Delete(root); return; }
         const cJSON *payload = cJSON_GetObjectItem(root, "payload"); const cJSON *state = payload ? cJSON_GetObjectItem(payload, "state") : nullptr;
         if (cJSON_IsString(state)) {
+            if (strcmp(state->valuestring, "connecting") == 0) {
+                g_natural_barge_in = false;
+                const cJSON *session_id = cJSON_GetObjectItem(root, "session_id");
+                g_voice_session_id[0] = '\0';
+                if (cJSON_IsString(session_id) && strlen(session_id->valuestring) < sizeof(g_voice_session_id)) snprintf(g_voice_session_id, sizeof(g_voice_session_id), "%s", session_id->valuestring);
+            }
+            if (strcmp(state->valuestring, "idle") == 0) { g_natural_barge_in = false; g_voice_session_id[0] = '\0'; }
             const cJSON *detail = cJSON_GetObjectItem(payload, "detail");
             UiState ui = UiState::Idle;
             if (strcmp(state->valuestring, "idle") == 0) { reset_barge_state(false); g_navigation_id[0] = '\0'; display_ui_nav_icon(0); ++g_generation; note_playback_stopped(); g_abort_requested = true; if (g_audio_queue) xQueueReset(g_audio_queue); g_listening = false; g_cloud_ready = false; g_auto_session = false; g_wake_upload_pending = false; g_wake_reset_pending = true; confirm_wake_audio_release(); }
@@ -862,7 +911,7 @@ static void ws_event(void *, esp_event_base_t, int32_t event_id, void *event_dat
                 }
             }
         }
-    } else if (event_id == WEBSOCKET_EVENT_DISCONNECTED) { g_navigation_id[0] = '\0'; display_ui_nav_icon(0); display_ui_screen_link(false); reset_barge_state(false); ++g_generation; g_media_active = false; g_media_wake_pending = false; if (g_media_commands) xQueueReset(g_media_commands); g_listening = false; note_playback_stopped(); g_cloud_ready = false; g_auto_session = false; g_wake_upload_pending = false; g_wake_reset_pending = true; confirm_wake_audio_release(); g_abort_requested = true; if (g_audio_queue) xQueueReset(g_audio_queue); g_text_fragment_length = 0; g_text_fragment_active = false; g_reject_text_fragment = false; display_ui_state(UiState::Connecting, "连接断开，正在重连"); }
+    } else if (event_id == WEBSOCKET_EVENT_DISCONNECTED) { g_natural_barge_in = false; g_voice_session_id[0] = '\0'; g_navigation_id[0] = '\0'; display_ui_nav_icon(0); display_ui_screen_link(false); reset_barge_state(false); ++g_generation; g_media_active = false; g_media_wake_pending = false; if (g_media_commands) xQueueReset(g_media_commands); g_listening = false; note_playback_stopped(); g_cloud_ready = false; g_auto_session = false; g_wake_upload_pending = false; g_wake_reset_pending = true; confirm_wake_audio_release(); g_abort_requested = true; if (g_audio_queue) xQueueReset(g_audio_queue); g_text_fragment_length = 0; g_text_fragment_active = false; g_reject_text_fragment = false; display_ui_state(UiState::Connecting, "连接断开，正在重连"); }
 }
 
 static void cache_wake_audio(const uint8_t *data, size_t length) {
@@ -1269,6 +1318,11 @@ static void service_manual_listening() {
     }
     if (g_manual_active.load()) {
         if (g_wake_upload_blocked.load()) return;
+        if (board_profile::manual_audio_only && audio_capture_failed()) {
+            ESP_LOGE(TAG, "manual_capture_incomplete manual_id=%s", g_manual_id);
+            abort_wake_audio();
+            return;
+        }
         if (g_manual_ready_ack_token.load() == g_manual_owner_request.load() && g_manual_start_sent.load() && g_wake_tx_enabled.load() && !g_wake_upload_release_pending.load()) g_wake_tx_ready = true;
         // 建连、最长采集和松键后的积压都有墙钟上限；不补静音、不覆盖旧PCM。
         if ((!g_wake_tx_ready.load() && now - g_manual_started_us >= 4000000) ||
@@ -1528,6 +1582,9 @@ static void capture_task(void *) {
         if (g_wake_upload_blocked.load()) { vTaskDelay(1); continue; }
         // 松键后sender仍独立排空已采PCM；此处不再采新帧，也不落入自动唤醒缓存。
         if (capture_manual_audio(frame, bytes, &capture_frame)) { vTaskDelay(1); continue; }
+        // Explicit manual-only profiles never cache idle microphone PCM,
+        // enter automatic listening, or upload playback echo without AEC.
+        if constexpr (board_profile::manual_audio_only) { vTaskDelay(1); continue; }
         note_wake_clip_audio(bytes, !capture_frame.vad_valid || capture_frame.voice_active);
         AudioCaptureMetrics metrics = {};
         const bool have_metrics = audio_capture_metrics(&metrics);
@@ -1595,7 +1652,11 @@ static void capture_task(void *) {
             const bool uplink_echo_tail = !g_speaking && playback_end_us > 0 &&
                 esp_timer_get_time() - playback_end_us < kUplinkEchoTailUs;
             if (g_speaking && barge_state == BargeState::None) {
-                if (!kEnableBargeIn) {
+                if (g_natural_barge_in.load() && audio_echo_cancellation_ready() && !g_test_disable_barge) {
+                    // 持续上传已处理音频，包括插话开头；判断有效插话交给千问语义VAD。
+                    // 不用本地响度硬切或唤醒词决定中止，设备仅执行服务端的interrupt。
+                    g_loud_hold_us = 0;
+                } else if (!kEnableBargeIn) {
                     // 0.3.6：语音打断关闭。播放期间只把上行帧清零后照常发送（静音帧，
                     // 保持云端连续流、也盖住 AEC 残留），不缓存打断音频、不跑本地强打断、
                     // 不喂唤醒词、不触发 candidate/confirmed/abort；回答完整播完后由
@@ -1678,7 +1739,7 @@ static void capture_task(void *) {
                 memset(frame, 0, bytes);
                 send_capture = false;
                 vTaskDelay(1);
-            } else if (uplink_echo_tail) {
+            } else if (uplink_echo_tail && !g_natural_barge_in.load()) {
                 // 播放刚结束的 400ms 内继续清零上传：这段是 codec/I2S 的尾音，
                 // 立即恢复上行会被云端 qwen server_vad（0.75/600ms）判成人声，
                 // 云端自动生成新回答、播完再触发，形成"自问自答"无限循环
@@ -1799,62 +1860,73 @@ static void playback_task(void *) {
 }
 
 esp_err_t control_protocol_start(const DeviceConfig *config) {
+    if (g_ws) return ESP_ERR_INVALID_STATE;
     g_media_receipts = xQueueCreateStatic(8, sizeof(MediaReceipt), g_media_receipts_storage, &g_media_receipts_control);
     if (!g_media_receipts) return ESP_ERR_NO_MEM;
     g_screen_action_queue = xQueueCreate(4, sizeof(ScreenAction));
     if (!g_screen_action_queue) return ESP_ERR_NO_MEM;
-    if (xTaskCreateWithCaps(screen_action_task, "screen_actions", 8192, nullptr, 2, nullptr, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT) != pdPASS) return ESP_ERR_NO_MEM;
+    if (xTaskCreateWithCaps(screen_action_task, "screen_actions", 8192, nullptr, 2, nullptr, board_profile::working_memory_caps) != pdPASS) return ESP_ERR_NO_MEM;
     if (!config || !config->ws_url[0]) return ESP_ERR_INVALID_ARG;
     g_wake_word_ready = wake_word_init() == ESP_OK;
-    if (!g_wake_word_ready) ESP_LOGW(TAG, "小燕子离线口令不可用，仍可用 BOOT 按键");
+#if defined(ASSISTANT_BOARD_GUITION) || defined(ASSISTANT_BOARD_INTERNAL_RAM)
+    ESP_LOGI(TAG, "manual_audio_profile no local wake model; use hardware or screen input");
+#else
+    if (!g_wake_word_ready) ESP_LOGW(TAG, "伊迪斯离线口令不可用，仍可用 BOOT 按键");
+#endif
 #if defined(ASSISTANT_WAKE_PCM_PROBE)
     audio_capture_stop();
-    if (bsp_display_lock(1000)) { lv_timer_enable(false); bsp_display_unlock(); }
+    if (board_profile::display_lock(1000)) { lv_timer_enable(false); bsp_display_unlock(); }
     const UBaseType_t previous_priority = uxTaskPriorityGet(nullptr);
     vTaskPrioritySet(nullptr, 5);
     bool negative_detected = false, positive_detected = false;
     const esp_err_t probe_result = wake_word_run_pcm_probe(&negative_detected, &positive_detected);
     vTaskPrioritySet(nullptr, previous_priority);
-    if (bsp_display_lock(1000)) { lv_timer_enable(true); bsp_display_unlock(); }
+    if (board_profile::display_lock(1000)) { lv_timer_enable(true); bsp_display_unlock(); }
     audio_capture_start();
     ESP_LOGI(TAG, "wake_probe_result ok=%d negative=%d positive=%d", probe_result == ESP_OK, negative_detected, positive_detected);
 #endif
     snprintf(g_headers, sizeof(g_headers), "Authorization: Bearer %s\r\nProtocol-Version: 1\r\n", config->device_token);
     snprintf(g_device_token, sizeof(g_device_token), "Bearer %s", config->device_token);
-    esp_websocket_client_config_t ws_cfg = {};
-    ws_cfg.uri = config->ws_url; ws_cfg.headers = g_headers; ws_cfg.buffer_size = 4096; ws_cfg.task_stack = 8192; ws_cfg.reconnect_timeout_ms = 5000; ws_cfg.network_timeout_ms = 10000;
-    // ping 默认已开，但对端进程死亡后 TCP 半开要靠重传超时才暴露（分钟级）；
-    // 显式设置间隔并把 pong 超时缩到 15 秒，断线约 25 秒内检测并触发重连。
-    ws_cfg.ping_interval_sec = 10;
-    ws_cfg.pingpong_timeout_sec = 15;
-    if (strncmp(config->ws_url, "wss://", 6) == 0) ws_cfg.crt_bundle_attach = esp_crt_bundle_attach;
-    // 载荷放入PSRAM，避免字体绘制和WakeNet启动后抢占内部连续内存。
-    auto *queue_storage = static_cast<uint8_t *>(heap_caps_malloc(AUDIO_QUEUE_CAPACITY * sizeof(AudioChunk), MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT));
+    // Each explicit mode bounds its queues and chooses its implemented memory pool.
+    auto *queue_storage = static_cast<uint8_t *>(heap_caps_malloc(AUDIO_QUEUE_CAPACITY * sizeof(AudioChunk), board_profile::working_memory_caps));
     if (!queue_storage) return ESP_ERR_NO_MEM;
     g_audio_queue = xQueueCreateStatic(AUDIO_QUEUE_CAPACITY, sizeof(AudioChunk), queue_storage, &g_audio_queue_control);
     if (!g_audio_queue) { heap_caps_free(queue_storage); return ESP_ERR_NO_MEM; }
     g_media_commands = xQueueCreateStatic(4, sizeof(MediaCommand), g_media_commands_storage, &g_media_commands_control);
     if (!g_media_commands) return ESP_ERR_NO_MEM;
-    g_wake_cache = static_cast<uint8_t *>(heap_caps_malloc(WAKE_CACHE_BYTES, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT));
-    if (!g_wake_cache) return ESP_ERR_NO_MEM;
-    g_wake_prefix_cache = static_cast<uint8_t *>(heap_caps_malloc(WAKE_PREFIX_BYTES, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT));
-    if (!g_wake_prefix_cache) return ESP_ERR_NO_MEM;
-    auto *wake_tx_storage = static_cast<uint8_t *>(heap_caps_malloc((WAKE_TX_AUDIO_CAPACITY + 1) * sizeof(WakeTxChunk), MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT));
+    if constexpr (!board_profile::manual_audio_only) {
+        g_wake_cache = static_cast<uint8_t *>(heap_caps_malloc(WAKE_CACHE_BYTES, board_profile::working_memory_caps));
+        if (!g_wake_cache) return ESP_ERR_NO_MEM;
+        g_wake_prefix_cache = static_cast<uint8_t *>(heap_caps_malloc(WAKE_PREFIX_BYTES, board_profile::working_memory_caps));
+        if (!g_wake_prefix_cache) return ESP_ERR_NO_MEM;
+    }
+    auto *wake_tx_storage = static_cast<uint8_t *>(heap_caps_malloc((WAKE_TX_AUDIO_CAPACITY + 1) * sizeof(WakeTxChunk), board_profile::working_memory_caps));
     if (!wake_tx_storage) return ESP_ERR_NO_MEM;
     g_wake_tx_queue = xQueueCreateStatic(WAKE_TX_AUDIO_CAPACITY + 1, sizeof(WakeTxChunk), wake_tx_storage, &g_wake_tx_queue_control);
     if (!g_wake_tx_queue) { heap_caps_free(wake_tx_storage); return ESP_ERR_NO_MEM; }
-    g_barge_cache = static_cast<uint8_t *>(heap_caps_malloc(BARGE_PREROLL_BYTES, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT));
-    if (!g_barge_cache) return ESP_ERR_NO_MEM;
-    g_ws = esp_websocket_client_init(&ws_cfg); if (!g_ws) return ESP_FAIL;
-    ESP_RETURN_ON_ERROR(esp_websocket_register_events(g_ws, WEBSOCKET_EVENT_ANY, ws_event, nullptr), TAG, "register");
-    ESP_RETURN_ON_ERROR(esp_websocket_client_start(g_ws), TAG, "start");
-    if (xTaskCreateWithCaps(wake_audio_tx_task, "wake_pcm_tx", 8192, nullptr, 5, nullptr, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT) != pdPASS) return ESP_ERR_NO_MEM;
-    if (xTaskCreateWithCaps(capture_task, "capture_pcm", 8192, nullptr, 5, nullptr, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT) != pdPASS) return ESP_ERR_NO_MEM;
-    // 新版 codec 增益/I2C 与播放参考调用叠加时实机发生 4KB 栈溢出，栈仍放在 PSRAM。
-    return xTaskCreateWithCaps(playback_task, "playback_pcm", 8192, nullptr, 6, nullptr, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT) == pdPASS ? ESP_OK : ESP_ERR_NO_MEM;
+    if constexpr (!board_profile::manual_audio_only) {
+        g_barge_cache = static_cast<uint8_t *>(heap_caps_malloc(BARGE_PREROLL_BYTES, board_profile::working_memory_caps));
+        if (!g_barge_cache) return ESP_ERR_NO_MEM;
+    }
+    ESP_RETURN_ON_ERROR(g_ws_client.Init(config->ws_url, g_headers), TAG, "WebSocket init");
+    g_ws = g_ws_client.handle();
+    esp_err_t result = esp_websocket_register_events(g_ws, WEBSOCKET_EVENT_ANY, ws_event, nullptr);
+    if (result == ESP_OK) result = esp_websocket_client_start(g_ws);
+    if (result != ESP_OK) {
+        // No protocol sender tasks exist yet; reset outside the WS callback.
+        (void)g_ws_client.Reset();
+        g_ws = nullptr;
+        ESP_LOGE(TAG, "WebSocket startup failed error=%s", esp_err_to_name(result));
+        return result;
+    }
+    if (xTaskCreateWithCaps(wake_audio_tx_task, "wake_pcm_tx", 8192, nullptr, 5, nullptr, board_profile::working_memory_caps) != pdPASS) return ESP_ERR_NO_MEM;
+    if (xTaskCreateWithCaps(capture_task, "capture_pcm", 8192, nullptr, 5, nullptr, board_profile::working_memory_caps) != pdPASS) return ESP_ERR_NO_MEM;
+    // Preserve the measured8KB stack requirement; internal mode changes its pool, not its size.
+    return xTaskCreateWithCaps(playback_task, "playback_pcm", 8192, nullptr, 6, nullptr, board_profile::working_memory_caps) == pdPASS ? ESP_OK : ESP_ERR_NO_MEM;
 }
 
 static void begin_listening(bool manual) {
+    g_natural_barge_in = false;
     if (g_wake_upload_blocked.load()) return;
     g_navigation_id[0] = '\0';
     display_ui_nav_icon(0);
@@ -1870,5 +1942,6 @@ static void begin_listening(bool manual) {
 }
 void control_protocol_listen_start() { if (!g_manual_held.exchange(true)) ++g_manual_request; }
 void control_protocol_listen_stop() { g_manual_held = false; }
-void control_protocol_abort() { if (g_manual_active.load()) { g_manual_held = false; g_manual_cancel_requested = true; return; } g_navigation_id[0] = '\0'; display_ui_nav_icon(0); if (g_media_active) { MediaCommand command = {}; command.kind = MediaCommandKind::Stop; snprintf(command.playback_id, sizeof(command.playback_id), "%s", g_media_id); queue_media_command(command); return; } reset_barge_state(false); ++g_generation; g_listening = false; note_playback_stopped(); g_response_finished = false; g_requested_ui = UiState::Idle; display_ui_audio_level(0); audio_playback_abort(); if (g_audio_queue) xQueueReset(g_audio_queue); send_control("abort"); send_control("device_state", "idle"); display_ui_state(UiState::Idle, "本次回答已停止，可重新唤醒继续"); }
+void control_protocol_listen_cancel() { g_manual_cancel_requested = true; g_manual_held = false; }
+void control_protocol_abort() { g_natural_barge_in = false; if (g_manual_active.load()) { g_manual_held = false; g_manual_cancel_requested = true; return; } g_navigation_id[0] = '\0'; display_ui_nav_icon(0); if (g_media_active) { MediaCommand command = {}; command.kind = MediaCommandKind::Stop; snprintf(command.playback_id, sizeof(command.playback_id), "%s", g_media_id); queue_media_command(command); return; } reset_barge_state(false); ++g_generation; g_listening = false; note_playback_stopped(); g_response_finished = false; g_requested_ui = UiState::Idle; display_ui_audio_level(0); audio_playback_abort(); if (g_audio_queue) xQueueReset(g_audio_queue); send_control("abort"); send_control("device_state", "idle"); display_ui_state(UiState::Idle, board_profile::manual_audio_only ? "本次回答已停止，可按键重新录音" : "本次回答已停止，可重新唤醒继续"); }
 void control_protocol_send_device_state(const char *state, const char *detail) { cJSON *root = cJSON_CreateObject(); cJSON_AddStringToObject(root, "type", "device_state"); cJSON_AddStringToObject(root, "state", state); if (detail) cJSON_AddStringToObject(root, "detail", detail); send_json(root); }

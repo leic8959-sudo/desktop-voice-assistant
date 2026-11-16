@@ -24,6 +24,8 @@ import aiohttp
 from aiohttp import web
 
 from audio_codec import OpusBridge
+from native_opus import native_audio_socket
+from wake_phrase import DEFAULT_WAKE_PHRASE, device_wake_phrase, wake_phrase_display, wake_phrase_variants
 from assistant_core.store import AssistantStore, IdempotencyConflict, LeaseConflict, NotFoundError
 from assistant_core.tools import TOOL_SCHEMAS as PERSONAL_TOOLS, execute_tool as execute_personal_tool
 from assistant_runtime import AssistantRuntime, NativeDevice, RUNTIME_KEY
@@ -49,6 +51,7 @@ from src.assistant_app.application.pairing import PairingManager
 from src.assistant_app.integrations import AmapConnector, FeishuConnector, GitHubConnector, GmailConnector, GoogleCalendarConnector, HomeAssistantConnector, MicrosoftCalendarConnector, MicrosoftMailConnector, NotionConnector, SlackConnector, TodoistConnector
 from src.assistant_app.application.extensions import initialize_extensions, close_extensions, register_extension_routes
 from src.assistant_app.integrations.music_assistant import MusicAssistantError
+from src.assistant_app.integrations.mcp_http import MCPConnector
 
 ROOT = Path(__file__).resolve().parent
 LOGGER = logging.getLogger("assistant")
@@ -72,7 +75,7 @@ SELF_TURN_WINDOW_SECONDS = 1.2
 SELF_TURN_SPEECH_MS = 500
 SELF_TURN_INTERVAL_MS = 1000
 SELF_TURN_STREAK_LIMIT = 2
-WAKE_PHRASE = "你好小燕子"
+WAKE_PHRASE = DEFAULT_WAKE_PHRASE
 WAKE_VERIFICATION_SECONDS = 10
 WAKE_MAX_EVENTS = 128
 WAKE_MAX_BYTES = 262144
@@ -138,12 +141,12 @@ def load_config(path):
     return config
 
 
-def session_settings(config, memory):
+def session_settings(config, memory, wake_phrase=WAKE_PHRASE):
     return {
         "type": "session.update",
         "session": {
             "modalities": ["text", "audio"],
-            "instructions": build_instructions(config, memory),
+            "instructions": build_instructions(config, memory, wake_phrase=wake_phrase),
             "turn_detection": dict(REALTIME_TURN_DETECTION),
             "audio": {
                 "input": {"format": {"type": "pcm", "sample_rate": 16000, "sample_format": "s16le", "channels": 1, "packing": "interleaved", "channel_layout": "mono"}},
@@ -182,6 +185,20 @@ class RealtimeBackend:
         self._session_update_waiters = []
         self._pending_cloud_messages = []
         self.wake_ack_context = False
+        self.natural_vad_confirmed = False
+
+    def turn_detection(self):
+        model = self.session.config.get("aliyun_model", "")
+        if self.session.natural_barge_in_supported and model.startswith("qwen3.8-omni-") and "realtime" in model:
+            # 千问首句音频append后锁定检测时长；切换模式沿用云端参数，不能重设600ms。
+            return {"type": "semantic_vad"}
+        return dict(REALTIME_TURN_DETECTION)
+
+    def confirm_turn_detection(self, event):
+        detection = event.get("session", {}).get("turn_detection") or {}
+        self.natural_vad_confirmed = detection.get("type") == "semantic_vad" and detection.get("interrupt_response") is True
+        if self.turn_detection()["type"] == "semantic_vad" and not self.natural_vad_confirmed:
+            raise RuntimeError("云端未确认语义打断，不能开启播放期间收音")
 
     @property
     def send_failed(self):
@@ -219,7 +236,8 @@ class RealtimeBackend:
         await self.wait_cloud("session.created")
         memory_service = getattr(session.app[RUNTIME_KEY], "memory_service", None)
         memories = await memory_service.context() if memory_service else await asyncio.to_thread(session.app[STORE_KEY].recall_memory, limit=10)
-        settings = session_settings(config, json.dumps(memories, ensure_ascii=False))
+        settings = session_settings(config, json.dumps(memories, ensure_ascii=False), wake_phrase=session.wake_phrase)
+        settings["session"]["turn_detection"] = self.turn_detection()
         settings["session"]["tools"] = session.active_tool_schemas()
         self.current_instructions = settings["session"]["instructions"]
         session.selected_voice = config["aliyun_voice"]
@@ -240,6 +258,8 @@ class RealtimeBackend:
             raise RuntimeError("云端未确认首句独立提交，不能开始有限片段识别")
         if self.wake_ack_pcm and not self.wake_clip_active and updated.get("session", {}).get("turn_detection", {}).get("create_response") is not False:
             raise RuntimeError("云端未确认关闭首轮自动回答，不能播放唤醒缓存")
+        if not session.manual and not self.wake_clip_active:
+            self.confirm_turn_detection(updated)
 
     async def wait_cloud(self, wanted):
         async with asyncio.timeout(20):
@@ -343,7 +363,9 @@ class RealtimeBackend:
         if self.wake_clip_active:
             raise ValueError("首句验证期间不能切换收音模式，请结束后重新按键")
         self.wake_ack_pcm = None
-        payload = None if manual else {"type": "server_vad", "threshold": 0.5, "prefix_padding_ms": 300, "silence_duration_ms": 600}
+        payload = None if manual else self.turn_detection()
+        if payload is not None and payload["type"] == "server_vad":
+            payload["threshold"] = 0.5
         if self._mode_confirmation is not None:
             raise RuntimeError("收音模式仍在确认中")
         confirmation = asyncio.get_running_loop().create_future()
@@ -354,8 +376,10 @@ class RealtimeBackend:
                 await self._send(self._mode_update_event)
                 updated = await confirmation
             actual = updated.get("session", {}).get("turn_detection")
-            if manual and actual is not None or not manual and (not isinstance(actual, dict) or actual.get("type") != "server_vad"):
+            if manual and actual is not None or not manual and (not isinstance(actual, dict) or actual.get("type") != payload["type"]):
                 raise RuntimeError("云端未确认收音模式，不能继续上传音频")
+            if not manual:
+                self.confirm_turn_detection(updated)
         finally:
             self._mode_confirmation = None
             self._mode_update_event = None
@@ -370,14 +394,14 @@ class RealtimeBackend:
         async with self._input_lock:
             pcm, self.wake_ack_pcm = self.wake_ack_pcm, None
             limited = self.session.wake_clip_limited
-            settings = {"turn_detection": {**REALTIME_TURN_DETECTION, "create_response": True}}
+            settings = {"turn_detection": {**self.turn_detection(), "create_response": True}}
             if use_cache and pcm and not limited:
                 # 千问公开create schema未确认assistant文本项；用支持的会话指令告知本地问候安排。
                 self.wake_ack_context = True
                 self.current_instructions += WAKE_ACK_CONTEXT
                 settings["instructions"] = self.current_instructions
             await self._send({"type": "session.update", "session": settings})
-            if use_cache and pcm and not limited:
+            if (use_cache and pcm and not limited) or self.turn_detection()["type"] == "semantic_vad":
                 # 同一events消费者等待回执，其他事件有界保留；确认前不放行接话音频。
                 async with asyncio.timeout(10):
                     async for message in self.cloud:
@@ -385,10 +409,16 @@ class RealtimeBackend:
                             raise RuntimeError("云端未确认本地问候上下文")
                         event = json.loads(message.data)
                         if event.get("type") == "error":
+                            error = event.get("error", {})
+                            LOGGER.error("wake_mode_update_rejected session=%s error_type=%s parameter=%s", self.session.session_id, error.get("type", "unknown"), error.get("param", "unknown"))
                             raise RuntimeError("云端拒绝本地问候上下文")
                         if event.get("type") == "session.updated":
                             self._confirm_session_update(event)
-                            if event.get("session", {}).get("instructions") == self.current_instructions:
+                            actual = event.get("session", {})
+                            natural_mode = settings["turn_detection"]["type"] == "semantic_vad"
+                            if (not natural_mode or (actual.get("turn_detection") or {}).get("type") == "semantic_vad") and ("instructions" not in settings or actual.get("instructions") == self.current_instructions):
+                                if natural_mode:
+                                    self.confirm_turn_detection(event)
                                 break
                             continue
                         if len(self._pending_cloud_messages) >= WAKE_MAX_EVENTS or sum(len(item.data) for item in self._pending_cloud_messages) + len(message.data) > WAKE_MAX_BYTES:
@@ -560,6 +590,10 @@ class VoiceSession:
         self.uploading = True
         self.manual = browser
         self.manual_input_ready_supported = False
+        self.natural_barge_in_supported = False
+        self.natural_barge_in_requested = False
+        self.natural_barge_in_enabled = False
+        self.natural_input_active = False
         self.manual_turn = None
         self.manual_turn_sequence = 0
         self.manual_pending_commit = None
@@ -592,6 +626,7 @@ class VoiceSession:
         self.run_task = None
         self.selected_voice = None
         self.require_wake_phrase = False
+        self.wake_phrase = WAKE_PHRASE
         self.wake_phrase_verified = False
         self.wake_deadline = None
         self.wake_rejection = None
@@ -611,6 +646,12 @@ class VoiceSession:
         payload.setdefault("session_id", self.session_id)
         await self.socket.send_json(payload)
 
+    async def enable_natural_barge_in(self):
+        if self.natural_barge_in_supported and not self.manual and isinstance(self.backend, RealtimeBackend) and self.backend.natural_vad_confirmed and (not self.require_wake_phrase or self.wake_phrase_verified):
+            self.natural_barge_in_requested = True
+            await self.send({"type": "conversation_mode", "natural_barge_in": True, "vad": "semantic_vad"})
+            LOGGER.info("natural_barge_in_requested session=%s", self.session_id)
+
     @property
     def http(self):
         return self.app[HTTP_KEY]
@@ -628,18 +669,23 @@ class VoiceSession:
         return self.backend is not None and self.backend.connected
 
     def active_tool_schemas(self):
-        schemas = list(TOOL_SCHEMAS)
+        runtime = self.app[RUNTIME_KEY]
+        registry = getattr(runtime, "connector_registry", None)
+        schemas = [tool for tool in TOOL_SCHEMAS if tool["name"] != "invoke_connector"]
+        if hasattr(registry, "read_tool_schemas"):
+            registry.configure(runtime.config)
+            schemas.extend(registry.read_tool_schemas())
         for service in getattr(self.app[RUNTIME_KEY], "capability_services", ()):
             schemas.extend({"type": "function", "name": tool["name"], "description": tool["description"], "parameters": tool["parameters"]} for tool in service.tool_schemas)
         if getattr(self.app[RUNTIME_KEY], "device_music", None) is not None:
             schemas.append(MUSIC_SELECTION_DECISION_TOOL)
         for index, tool in enumerate(schemas):
-            if tool["name"] == "invoke_connector":
-                schemas[index] = {**tool, "description": "调用已授权连接器的只读动作；修改和发送需到控制台预览确认，语音不能自行提交确认。"}
-            elif tool["name"] == "invoke_workflow":
+            if tool["name"] == "invoke_workflow":
                 properties = {**tool["parameters"]["properties"], "workflow_id": {"type": "string", "enum": ["meeting-travel"]}}
                 schemas[index] = {**tool, "description": "读取日历并规划会议出行；创建笔记、工单、待办需到控制台预览确认。", "parameters": {**tool["parameters"], "properties": properties}}
-        return [tool for tool in schemas if self.config["enable_search"] or tool["name"] != "search_web"]
+        disabled = getattr(runtime, "config", self.config).get("disabled_connectors") or []
+        home_tools = {"list_home_devices", "get_home_state", "execute_home_action", "set_home_state", "control_vacuum", "control_climate"}
+        return [tool for tool in schemas if (self.config["enable_search"] or tool["name"] != "search_web") and not ("gmail" in disabled and tool["name"].startswith("gmail_")) and not ("home_assistant" in disabled and tool["name"] in home_tools)]
 
     async def state(self, value, detail=""):
         if self.require_wake_phrase and not self.wake_phrase_verified and value in ("thinking", "executing", "speaking"):
@@ -699,7 +745,7 @@ class VoiceSession:
         epoch = self.accepted_input_epoch
         memory_service = getattr(self.app[RUNTIME_KEY], "memory_service", None)
         memories = await memory_service.context(self.memory_query) if memory_service else await asyncio.to_thread(self.app[STORE_KEY].recall_memory, limit=10)
-        instructions = build_instructions(self.config, json.dumps(memories, ensure_ascii=False))
+        instructions = build_instructions(self.config, json.dumps(memories, ensure_ascii=False), wake_phrase=self.wake_phrase)
         if self.control_response_reported and self.control_plan is not None and self.control_plan["status"] != "none":
             receipt = self.control_receipt()
             instructions += "\n本轮网关语义执行回执（可信服务器数据）：" + json.dumps(receipt, ensure_ascii=False) + "。按回执准确回答；没有执行或只有请求被接受时不得声称物理动作成功，不再重复调用这些步骤。"
@@ -841,7 +887,7 @@ class VoiceSession:
         navigation = getattr(self.app[RUNTIME_KEY], "navigation_demo", None)
         if navigation is not None and navigation.pending is not None and navigation.pending["session"] is self:
             return
-        if self._is_wake_only(self.last_user_text):
+        if self._is_wake_only(self.last_user_text, self.wake_phrase):
             return
         epoch = self.accepted_input_epoch
         self.control_response_reported = True
@@ -1096,7 +1142,7 @@ class VoiceSession:
             self.current_playback_id = None
         if not self.closed:
             await self.state("listening")
-        if cancel_cloud and (not response_id or response_id != self.wake_ack_response_id) and (response_id or chat_turn_active):
+        if cancel_cloud and response_id not in self.completed_responses and (not response_id or response_id != self.wake_ack_response_id) and (response_id or chat_turn_active):
             await self.backend.cancel_response()
 
     async def device_input(self):
@@ -1121,7 +1167,11 @@ class VoiceSession:
             elif message.type == aiohttp.WSMsgType.TEXT:
                 event = json.loads(message.data)
                 kind = event.get("type")
-                if kind == "abort":
+                if kind == "conversation_mode_ack":
+                    if event.get("session_id") == self.session_id and self.natural_barge_in_requested:
+                        self.natural_barge_in_enabled = event.get("natural_barge_in") is True and event.get("aec_ready") is True
+                        LOGGER.info("natural_barge_in_ack session=%s enabled=%s", self.session_id, self.natural_barge_in_enabled)
+                elif kind == "abort":
                     if self.manual_pending_commit is not None:
                         # 未确认的commit可能稍后生成未知item，关闭本会话，不能借新轮pending承接旧回执。
                         self.manual_pending_commit = None
@@ -1149,6 +1199,8 @@ class VoiceSession:
                             raise RuntimeError("当前模型不支持按键手动录音，请选择千问实时模型后重试")
                         self.memory_audio_allowed = not self.speaking and (self.playback_ended_at is None or time.monotonic() - self.playback_ended_at >= SELF_TURN_WINDOW_SECONDS)
                         if event.get("mode") == "manual" and not self.manual:
+                            self.natural_barge_in_requested = self.natural_barge_in_enabled = self.natural_input_active = False
+                            await self.send({"type": "conversation_mode", "natural_barge_in": False})
                             await self.backend.set_turn_detection(True)
                             await self.backend.clear_audio()
                             self.manual = True
@@ -1156,6 +1208,7 @@ class VoiceSession:
                             await self.backend.set_turn_detection(False)
                             self.manual = False
                             self.manual_turn = None
+                            await self.enable_natural_barge_in()
                         if self.manual and isinstance(self.backend, RealtimeBackend):
                             if not await self.begin_manual_turn(event):
                                 continue
@@ -1185,6 +1238,11 @@ class VoiceSession:
                 raise RuntimeError("设备连接错误") from self.socket.exception()
 
     async def start_input_turn(self, event):
+        # [人工决策-2026-11-09 13:12:23] 牛牛要求无需唤醒词的自然插话；仅在端云均确认后放行播放期人声。
+        self.natural_input_active = self.natural_barge_in_enabled and not self.manual and not event.get("wake_clip") and (not self.require_wake_phrase or self.wake_phrase_verified)
+        if self.natural_input_active:
+            # 新人声开始即阻止旧工具链继续，已经执行的外部动作不回滚、不重放。
+            self.accepted_input_epoch += 1
         self.input_turn_serial += 1
         self.response_requested_at = None
         if not event.get("wake_clip"):
@@ -1205,11 +1263,12 @@ class VoiceSession:
         if navigation is not None:
             await navigation.cancel_voice_request(self)
         now = time.monotonic()
-        self.memory_audio_allowed = not self.speaking and (self.playback_ended_at is None or now - self.playback_ended_at >= SELF_TURN_WINDOW_SECONDS)
+        self.memory_audio_allowed = self.natural_input_active or not self.speaking and (self.playback_ended_at is None or now - self.playback_ended_at >= SELF_TURN_WINDOW_SECONDS)
         self.last_activity = now
         self._note_speech_started(now, event)
         if self.speaking or self.current_response:
-            await self.interrupt()
+            # 语义VAD回执已确认服务端自动取消，避免重复cancel导致无活动响应错误。
+            await self.interrupt(cancel_cloud=not self.natural_input_active)
         if not event.get("wake_clip"):
             await self.state("listening")
 
@@ -1296,9 +1355,9 @@ class VoiceSession:
             speech_ms = round((now - started) * 1000)
             limit_ms = SELF_TURN_INTERVAL_MS
         self.vad_speech_ms = speech_ms
-        suspicious = near and speech_ms < limit_ms
+        suspicious = not self.natural_input_active and near and speech_ms < limit_ms
         self.self_turn_pending = suspicious
-        self.command_audio_allowed = not suspicious and not self.speech_started_during_playback
+        self.command_audio_allowed = not suspicious and (not self.speech_started_during_playback or self.natural_input_active)
         if not suspicious:
             # 语音够长或离播放结束够远，视为真实用户回合，打断连续计数。
             self.self_turn_streak = 0
@@ -1365,12 +1424,12 @@ class VoiceSession:
         if diagnostic["first_stt_ms"] < 0:
             diagnostic["first_stt_ms"] = self._wake_elapsed_ms()
         matched = 0
-        for actual, expected in zip(prefix, WAKE_PHRASE):
+        for actual, expected in zip(prefix, self.wake_phrase):
             if actual != expected:
                 break
             matched += 1
         diagnostic["prefix_match_chars"] = matched
-        diagnostic["wake_after_start"] = diagnostic["wake_after_start"] or prefix.find(WAKE_PHRASE) > 0
+        diagnostic["wake_after_start"] = diagnostic["wake_after_start"] or prefix.find(self.wake_phrase) > 0
 
     def _summarize_wake_gate(self, reason):
         if self._wake_summary_sent or not self.require_wake_phrase:
@@ -1388,19 +1447,21 @@ class VoiceSession:
         return self.wake_deadline
 
     @staticmethod
-    def _is_wake_only(text):
+    def _is_wake_only(text, wake_phrase=WAKE_PHRASE):
         normalized = "".join(character for character in text if character.isalnum())
         # 重复完整口令仍是纯唤醒；附带请求、否定词或不完整尾句继续交给模型。
-        return bool(re.fullmatch(r"(?:" + WAKE_PHRASE + r")+", normalized))
+        alternatives = "|".join(re.escape(phrase) for phrase in wake_phrase_variants(wake_phrase))
+        return bool(re.fullmatch(r"(?:" + alternatives + r")+", normalized))
 
     @staticmethod
-    def _wake_transcript_state(text, prefix):
+    def _wake_transcript_state(text, prefix, wake_phrase=WAKE_PHRASE):
         if not isinstance(text, str):
             return prefix, "invalid_transcript"
         prefix += "".join(character for character in text if character.isalnum())
-        if prefix.startswith(WAKE_PHRASE):
+        variants = wake_phrase_variants(wake_phrase)
+        if any(prefix.startswith(phrase) for phrase in variants):
             return prefix, "verified"
-        if prefix and not WAKE_PHRASE.startswith(prefix):
+        if prefix and not any(phrase.startswith(prefix) for phrase in variants):
             return prefix, "phrase_missing"
         return prefix, "pending"
 
@@ -1427,7 +1488,7 @@ class VoiceSession:
         if count > WAKE_MAX_EVENTS or size > WAKE_MAX_BYTES:
             self.wake_rejection = pending["rejection"] = "buffer_limit"
             return None
-        prefix, state = self._wake_transcript_state(text, pending.get("prefix", ""))
+        prefix, state = self._wake_transcript_state(text, pending.get("prefix", ""), self.wake_phrase)
         if state == "verified":
             accepted = pending.get("text", "") + text
             pending.clear()
@@ -1476,7 +1537,7 @@ class VoiceSession:
                             if state != "pending":
                                 raise WakePhraseRejected(state)
                             continue
-                        transcript_prefix, state = self._wake_transcript_state(text, transcript_prefix)
+                        transcript_prefix, state = self._wake_transcript_state(text, transcript_prefix, self.wake_phrase)
                         # 有限首句只有一个已提交item；最终转写不会再补齐，不能继续等流式分段。
                         if state == "pending" and getattr(self.backend, "wake_clip_active", False):
                             raise WakePhraseRejected("empty_transcript" if not transcript_prefix else "phrase_missing")
@@ -1501,11 +1562,12 @@ class VoiceSession:
             if getattr(self.backend, "wake_ack_pcm", None) or getattr(self.backend, "wake_clip_active", False):
                 # 后续人声已进入门禁缓冲时不抢先播问候，交给模型处理当前上下文。
                 speech_starts = sum(event.get("type") == "input_audio_buffer.speech_started" for event in pending)
-                pcm = await self.backend.finish_wake_verification(self._is_wake_only(transcript_prefix) and speech_starts <= 1)
+                pcm = await self.backend.finish_wake_verification(self._is_wake_only(transcript_prefix, self.wake_phrase) and speech_starts <= 1)
                 if pcm:
                     LOGGER.info("wake_ack_cache_hit session=%s voice=%s audio_ms=%d", self.session_id, self.selected_voice, len(pcm) * 1000 // 48000)
                     for event in wake_ack_events(pcm):
                         yield event
+        await self.enable_natural_barge_in()
         async for event in events:
             yield event
 
@@ -1693,6 +1755,8 @@ class VoiceSession:
                 response_id = event.get("response", {}).get("id")
                 if not isinstance(response_id, str) or not response_id:
                     raise ValueError("云端 response.created 缺少响应ID")
+                if self.natural_barge_in_enabled and response_id in self.cancelled_responses:
+                    continue
                 if self.self_turn_pending:
                     await self._cancel_self_turn(response_id)
                     continue
@@ -2073,6 +2137,16 @@ class VoiceSession:
 
     async def _execute_tool(self, name, args):
         runtime = self.app[RUNTIME_KEY]
+        if name.startswith("gmail_"):
+            runtime.connector_registry.require_enabled("gmail")
+        if name in {"list_home_devices", "get_home_state", "execute_home_action", "set_home_state", "control_vacuum", "control_climate"}:
+            runtime.connector_registry.require_enabled("home_assistant")
+        if name.startswith("connector__"):
+            registry = runtime.connector_registry
+            if not any(tool["name"] == name for tool in registry.read_tool_schemas()):
+                raise LocalToolNotAvailableError()
+            _, connector_id, action_name = name.split("__", 2)
+            name, args = "invoke_connector", {"connector_id": connector_id, "action": action_name, "arguments": args}
         if name == "music_selection_decision":
             if not self.music_choices or self.music_choices["expires"] <= time.monotonic() or not self.last_user_text:
                 raise LocalToolRejectedError()
@@ -2140,12 +2214,15 @@ class VoiceSession:
             if not isinstance(arguments, dict):
                 raise LocalToolArgumentsError()
             registry = runtime.connector_registry
+            registry.configure(runtime.config)
+            if set(args) - {"connector_id", "action", "arguments"} or registry.status(args.get("connector_id", ""))["status"] != "available":
+                raise LocalToolRejectedError()
             try:
                 connector = registry.get(args.get("connector_id", ""))
                 action = action_for(connector.manifest, args.get("action", ""))
             except KeyError as error:
                 raise LocalToolNotAvailableError() from error
-            if action.requires_confirmation or not action.scopes.issubset({PermissionScope.READ}):
+            if action.needs_confirmation or not action.scopes.issubset({PermissionScope.READ}):
                 raise LocalToolRejectedError()
             context = ConnectorContext(subject="voice", approved_scopes=frozenset({PermissionScope.READ}))
             result = await self.app[RUNTIME_KEY].connector_registry.invoke(args.get("connector_id", ""), args.get("action", ""), arguments, context)
@@ -2257,16 +2334,16 @@ class VoiceSession:
             media = getattr(self.app[RUNTIME_KEY], "media_service", None)
             if media is not None and self.response_completed and not self.speaking and not self.current_response and not self.executing_tools and self.playback.empty() and self.pending_output is None:
                 if await media.voice_response_finished(self):
-                    await self.state("idle", "即将播放媒体，说“你好，小燕子”可暂停并继续对话")
+                    await self.state("idle", f"即将播放媒体，说“{wake_phrase_display(self.wake_phrase)}”可暂停并继续对话")
                     return
             music = getattr(self.app[RUNTIME_KEY], "device_music", None)
             if music is not None and self.response_completed and not self.speaking and not self.current_response and not self.executing_tools and self.playback.empty() and self.pending_output is None:
                 if await music.voice_response_finished(self):
-                    await self.state("idle", "即将从小燕子喇叭播放，说“你好，小燕子”可暂停")
+                    await self.state("idle", f"即将从伊迪斯喇叭播放，说“{wake_phrase_display(self.wake_phrase)}”可暂停")
                     return
             active = self.manual_pending_commit is not None or self.current_response or getattr(self, "current_chat_turn", None) or response_requested is not None or self.executing_tools or self.speaking or not self.playback.empty() or self.pending_output is not None
             if now - self.created >= self.config.get("session_seconds", 600) or (not active and now - self.last_activity >= self.config.get("idle_seconds", 30)):
-                await self.state("idle", "说“你好，小燕子”可继续")
+                await self.state("idle", f"说“{wake_phrase_display(self.wake_phrase)}”可继续")
                 return
 
     async def run(self):
@@ -2368,16 +2445,27 @@ async def handle_native_device(request):
         if not isinstance(hello, dict):
             raise ValueError("hello 必须为对象")
         params = hello.get("audio_params", {})
-        if hello.get("type") != "hello" or hello.get("version") != 1 or params.get("format") != "pcm_s16le" or params.get("sample_rate") != 16000 or params.get("channels") != 1:
-            await socket.close(code=1003, message=b"Expected protocol v1 PCM16k mono")
+        if hello.get("type") != "hello" or hello.get("version") != 1:
+            await socket.close(code=1003, message=b"Expected native protocol v1")
             return socket
-        LOGGER.info("device_hello firmware_version=%s", hello.get("firmware_version"))
+        try:
+            device_socket = native_audio_socket(socket, params)
+        except ValueError:
+            await socket.close(code=1003, message=b"Expected PCM16k mono or framed Opus20ms")
+            return socket
+        try:
+            wake_phrase = device_wake_phrase(hello)
+        except ValueError:
+            await socket.close(code=1003, message=b"Unsupported wake phrase")
+            return socket
+        LOGGER.info("device_hello firmware_version=%s wake_phrase=%s", hello.get("firmware_version"), wake_phrase)
         # 设备固件落后于本地构建产物时推送 OTA；设备下载写入备用分区后自行重启。
         manifest = ota_firmware_manifest()
         if manifest and hello.get("firmware_version") != manifest["version"]:
             await socket.send_json({"type": "ota", "url": f"http://{request.host}/api/ota/firmware", "sha256": manifest["sha256"]})
             LOGGER.info("ota_pushed device_version=%s target=%s", hello.get("firmware_version"), manifest["version"])
-        device = NativeDevice(socket, runtime, lambda proxy: VoiceSession(request.app, proxy, raw_pcm=True))
+        device = NativeDevice(device_socket, runtime, lambda proxy: VoiceSession(request.app, proxy, raw_pcm=True))
+        device.wake_phrase = wake_phrase
         device.paired_device_id = paired_device_id or config["device_id"]
         device.firmware_version = hello.get("firmware_version", "unknown")
         features = hello.get("features", {})
@@ -2387,7 +2475,8 @@ async def handle_native_device(request):
         device.wake_clip_supported = isinstance(features, dict) and features.get("wake_clip_v1") is True
         device.wake_input_ready_supported = isinstance(features, dict) and features.get("wake_input_ready_v1") is True
         device.manual_input_ready_supported = isinstance(features, dict) and features.get("manual_input_ready_v1") is True
-        LOGGER.info("native_device_capabilities firmware=%s wake_clip_v1=%s wake_input_ready_v1=%s", device.firmware_version, device.wake_clip_supported, device.wake_input_ready_supported)
+        device.natural_barge_in_supported = isinstance(features, dict) and features.get("natural_barge_in_v1") is True
+        LOGGER.info("native_device_capabilities firmware=%s wake_clip_v1=%s wake_input_ready_v1=%s natural_barge_in_v1=%s", device.firmware_version, device.wake_clip_supported, device.wake_input_ready_supported, device.natural_barge_in_supported)
         # 同一设备重连替换旧连接，不影响其他已配对设备。
         async with runtime.native_device_lock:
             if paired_device_id and request.app[PAIRING_KEY].authenticate_device(token) != paired_device_id:
@@ -2541,6 +2630,9 @@ async def lifecycle(app):
         runtime.connector_registry.register(GitHubConnector(client, app[CONFIG_KEY]))
         runtime.connector_registry.register(SlackConnector(client, app[CONFIG_KEY]))
         runtime.connector_registry.register(TodoistConnector(client, app[CONFIG_KEY]))
+        runtime.connector_registry.configure(app[CONFIG_KEY])
+        if app[CONFIG_KEY].get("mcp_url"):
+            runtime.connector_registry.register(MCPConnector(client, app[CONFIG_KEY]))
         app[RUNTIME_KEY] = runtime
         try:
             await initialize_extensions(app, runtime, store, client, runtime_path)

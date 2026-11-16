@@ -94,6 +94,8 @@ class ImportantEvents:
 
     async def _mail(self, row, options, state, now):
         provider = options["provider"]
+        if provider in (self.service.config.get("disabled_connectors") or []):
+            raise PermissionError("该邮件连接器已撤销伊迪斯访问")
         if provider == "gmail":
             gmail = getattr(self.service.runtime, "gmail", None)
             if gmail is None or not gmail.status().get("configured") or not gmail.status().get("authorized"):

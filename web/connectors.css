@@ -2,3 +2,5 @@
 .connector-check{display:grid;gap:8px;border-top:1px solid var(--line);margin-top:14px;padding-top:13px}.connector-check input{width:100%}.connector-check button{justify-self:start}
 
 .connector-config-form,.settings-form{display:grid;gap:12px;margin:16px 0}.connector-config-form label,.settings-form label{display:grid;gap:6px;color:var(--muted);font-size:12px}.connector-config-form input,.connector-config-form textarea{width:100%}.connector-config-form .config-clear{display:flex;align-items:center;gap:8px}.connector-config-form input[type=checkbox],.settings-form input[type=checkbox]{width:20px;min-height:20px}.connector-config-form textarea{min-height:90px}
+
+.action-result{white-space:pre-wrap;overflow-wrap:anywhere;max-height:320px;overflow:auto;font-size:13px}.connector-detail label{display:grid;gap:6px;margin:10px 0}.connector-detail select{min-height:44px;max-width:100%}

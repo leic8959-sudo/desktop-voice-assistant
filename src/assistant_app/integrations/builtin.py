@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from .contracts import ConnectorContext, ConnectorManifest, ConnectorAction, PermissionScope
+from .action_schemas import SCHEMAS
 
 
 class GmailConnector:
@@ -46,9 +47,9 @@ class HomeAssistantConnector:
         display_name="Home Assistant",
         version="1.0",
         actions=(
-            ConnectorAction("list_devices", "列出已授权设备"),
-            ConnectorAction("get_state", "读取设备状态"),
-            ConnectorAction("execute", "执行设备动作", frozenset({PermissionScope.DEVICE_CONTROL}), True),
+            ConnectorAction("list_devices", "列出已授权设备", input_schema=SCHEMAS[("home_assistant", "list_devices")]),
+            ConnectorAction("get_state", "读取设备状态", input_schema=SCHEMAS[("home_assistant", "get_state")]),
+            ConnectorAction("execute", "执行设备动作", frozenset({PermissionScope.DEVICE_CONTROL}), True, SCHEMAS[("home_assistant", "execute")]),
         ),
     )
 

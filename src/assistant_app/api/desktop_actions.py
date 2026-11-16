@@ -10,7 +10,7 @@ from pathlib import Path
 
 from aiohttp import web
 
-from control_api import AUDIT_KEY, CONFIRMATIONS_KEY, _require_config_transport, body_object
+from control_api import AUDIT_KEY, CONFIRMATIONS_KEY, CONFIG_LOCK_KEY, _require_config_transport, body_object
 from ..application.desktop_actions import DesktopActionsService, DIRECT_PC_ACTIONS, MAX_MEDIA_BYTES
 from ..infrastructure.audit import record
 
@@ -93,11 +93,16 @@ async def oauth_config(request):
     _require_config_transport(request)
     payload = await body_object(request)
     try:
-        result = await service.tokens.configure(provider, payload.get("values", {}))
+        async with request.app[CONFIG_LOCK_KEY]:
+            result = await service.tokens.configure(provider, payload.get("values", {}))
+            registry = service.runtime.connector_registry
+            registry.invalidate(provider)
+            if provider == "microsoft_calendar":
+                registry.invalidate("microsoft_mail")
+            request.app[CONFIRMATIONS_KEY].invalidate_pending()
     except Exception:
         LOGGER.exception("oauth_configuration_failed provider=%s", provider)
         raise
-    request.app[CONFIRMATIONS_KEY].invalidate_pending()
     record(request.app[AUDIT_KEY], action="oauth_refresh_configuration", outcome="saved", connector_id=provider, subject=request["principal"].subject, request_id=request.get("request_id"))
     return web.json_response(result)
 

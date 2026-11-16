@@ -7,20 +7,43 @@ const drawer = byId('detail-drawer');
 const paths = { status: '/api/status', connectors: '/api/connectors', audit: '/api/audit/recent', devices: '/api/devices' };
 const states = Object.fromEntries(Object.keys(paths).map(key => [key, { data: null, loadedAt: 0, error: '', loading: false }]));
 const routes = {
-  overview: ['系统总览', '查看服务、配置和近期记录的接口快照。'],
+  overview: ['伊迪斯工作台', '查看当前状态，快速进入日常任务。'],
   workflows: ['工作流', '查看真实依赖；会议出行规划支持手动只读查询。'],
   audit: ['审计日志', '仅显示当前日志末尾的有界近期记录，不推算缺失时间。'],
   credentials: ['权限与凭据', '查看声明权限与认证边界。'],
   settings: ['系统设置', '查看状态接口公开的运行配置摘要。'],
   assistant: ['个人助手', '打开已有助手功能，沿用原有服务端确认流程。'],
+  connectors: ['连接器中心', '查看与配置连接器；配置就绪不代表外部授权有效。'],
+  devices: ['设备管理', '查看绑定设备状态、配对与固件。'],
+  productivity: ['提醒与主动助理', '安排提醒与待办。'],
+  memory: ['记忆管理', '查看与维护助手记忆。'],
+  music: ['互联网点歌', '搜索与播放音乐。'],
+  knowledge: ['知识与会议', '知识与会议资料管理。'],
+  desktop: ['桌面工具', '桌面辅助工具。'],
+  computer: ['电脑与媒体', '电脑控制与媒体播放。'],
 };
+// 内嵌到控制台的独立功能页；侧栏常驻，路由切换只替换 iframe。
+const embedRoutes = {
+  connectors: '/static/connectors.html',
+  devices: '/static/devices.html',
+  productivity: '/static/productivity.html',
+  memory: '/static/memory.html',
+  music: '/static/music.html',
+  knowledge: '/static/knowledge.html',
+  desktop: '/static/desktop.html',
+  computer: '/static/computer.html',
+};
+let embedAnchor = '';
+let embedGeneration = 0;
+const embedCache = new Map();
 let generation = 0;
 let busy = false;
 let authenticated = false;
 let refreshTimer;
 let auditFilter = 'all';
 let previousFocus;
-const api = createConsoleApi(() => tokenInput.value, () => resetAuthentication('管理员认证失效，已清空控制台数据并停止自动刷新。', true));
+let renderedAuthentication = false;
+const api = createConsoleApi(() => tokenInput.value, () => resetAuthentication('管理员认证不可用：请在服务所在电脑点击本机登录，或检查管理员令牌。', true));
 const settingsPanel = createSettingsPanel(byId('settings-controls'), api, () => authenticated);
 const fresh = key => states[key].data !== null && !states[key].error && !states[key].loading && Date.now() - states[key].loadedAt < 45000;
 const timeText = value => new Date(value).toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai', hour12: false });
@@ -83,7 +106,7 @@ async function load(keys = Object.keys(paths)) {
   if (current !== generation) return;
   setBusy(false);
   renderFreshness();
-  byId('page-message').textContent = Object.values(states).some(state => state.error) ? authenticated ? '部分数据读取失败；旧快照已标记，可按分区重试。' : '未取得接口数据，请查看分区错误并重试。' : '已读取当前接口快照；正常情况下每 30 秒刷新，页面隐藏或详情打开时暂停。';
+  byId('page-message').textContent = Object.values(states).some(state => state.error) ? authenticated ? '部分数据读取失败；旧快照已标记，可按分区重试。' : '未取得接口数据，请查看分区错误并重试。' : '已读取当前接口快照。';
   scheduleRefresh();
   if (byId('main-content').dataset.route === 'settings' && authenticated && !byId('settings-controls').querySelector('form')) settingsPanel.load();
 }
@@ -91,8 +114,12 @@ function renderFreshness() {
   const allFresh = Object.keys(states).every(fresh);
   const hasData = Object.values(states).some(state => state.data !== null);
   const mode = byId('data-mode');
-  mode.textContent = allFresh ? 'Live 数据 · 近期快照' : hasData ? '部分 / 过期快照' : busy ? '读取中' : '等待认证 / 加载';
-  mode.className = `badge ${allFresh ? 'good' : hasData ? 'warn' : ''}`;
+  const hasErrors = Object.values(states).some(state => state.error);
+  mode.textContent = busy ? '正在更新快照' : allFresh ? '近期接口快照' : hasErrors ? hasData ? '部分读取失败' : '读取失败 · 请登录或重试' : hasData ? '快照已过期' : '等待认证 / 加载';
+  mode.className = `badge ${allFresh ? 'good' : hasData || hasErrors ? 'warn' : ''}`;
+  byId('auth-summary').textContent = authenticated ? '切换认证' : '管理员登录';
+  if (authenticated !== renderedAuthentication) byId('auth-panel').open = !authenticated;
+  renderedAuthentication = authenticated;
   document.querySelectorAll('[data-state]').forEach(node => {
     const key = node.dataset.state;
     const state = states[key];
@@ -106,6 +133,24 @@ function renderFreshness() {
       node.append(retry);
     }
   });
+  renderWorkbench();
+}
+const snapshotSuffix = key => !states[key].data ? '' : states[key].loading ? ' · 更新中，旧快照' : states[key].error ? ' · 读取失败，旧快照' : !fresh(key) ? ' · 快照过期' : '';
+// 兼容尚未重启的网关，不把离线默认配置项计为设备。
+const availableDevices = () => states.devices.data?.items?.filter(item => item.pairing_id || item.state === 'online' || item.state === 'disabled');
+const deviceOnline = item => item.state === 'online' && item.enabled !== false && item.disabled !== true;
+function renderWorkbench() {
+  const status = states.status.data;
+  const suffix = snapshotSuffix('status');
+  byId('summary-gateway').textContent = `${status?.bridge?.running === true ? '运行中' : status?.bridge?.running === false ? '已停止' : '未知'}${suffix}`;
+  byId('summary-cloud').textContent = `云语音：${status?.cloud?.connected === true ? '活动中' : status?.cloud?.connected === false ? '待机' : '未知'}`;
+  byId('summary-model').textContent = `${status?.bridge?.model || '未知'}${suffix}`;
+  byId('summary-provider').textContent = `提供方：${status?.bridge?.llm_provider || '未知'}`;
+  const search = status?.capabilities?.web_search;
+  byId('summary-search').textContent = `${search === true ? '已开启' : search === false ? '已关闭' : '未知'}${suffix}`;
+  const devices = availableDevices();
+  byId('summary-devices').textContent = devices ? `${devices.filter(deviceOnline).length} / ${devices.length}${snapshotSuffix('devices')}` : '未知';
+  byId('summary-device-note').textContent = devices ? '在线 / 本次返回的有效设备' : '等待读取设备列表';
 }
 const itemButton = (name, description, status, onClick) => {
   const button = element('button', 'item-button');
@@ -118,9 +163,12 @@ const itemButton = (name, description, status, onClick) => {
 };
 function renderConnectors() {
   const items = states.connectors.data?.items || [];
-  byId('connector-list').replaceChildren(...items.map(item => itemButton(item.name || item.id, `${item.id} · ${item.action_count ?? item.actions?.length ?? 0} 项声明能力`, item.configured ? '已配置 · 未验证连接' : '未配置', () => {
+  byId('connector-list').replaceChildren(...items.map(item => itemButton(item.name || item.id, `${item.id} · ${item.action_count ?? item.actions?.length ?? 0} 项声明能力`, item.configured === true ? '已配置 · 未验证连接' : item.configured === false ? '未配置' : '配置未知', () => {
     openDrawer(item.name || item.id, '配置项存在不等于第三方授权有效。', (item.actions || []).map(action => `${action.name}：${action.description || '无说明'} · ${(action.scopes || []).join('、') || '未声明权限'}${action.requires_confirmation ? ' · 需服务端确认' : ''}`));
-    byId('drawer-content').append(link('配置说明与能力详情', `/static/connectors.html#${encodeURIComponent(item.id)}`));
+    const detail = element('a', 'button', '配置说明与能力详情');
+    detail.href = '#/connectors';
+    detail.addEventListener('click', () => { embedAnchor = `#${encodeURIComponent(item.id)}`; });
+    byId('drawer-content').append(detail);
   })));
   if (!items.length) byId('connector-list').append(element('p', 'empty', states.connectors.data ? '暂无已注册连接器。' : '等待真实连接器数据。'));
   byId('permission-list').replaceChildren(...items.map(item => {
@@ -144,7 +192,7 @@ function renderStatus() {
   } else {
     const rows = [
       ['桥接服务', status.bridge?.running === true ? '运行中' : status.bridge?.running === false ? '已停止' : '未提供'],
-      ['云语音会话', status.cloud?.connected === true ? '有活动连接' : status.cloud?.connected === false ? '无活动连接（不代表语音故障）' : '未提供'],
+      ['云语音会话', status.cloud?.connected === true ? '活动中' : status.cloud?.connected === false ? '待机' : '未知'],
       ['语音设备会话', status.device?.connected === true ? '存在连接' : status.device?.connected === false ? '无连接' : '未提供'],
     ];
     rows.forEach(([name, value]) => { const row = element('div', 'health-row'); row.append(element('span', 'muted', name), element('strong', '', value)); health.append(row); });
@@ -153,7 +201,7 @@ function renderStatus() {
   }
   const workflows = status?.workflows || [];
   byId('workflow-list').replaceChildren(...workflows.map(workflow => {
-    const button = itemButton(workflow.name || workflow.id, `${workflow.id} · 依赖：${(workflow.required_connectors || []).join('、') || '接口未提供'} · ${workflow.read_only ? '只读' : '涉及写入'}`, workflow.ready ? '配置就绪 · 未验证执行' : '待配置', () => showWorkflow(workflow));
+    const button = itemButton(workflow.name || workflow.id, `${workflow.id} · 依赖：${(workflow.required_connectors || []).join('、') || '接口未提供'} · ${workflow.read_only ? '只读' : '涉及写入'}`, workflow.ready === true ? '配置就绪 · 未验证执行' : workflow.ready === false ? '待配置' : '配置未知', () => showWorkflow(workflow));
     button.dataset.workflowId = workflow.id;
     return button;
   }));
@@ -163,7 +211,7 @@ function renderStatus() {
 function showWorkflow(workflow) {
   openDrawer(workflow.name || workflow.id, `${fresh('status') ? '近期快照' : '旧快照'}：${workflow.ready ? '配置条件已满足，外部执行结果尚未验证。' : '缺少配置，当前无法执行。'}`, [`标识：${workflow.id}`, `依赖：${(workflow.required_connectors || []).join('、') || '未提供'}`, workflow.read_only ? '本工作流声明为只读。' : '写入动作需要服务端生成的短期确认凭证，参数变化会使凭证失效。']);
   const root = byId('drawer-content');
-  root.append(link('查看连接器配置', '/static/connectors.html'), document.createTextNode(' '), link('查看近期审计', '#/audit'));
+  root.append(link('查看连接器配置', '#/connectors'), document.createTextNode(' '), link('查看近期审计', '#/audit'));
   if (workflow.id === 'meeting-travel' && workflow.read_only && workflow.ready && fresh('status') && authenticated) addTravelForm(root);
   else if (workflow.id === 'meeting-travel' && !fresh('status')) root.append(element('p', 'notice', '请先刷新运行状态，再打开只读查询表单。'));
   else if (['meeting-notes', 'github-issue', 'todoist-task'].includes(workflow.id)) {
@@ -175,12 +223,21 @@ function showWorkflow(workflow) {
 }
 
 function addWriteWorkflowForm(root, workflow) {
-  const form = element('form');
-  const field = (name, label, type = 'text') => { const wrapper = element('label', '', label); const input = element('input'); input.name = name; input.type = type; input.required = name !== 'body' && name !== 'due_string'; wrapper.append(input); form.append(wrapper); return input; };
+  const form = element('form', 'workflow-form');
+  const field = (name, label, type = 'text', options = []) => {
+    const wrapper = element('label', '', label);
+    const input = element(type === 'textarea' ? 'textarea' : type === 'select' ? 'select' : 'input');
+    input.name = name;
+    if (type === 'textarea') input.rows = 5;
+    else if (type === 'select') options.forEach(([value, text]) => { const option = element('option', '', text); option.value = value; input.append(option); });
+    else input.type = type;
+    input.required = name !== 'body' && name !== 'due_string';
+    wrapper.append(input); form.append(wrapper); return input;
+  };
   let inputs;
-  if (workflow.id === 'meeting-notes') inputs = { parent_id: field('parent_id', 'Notion 父页面或数据库 ID'), parent_type: field('parent_type', '父级类型（page 或 database）'), title: field('title', '标题'), content: field('content', '正文') };
-  if (workflow.id === 'github-issue') inputs = { repository: field('repository', 'GitHub 仓库（owner/name）'), title: field('title', 'Issue 标题'), body: field('body', 'Issue 正文') };
-  if (workflow.id === 'todoist-task') inputs = { content: field('content', 'Todoist 待办内容'), due_string: field('due_string', '截止时间（可选）'), priority: field('priority', '优先级（1-4）', 'number') };
+  if (workflow.id === 'meeting-notes') inputs = { parent_id: field('parent_id', 'Notion 父页面或数据库 ID'), parent_type: field('parent_type', '父级类型', 'select', [['page', '页面（page）'], ['database', '数据库（database）']]), title: field('title', '标题'), content: field('content', '正文', 'textarea') };
+  if (workflow.id === 'github-issue') inputs = { repository: field('repository', 'GitHub 仓库（owner/name）'), title: field('title', 'Issue 标题'), body: field('body', 'Issue 正文（可选）', 'textarea') };
+  if (workflow.id === 'todoist-task') inputs = { content: field('content', 'Todoist 待办内容'), due_string: field('due_string', '截止时间（可选）'), priority: field('priority', '优先级', 'select', [['1', '普通（1）'], ['2', '中（2）'], ['3', '高（3）'], ['4', '紧急（4）']]) };
   const prepare = element('button', 'primary', '生成服务端预览'); prepare.type = 'submit'; form.append(prepare);
   const result = element('pre', '', '填写参数后生成预览；尚未调用外部服务。'); result.setAttribute('role', 'status'); form.append(result); root.append(form);
   let pending = false;
@@ -256,6 +313,8 @@ function renderAudit() {
   const query = byId('audit-search').value.trim().toLowerCase();
   root.replaceChildren();
   const labels = { success: '成功', failure: '失败 / 拦截', unknown: '未知' };
+  const overview = byId('main-content').dataset.route === 'overview';
+  let matched = 0;
   for (const line of [...lines].reverse()) {
     let entry;
     try { entry = typeof line === 'string' ? JSON.parse(line) : line; } catch { entry = null; }
@@ -263,43 +322,125 @@ function renderAudit() {
     const result = auditOutcome(entry.outcome);
     const searchable = [entry.action, entry.route, entry.outcome, entry.request_id, entry.method, entry.remote].join(' ').toLowerCase();
     if ((auditFilter !== 'all' && result !== auditFilter) || (query && !searchable.includes(query))) continue;
+    matched += 1;
+    if (overview && matched > 5) continue;
     const row = itemButton(entry.action || '审计事件', `${auditTime(entry.timestamp)} · ${entry.method || ''} ${entry.route || ''} · ${entry.outcome ?? '结果未记录'}`, labels[result], () => openDrawer(entry.action || '审计事件', '日志记录不等同于外部业务执行成功；HTTP 成功仅表示该 API 返回成功。', [`时间：${auditTime(entry.timestamp)}`, `结果：${entry.outcome ?? '未记录'}`, `方法：${entry.method || '未记录'}`, `路由：${entry.route || '未记录'}`, `请求 ID：${entry.request_id || '未记录'}`, `来源：${entry.remote || '未记录'}`]));
     row.querySelector('.badge').classList.add(result === 'success' ? 'good' : result === 'failure' ? 'failure' : 'warn');
     root.append(row);
   }
   if (!root.children.length) root.append(element('p', 'empty', states.audit.data ? '当前范围内没有匹配的审计记录。' : '等待审计数据。'));
   byId('metric-audit').textContent = states.audit.data ? lines.length : '—';
-  byId('audit-range').textContent = `当前日志末尾最多 ${states.audit.data?.limit ?? 30} 条，本次返回 ${lines.length} 条；最多读取尾部 ${states.audit.data?.max_bytes ?? 65536} 字节，长行可能被截去。${states.audit.data?.truncated ? '本次尾部窗口未覆盖完整日志。' : ''}不是全量或今日统计。`;
+  const range = states.audit.data ? `本次返回 ${lines.length} 条，筛选匹配 ${matched} 条。${overview ? `总览显示最近 ${Math.min(matched, 5)} 条，进入审计详情查看完整匹配。` : '显示本次返回的全部匹配记录。'}` : '等待审计数据。';
+  byId('audit-range').textContent = `${range}服务端最多返回 ${states.audit.data?.limit ?? 30} 条，尾部窗口 ${states.audit.data?.max_bytes ?? 65536} 字节。${states.audit.data?.truncated ? '本次窗口未覆盖完整日志。' : ''}不是全量或今日统计。`;
 }
 function applySearch() {
   const query = byId('command-search').value.trim().toLowerCase();
-  ['connector-list', 'workflow-list'].forEach(id => {
+  const overview = byId('main-content').dataset.route === 'overview';
+  [['connector-list', 'connector-summary'], ['workflow-list', 'workflow-summary']].forEach(([id, summaryId]) => {
     const root = byId(id);
     root.querySelector('[data-search-empty]')?.remove();
     const buttons = [...root.querySelectorAll('.item-button')];
-    buttons.forEach(node => { node.hidden = Boolean(query && !node.textContent.toLowerCase().includes(query)); });
-    if (buttons.length && buttons.every(node => node.hidden)) { const empty = element('p', 'empty', '没有匹配的结果。'); empty.dataset.searchEmpty = ''; root.append(empty); }
+    let matched = 0;
+    buttons.forEach(node => {
+      const matches = !query || node.textContent.toLowerCase().includes(query);
+      if (matches) matched += 1;
+      node.hidden = !matches || (overview && !query && matched > 4);
+    });
+    if (buttons.length && !matched) { const empty = element('p', 'empty', '没有匹配的结果。'); empty.dataset.searchEmpty = ''; root.append(empty); }
+    byId(summaryId).textContent = !buttons.length ? '' : query ? `匹配 ${matched} / ${buttons.length} 项，已展示全部匹配。` : overview && buttons.length > 4 ? `展示 4 / ${buttons.length} 项，搜索可查看全部匹配，或进入详情。` : `共 ${buttons.length} 项。`;
   });
 }
+function renderDevices() {
+  const devices = availableDevices();
+  byId('metric-devices').textContent = devices ? `${devices.filter(deviceOnline).length} / ${devices.length}` : '—';
+  const root = byId('device-summary');
+  root.replaceChildren();
+  if (!devices?.length) { root.append(element('p', 'empty', devices ? '暂无有效设备，请到设备管理添加或查看。' : '等待设备列表。')); return; }
+  devices.slice(0, 3).forEach(item => {
+    const row = element('div', 'device-summary-row');
+    const description = element('div');
+    description.append(element('strong', '', item.name || item.id || '未命名设备'), element('small', '', `固件：${item.firmware || '未知'}`));
+    const disabled = item.state === 'disabled' || item.enabled === false || item.disabled === true;
+    row.append(description, element('span', `badge ${deviceOnline(item) ? 'good' : ''}`, disabled ? '已禁用' : deviceOnline(item) ? '在线' : item.state === 'offline' ? '离线' : '状态未知'));
+    root.append(row);
+  });
+  if (devices.length > 3) root.append(link(`查看全部 ${devices.length} 台设备`, '#/devices'));
+}
 function render() {
-  renderConnectors(); renderStatus(); renderAudit(); applySearch();
-  // 兼容尚未重启的网关，不把离线默认配置项计为设备。
-  const devices = states.devices.data?.items?.filter(item => item.pairing_id || item.state === 'online');
-  byId('metric-devices').textContent = devices ? `${devices.filter(item => item.state === 'online').length} / ${devices.length}` : '—';
+  renderConnectors(); renderStatus(); renderAudit(); applySearch(); renderDevices();
   renderFreshness();
 }
+function closeNavigation(restoreFocus = false) {
+  byId('nav-toggle').setAttribute('aria-expanded', 'false');
+  byId('main-nav').classList.remove('is-open');
+  if (restoreFocus) byId('nav-toggle').focus();
+}
+const frame = () => byId('embed-frame');
+// 网关对页面响应统一携带 X-Frame-Options: DENY，iframe 直接以 src 加载子页面会被浏览器拒绝；
+// 同源 fetch 后经 srcdoc 注入，srcdoc 文档继承父源，不受该头限制。
+const loadEmbedSource = async route => {
+  if (!embedCache.has(route)) {
+    const response = await fetch(embedRoutes[route], { credentials: 'same-origin', cache: 'no-store' });
+    if (!response.ok) throw new Error(`功能页面读取失败（HTTP ${response.status}）`);
+    embedCache.set(route, `<!doctype html>${await response.text()}`);
+  }
+  return embedCache.get(route);
+};
+// 同源前提下接管子页面导航：返回控制台、功能页互跳改走父级路由，独立页（assistant）保持顶层打开。
+const EMBED_ROUTE_KEYS = Object.keys(embedRoutes);
+const decorateFrameLinks = () => {
+  const anchorId = embedAnchor.startsWith('#') ? decodeURIComponent(embedAnchor.slice(1)) : '';
+  embedAnchor = '';
+  let doc;
+  try { doc = frame().contentDocument; } catch { return; }
+  if (!doc) return;
+  doc.querySelectorAll('a[href^="/static/"]').forEach(node => node.addEventListener('click', event => {
+    const href = node.getAttribute('href');
+    if (href.includes('admin_console_demo')) { event.preventDefault(); parent.location.hash = '#/overview'; return; }
+    const route = EMBED_ROUTE_KEYS.find(key => href.startsWith(embedRoutes[key]));
+    if (!route) return;
+    event.preventDefault();
+    const target = new URL(href, location.origin);
+    embedAnchor = target.hash || '';
+    parent.location.hash = `#/${route}`;
+  }));
+  if (anchorId) doc.getElementById(anchorId)?.scrollIntoView({ block: 'start' });
+};
+const syncFrame = async route => {
+  const element = frame();
+  if (element.dataset.route === route && element.srcdoc) return;
+  const current = ++embedGeneration;
+  element.dataset.route = route;
+  element.removeAttribute('srcdoc');
+  try {
+    const source = await loadEmbedSource(route);
+    if (current !== embedGeneration) return;
+    element.srcdoc = source;
+  } catch (error) {
+    if (current !== embedGeneration) return;
+    element.srcdoc = `<!doctype html><html lang="zh-CN"><body style="font:14px/1.6 system-ui;background:#07070a;color:#eeeef4;display:grid;place-items:center;height:100vh"><p>${error.message}，请刷新重试。</p></body></html>`;
+  }
+};
 function navigate() {
   let route = location.hash.replace(/^#\/?/, '').split('/')[0] || 'overview';
-  const nav = document.querySelector(`[data-route="${route === 'connectors' || route === 'devices' ? route : 'overview'}"]`);
-  if (route === 'connectors' || route === 'devices') { location.replace(nav.href); return; }
   if (!Object.hasOwn(routes, route)) { route = 'overview'; history.replaceState(null, '', '#/overview'); }
   closeDrawer();
+  closeNavigation();
   byId('main-content').dataset.route = route;
+  if (embedRoutes[route]) syncFrame(route);
   if (route === 'settings' && !byId('settings-controls').children.length) settingsPanel.load();
   byId('page-title').textContent = routes[route][0]; byId('page-description').textContent = routes[route][1];
   document.querySelectorAll('[data-views]').forEach(node => { node.hidden = !node.dataset.views.split(' ').includes(route); });
   document.querySelectorAll('.nav [data-route]').forEach(node => { if (node.dataset.route === route) node.setAttribute('aria-current', 'page'); else node.removeAttribute('aria-current'); });
+  renderAudit(); applySearch();
 }
+byId('nav-toggle').addEventListener('click', () => {
+  const open = byId('nav-toggle').getAttribute('aria-expanded') !== 'true';
+  byId('nav-toggle').setAttribute('aria-expanded', String(open));
+  byId('main-nav').classList.toggle('is-open', open);
+});
+document.querySelector('.sidebar').addEventListener('click', event => { if (event.target.closest('a')) closeNavigation(); });
+document.addEventListener('keydown', event => { if (event.key === 'Escape' && byId('nav-toggle').getAttribute('aria-expanded') === 'true') closeNavigation(true); });
 byId('admin-load').addEventListener('click', () => load());
 byId('settings-reload').addEventListener('click', () => settingsPanel.load());
 byId('admin-refresh').addEventListener('click', () => load());
@@ -321,8 +462,16 @@ drawer.addEventListener('click', event => { if (event.target === drawer) { const
 drawer.addEventListener('close', () => { if (!drawer.open) { byId('drawer-content').replaceChildren(); (previousFocus?.isConnected ? previousFocus : byId('main-content')).focus(); } });
 document.addEventListener('keydown', event => { if (event.key === '/' && !drawer.open && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName) && !byId('command-search').closest('[hidden]')) { event.preventDefault(); byId('command-search').focus(); } });
 window.addEventListener('hashchange', navigate);
+byId('embed-frame').addEventListener('load', decorateFrameLinks);
 document.addEventListener('visibilitychange', () => { if (document.hidden) clearTimeout(refreshTimer); else { renderFreshness(); if (authenticated && !drawer.open) load(); else scheduleRefresh(); } });
 window.addEventListener('pagehide', () => resetAuthentication('页面已离开，请重新加载状态。', true));
 window.addEventListener('pageshow', event => { if (event.persisted) load(); });
 setInterval(renderFreshness, 5000);
-navigate(); render(); load();
+// 本机打开时先静默认证再读取数据，避免每次打开都显示“认证失效 / 设备未知”。
+async function bootstrap() {
+  if (['localhost', '127.0.0.1', '[::1]'].includes(location.hostname) && !tokenInput.value.trim()) {
+    try { await api.request('/api/auth/local-login', { method: 'POST', authenticate: false }); } catch { /* 非本机会话保持登录面板 */ }
+  }
+  load();
+}
+navigate(); render(); bootstrap();

@@ -39,7 +39,7 @@ class NavigationDemoService:
             return "语音播报服务不可用"
         _, reason = speech._device()
         if reason:
-            return "请连接唯一一台支持导航播报的小燕子"
+            return "请连接唯一一台支持导航播报的伊迪斯"
         if any(not self.runtime.config.get(key) for key in ("aliyun_api_key", "chat_tts_model", "chat_tts_voice")):
             return "导航演示语音尚未配置"
         return None

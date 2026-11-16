@@ -1,5 +1,6 @@
 #include "ota_update.h"
 #include "display_ui.h"
+#include "device_http_client.h"
 #include <stdio.h>
 #include <string.h>
 #include <atomic>
@@ -7,6 +8,7 @@
 #include "esp_http_client.h"
 #include "esp_log.h"
 #include "esp_ota_ops.h"
+#include "esp_app_desc.h"
 #include "esp_system.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -16,7 +18,7 @@ static const char *TAG = "ota";
 static std::atomic<bool> g_busy{false};
 // 下载缓冲放在任务栈上：写 flash 冻结 cache 期间被访问的内存必须都在内部 RAM。
 static constexpr size_t kReadChunk = 2048;
-// 应用分区 3MB；超过视为服务端异常，防止坏清单写满分区。
+// 服务端镜像最多3MB；小容量板还必须服从当前OTA分区的实际大小。
 static constexpr size_t kMaxFirmwareBytes = 3 * 1024 * 1024;
 
 static void ota_fail(esp_ota_handle_t handle, const esp_partition_t *partition, const char *reason) {
@@ -42,36 +44,33 @@ static void ota_task(void *argument) {
     const esp_partition_t *partition = esp_ota_get_next_update_partition(nullptr);
     if (!partition) { ota_fail(0, nullptr, "ota_no_update_partition"); return; }
 
-    esp_http_client_config_t http_config = {};
-    http_config.url = url;
-    http_config.timeout_ms = 10000;
-    http_config.buffer_size = 4096;
-    esp_http_client_handle_t client = esp_http_client_init(&http_config);
-    if (!client) { ota_fail(0, partition, "ota_http_init_failed"); return; }
+    DeviceHttpClient session;
+    if (session.Init(url, 10000, 4096) != ESP_OK) { ota_fail(0, partition, "ota_http_init_failed"); return; }
+    esp_http_client_handle_t client = session.handle();
     esp_http_client_set_header(client, "Authorization", token);
 
     ESP_LOGI(TAG, "ota_download url=%s partition=%s", url, partition->label);
     esp_http_client_set_method(client, HTTP_METHOD_GET);
-    if (esp_http_client_open(client, 0) != ESP_OK) { esp_http_client_cleanup(client); ota_fail(0, partition, "ota_http_open_failed"); return; }
+    if (esp_http_client_open(client, 0) != ESP_OK) { (void)session.Reset(); ota_fail(0, partition, "ota_http_open_failed"); return; }
     const int content_length = esp_http_client_fetch_headers(client);
     if (esp_http_client_get_status_code(client) != 200) {
         ESP_LOGE(TAG, "ota_http_status=%d", esp_http_client_get_status_code(client));
         esp_http_client_close(client);
-        esp_http_client_cleanup(client);
+        (void)session.Reset();
         ota_fail(0, partition, "ota_http_status");
         return;
     }
-    if (content_length <= 0 || static_cast<size_t>(content_length) > kMaxFirmwareBytes) {
+    if (content_length <= 0 || static_cast<size_t>(content_length) > kMaxFirmwareBytes || static_cast<size_t>(content_length) > partition->size) {
         ESP_LOGE(TAG, "ota_bad_length=%d", content_length);
         esp_http_client_close(client);
-        esp_http_client_cleanup(client);
+        (void)session.Reset();
         ota_fail(0, partition, "ota_bad_length");
         return;
     }
 
     if (esp_ota_begin(partition, content_length, &handle) != ESP_OK) {
         esp_http_client_close(client);
-        esp_http_client_cleanup(client);
+        (void)session.Reset();
         ota_fail(0, partition, "ota_begin_failed");
         return;
     }
@@ -94,7 +93,7 @@ static void ota_task(void *argument) {
         if (tenth != previous_tenth) { char progress[96]; snprintf(progress, sizeof(progress), "正在下载 %d%%\n请保持供电", tenth * 10); display_ui_state(UiState::Updating, progress); previous_tenth = tenth; }
     }
     esp_http_client_close(client);
-    esp_http_client_cleanup(client);
+    (void)session.Reset();
 
     if (total != static_cast<size_t>(content_length)) {
         mbedtls_sha256_free(&sha);
@@ -109,6 +108,15 @@ static void ota_task(void *argument) {
     if (expected_sha256[0] && strncasecmp(actual, expected_sha256, 64) != 0) {
         ESP_LOGE(TAG, "ota_sha_mismatch expected=%s actual=%s", expected_sha256, actual);
         ota_fail(handle, partition, "ota_sha_mismatch");
+        return;
+    }
+    // Each board profile has a distinct project_name. A valid SHA alone does
+    // not make another board's firmware compatible; never select its partition.
+    esp_app_desc_t candidate = {};
+    const esp_app_desc_t *running = esp_app_get_description();
+    if (esp_ota_get_partition_description(partition, &candidate) != ESP_OK ||
+        strncmp(candidate.project_name, running->project_name, sizeof(candidate.project_name)) != 0) {
+        ota_fail(handle, partition, "ota_board_project_mismatch");
         return;
     }
     if (esp_ota_end(handle) != ESP_OK) { ota_fail(handle, partition, "ota_end_failed"); return; }

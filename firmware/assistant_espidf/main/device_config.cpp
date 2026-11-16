@@ -63,6 +63,15 @@ bool device_config_ready(const DeviceConfig *config) {
 }
 
 bool device_config_network_ready(const DeviceConfig *config) {
+#if defined(ASSISTANT_BOARD_ML307)
+    return config != nullptr && strnlen(config->ws_url, sizeof(config->ws_url)) < sizeof(config->ws_url) &&
+        strncmp(config->ws_url, "wss://", 6) == 0;
+#elif defined(ASSISTANT_BOARD_RNDIS) || defined(ASSISTANT_BOARD_NT26)
+    // USB and UART Ethernet obtain their address independently of an SSID.
+    return config != nullptr && strlen(config->ws_url) < sizeof(config->ws_url) &&
+        (strncmp(config->ws_url, "ws://", 5) == 0 || strncmp(config->ws_url, "wss://", 6) == 0);
+#else
     const size_t ssid_len = config ? strlen(config->wifi_ssid) : 0;
     return config != nullptr && ssid_len > 0 && ssid_len <= 32 && strlen(config->ws_url) < sizeof(config->ws_url) && (strncmp(config->ws_url, "ws://", 5) == 0 || strncmp(config->ws_url, "wss://", 6) == 0);
+#endif
 }

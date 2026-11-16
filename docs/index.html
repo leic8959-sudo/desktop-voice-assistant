@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>伊迪斯 · 在自己的电脑上开始对话</title>
+  <style>
+    :root { color-scheme: dark; --bg:#10140f; --panel:#1b2118; --line:#31402c; --text:#f3f6ef; --muted:#b7c3ae; --accent:#d7ff67; }
+    * { box-sizing: border-box; }
+    body { margin:0; font:16px/1.6 "Segoe UI","Microsoft YaHei",sans-serif; background:var(--bg); color:var(--text); }
+    main { max-width:920px; margin:0 auto; padding:32px 20px 64px; }
+    h1 { font-size:40px; line-height:1.15; margin:8px 0 12px; }
+    h2 { margin-top:36px; }
+    a { color:var(--accent); }
+    .lead, .note { color:var(--muted); }
+    .steps { display:grid; gap:12px; padding:0; list-style:none; }
+    .steps li { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:14px 16px; }
+    code, pre { font-family:Consolas,"Cascadia Mono",monospace; }
+    pre { background:#070907; border-radius:14px; padding:16px; overflow:auto; }
+    .demo { display:grid; grid-template-columns:280px 1fr; gap:16px; }
+    .screen, .thread { min-height:360px; background:#070907; border:1px solid var(--line); border-radius:18px; padding:16px; }
+    .cloud { width:150px; height:150px; margin:28px auto; border-radius:50%; background:radial-gradient(circle at 40% 35%, #f4ffc8, #8ea85a 42%, #24301d 72%); }
+    .cloud.listening { animation:pulse 1s ease-in-out infinite alternate; }
+    .cloud.speaking { animation:pulse .45s ease-in-out infinite alternate; }
+    @keyframes pulse { from { transform:scale(.94); } to { transform:scale(1.05); } }
+    button, input { font:inherit; }
+    button { border:0; border-radius:999px; padding:10px 16px; background:var(--accent); color:#17200f; cursor:pointer; }
+    button:disabled { opacity:.45; cursor:not-allowed; }
+    input { width:100%; margin-top:12px; border:1px solid var(--line); border-radius:12px; padding:10px 12px; background:#10140f; color:var(--text); }
+    .bubble { margin:10px 0; padding:10px 12px; border-radius:14px; background:#182016; }
+    .bubble.user { background:#24301d; }
+    @media (max-width:760px) { .demo { grid-template-columns:1fr; } h1 { font-size:32px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="lead">开源桌面语音助手 · 跑在你自己的电脑上</p>
+    <h1>先在本地启动，再和伊迪斯说话。</h1>
+    <p class="lead">这个页面只演示操作顺序。它不连接任何人的网关，不保存密钥，也不能代替你电脑上的安装。</p>
+    <ol class="steps">
+      <li><strong>1. 克隆仓库。</strong> <code>git clone https://github.com/leic8959-sudo/desktop-voice-assistant.git</code></li>
+      <li><strong>2. 准备 Python 3.12，并自己安装依赖。</strong> <code>pip install -r requirements.txt</code></li>
+      <li><strong>3. 生成本地配置。</strong> <code>python tools/init_config.py --lan-ip 127.0.0.1</code>，再把你自己的模型密钥写入 <code>config.local.json</code>。</li>
+      <li><strong>4. 启动。</strong> <code>python gateway.py --config config.local.json</code></li>
+      <li><strong>5. 打开本机页面。</strong> <a href="http://127.0.0.1:8765">http://127.0.0.1:8765</a>。只有这一步发生在你的电脑上。</li>
+    </ol>
+    <h2>演示：从启动到第一句对话</h2>
+    <div class="demo">
+      <section class="screen" aria-label="模拟设备">
+        <strong>伊迪斯</strong>
+        <div id="cloud" class="cloud"></div>
+        <p id="device-state">未启动</p>
+        <button id="start" type="button">启动本地网关</button>
+        <button id="talk" type="button" disabled>说：你好，伊迪斯</button>
+      </section>
+      <section class="thread" aria-live="polite">
+        <strong>本机对话</strong>
+        <div id="messages"></div>
+        <input id="text" placeholder="网关启动后，输入一句话" disabled>
+      </section>
+    </div>
+    <p class="note">演示回复是预设的。真实语音识别、对话和合成走你自己的云端账号，会产生费用。不要把家里的网关暴露到公网。</p>
+    <pre>python gateway.py --config config.local.json
+# 浏览器打开 http://127.0.0.1:8765
+# 连接后输入：提醒我明天上午九点给妈妈打电话</pre>
+    <p><a href="https://github.com/leic8959-sudo/desktop-voice-assistant">查看源码</a> · <a href="https://github.com/leic8959-sudo/desktop-voice-assistant/blob/main/README.md">安装说明</a></p>
+  </main>
+  <script>
+    const cloud = document.querySelector("#cloud");
+    const state = document.querySelector("#device-state");
+    const messages = document.querySelector("#messages");
+    const start = document.querySelector("#start");
+    const talk = document.querySelector("#talk");
+    const text = document.querySelector("#text");
+    const replies = ["我在。网关已在你的电脑上运行。", "可以。我会把这件事记到本机提醒里。", "这是演示回复。真实回答来自你自己配置的模型。"];
+    let replyIndex = 0;
+    function add(role, content) {
+      const item = document.createElement("p");
+      item.className = "bubble " + role;
+      item.textContent = content;
+      messages.appendChild(item);
+    }
+    function say(content) {
+      cloud.className = "cloud speaking";
+      state.textContent = "正在回答";
+      window.setTimeout(() => {
+        add("assistant", content);
+        cloud.className = "cloud";
+        state.textContent = "等待下一句";
+      }, 700);
+    }
+    start.addEventListener("click", () => {
+      start.disabled = true;
+      state.textContent = "正在本机启动";
+      window.setTimeout(() => {
+        state.textContent = "本机网关已启动";
+        talk.disabled = false;
+        text.disabled = false;
+        add("assistant", "网关已准备好。接下来在 127.0.0.1:8765 对话。");
+      }, 600);
+    });
+    talk.addEventListener("click", () => {
+      cloud.className = "cloud listening";
+      state.textContent = "正在聆听";
+      add("user", "你好，伊迪斯");
+      window.setTimeout(() => say(replies[0]), 500);
+    });
+    text.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" || !text.value.trim()) return;
+      add("user", text.value.trim());
+      text.value = "";
+      replyIndex = (replyIndex + 1) % replies.length;
+      say(replies[replyIndex]);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+GC9107 command data from78/xiaozhi-esp32@49b4380b3faa0ceadd28a3e78aaf0f311c46c57e,main/boards/m5stack/atoms3r-echo-base/atoms3r_echo_base.cc.MITnotice retained inLICENSE.PanelID/backlightintegrationislocal;LP5562registerfactsarecrosscheckedagainstpublicLinuxv6.12registerdefinitions,withoutcopyingdriverfunctions.

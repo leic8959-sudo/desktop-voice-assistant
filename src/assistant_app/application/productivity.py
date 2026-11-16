@@ -462,6 +462,8 @@ class ProductivityService:
         return self._mutation("subscription_action", args, apply)
 
     async def _sensor(self, target):
+        if "home_assistant" in (self.config.get("disabled_connectors") or []):
+            raise PermissionError("Home Assistant已撤销伊迪斯访问")
         # 管理员明确选择的单个只读传感器；不枚举全部实体或修改设备授权。
         home = self.runtime.home
         async with home.configuration_lock:
@@ -594,11 +596,15 @@ class ProductivityService:
         return self._mutation("delete_scene", args, remove)
 
     async def home_catalog(self, cursor=""):
+        if "home_assistant" in (self.config.get("disabled_connectors") or []):
+            raise PermissionError("Home Assistant已撤销伊迪斯访问")
         if not isinstance(cursor, str) or len(cursor) > 160:
             raise ValueError("家居目录游标无效")
         return await asyncio.wait_for(self.runtime.home.list_home_devices(enabled_only=True, force=not cursor, cursor=cursor, limit=30), timeout=30)
 
     async def scene_preview(self, args):
+        if "home_assistant" in (self.config.get("disabled_connectors") or []):
+            raise PermissionError("Home Assistant已撤销伊迪斯访问")
         scene = self._scene(self.db.execute("SELECT * FROM p_scenes WHERE id=?", (_text(args.get("id"), "场景ID", 64),)).fetchone())
         preview = []
         for step in scene["steps"]:

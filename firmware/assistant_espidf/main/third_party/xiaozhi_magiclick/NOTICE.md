@@ -1,0 +1,1 @@
+GC9107 initialization command data adapted from78/xiaozhi-esp32 v2.5.2,commit49b4380b3faa0ceadd28a3e78aaf0f311c46c57e,main/boards/magiclick/2p5/magiclick_2p5_board.cc.OriginalMITcopyrightandpermissionnotice retained inLICENSE.Only commanddatais adapted;ADC/panelintegrationislocal.

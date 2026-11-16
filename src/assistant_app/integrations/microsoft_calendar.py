@@ -9,6 +9,8 @@ from urllib.parse import urlsplit
 import aiohttp
 
 from .contracts import ConnectorAction, ConnectorContext, ConnectorManifest, PermissionScope
+from .action_schemas import SCHEMAS
+from .http_json import read_json
 
 
 class MicrosoftCalendarConnector:
@@ -17,7 +19,7 @@ class MicrosoftCalendarConnector:
         display_name="Microsoft 365 日历",
         version="1.0",
         oauth_scopes=("Calendars.Read", "Calendars.ReadWrite"),
-        actions=(ConnectorAction("list_events", "查询 Outlook 日程"), ConnectorAction("create_event", "创建 Outlook 日程", frozenset({PermissionScope.WRITE}), True)),
+        actions=(ConnectorAction("list_events", "查询 Outlook 日程", input_schema=SCHEMAS[("microsoft_calendar", "list_events")]), ConnectorAction("create_event", "创建 Outlook 日程", frozenset({PermissionScope.WRITE}), True, SCHEMAS[("microsoft_calendar", "create_event")])),
     )
 
     def __init__(self, client: aiohttp.ClientSession, config: dict[str, Any], token_service=None) -> None:
@@ -29,10 +31,8 @@ class MicrosoftCalendarConnector:
         token = await self.token_service.ensure_access_token("microsoft_calendar") if self.token_service else self.config.get("microsoft_calendar_access_token", "")
         if not token:
             raise RuntimeError("Microsoft 365 日历尚未完成 OAuth 授权")
-        async with self.client.request(method, f"https://graph.microsoft.com/v1.0{path}", headers={"Authorization": f"Bearer {token}", "Prefer": 'outlook.timezone="UTC"'}, json=payload, params=params, timeout=aiohttp.ClientTimeout(total=20)) as response:
-            data = await response.json(content_type=None)
-            if response.status >= 400:
-                raise RuntimeError(f"Microsoft Calendar 请求失败: {response.status}")
+        async with self.client.request(method, f"https://graph.microsoft.com/v1.0{path}", headers={"Authorization": f"Bearer {token}", "Prefer": 'outlook.timezone="UTC"'}, json=payload, params=params, timeout=aiohttp.ClientTimeout(total=20), allow_redirects=False) as response:
+            data = await read_json(response, "Microsoft Calendar")
             return data
 
     async def invoke(self, action: str, arguments: dict[str, Any], context: ConnectorContext) -> dict[str, Any]:
@@ -42,6 +42,8 @@ class MicrosoftCalendarConnector:
                 raise ValueError("time_min 和 time_max 不能为空")
             start_value = datetime.fromisoformat(start.replace("Z", "+00:00"))
             end_value = datetime.fromisoformat(end.replace("Z", "+00:00"))
+            if start_value.tzinfo is None or end_value.tzinfo is None:
+                raise ValueError("日历查询时间必须携带时区")
             if end_value <= start_value:
                 raise ValueError("time_max 必须晚于 time_min")
             limit = int(arguments.get("limit", 20))
@@ -57,6 +59,8 @@ class MicrosoftCalendarConnector:
                     raise ValueError("日历分页游标来源无效")
                 path, params = next_url.path[len("/v1.0"):] + "?" + next_url.query, None
             data = await self._request("GET", path, params=params)
+            if not isinstance(data, dict) or not isinstance(data.get("value", []), list) or len(data.get("value", [])) > limit:
+                raise RuntimeError("Microsoft Calendar 列表格式无效或超过请求数量")
             if arguments.get("metadata_only"):
                 def utc_start(item):
                     value = (item.get("start") or {}).get("dateTime")
@@ -74,6 +78,8 @@ class MicrosoftCalendarConnector:
                     raise ValueError(f"缺少日程字段: {key}")
             start = datetime.fromisoformat(str(arguments["start"]).replace("Z", "+00:00"))
             end = datetime.fromisoformat(str(arguments["end"]).replace("Z", "+00:00"))
+            if start.tzinfo is None or end.tzinfo is None:
+                raise ValueError("日程时间必须携带时区")
             if end <= start:
                 raise ValueError("日程结束时间必须晚于开始时间")
             data = await self._request("POST", "/me/events", payload={"subject": arguments["summary"], "body": {"contentType": "text", "content": arguments.get("description", "")}, "start": {"dateTime": arguments["start"], "timeZone": arguments.get("time_zone", "UTC")}, "end": {"dateTime": arguments["end"], "timeZone": arguments.get("time_zone", "UTC")}, "location": {"displayName": arguments.get("location", "")}})

@@ -20,9 +20,11 @@ export const addConfigForm = (root, item, { api, isCurrent = () => true, onSaved
     } else if (field.key === 'gmail_send_enabled') {
       input.type = 'checkbox'; input.checked = Boolean(field.value);
     } else {
-      input.type = field.secret ? 'password' : field.kind === 'integer' ? 'number' : 'text';
-      if (field.minimum !== undefined) input.min = field.minimum;
-      if (field.maximum !== undefined) input.max = field.maximum;
+      if (input.tagName !== 'TEXTAREA') {
+        input.type = field.secret ? 'password' : field.kind === 'integer' ? 'number' : 'text';
+        if (field.minimum !== undefined) input.min = field.minimum;
+        if (field.maximum !== undefined) input.max = field.maximum;
+      }
       input.placeholder = '留空保留已有值';
       if (!field.secret && field.value !== undefined) input.value = typeof field.value === 'object' ? JSON.stringify(field.value) : String(field.value);
     }

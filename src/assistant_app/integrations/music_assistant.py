@@ -151,7 +151,7 @@ class MusicAssistantClient:
                 if response.status in {401, 403}:
                     raise MusicAssistantError("Music Assistant 令牌失效或缺少音乐/播放器权限，请在其页面重新授权")
                 if response.status != 200:
-                    raise MusicAssistantError("Music Assistant 命令失败；请核查服务日志、QQ 授权和小燕子播放器扩展")
+                    raise MusicAssistantError("Music Assistant 命令失败；请核查服务日志、QQ 授权和伊迪斯播放器扩展")
                 raw = bytearray()
                 async for chunk in response.content.iter_chunked(16384):
                     raw.extend(chunk)
@@ -204,7 +204,7 @@ class MusicAssistantClient:
         async with self._play_lock:
             result = await self._command("xiaoyanzi/resolve", {"uri": track_ref["uri"], "position_s": int(position_s)})
             if not isinstance(result, dict) or not isinstance(result.get("url"), str) or not isinstance(result.get("lease"), str):
-                raise MusicAssistantError("小燕子播放器扩展未返回可播放音频流，请检查音乐扩展是否已加载更新")
+                raise MusicAssistantError("伊迪斯播放器扩展未返回可播放音频流，请检查音乐扩展是否已加载更新")
             preview = result.get("playback_access") == "preview"
             duration = result.get("duration_s")
             if preview and (type(duration) not in {int, float} or not 0 < duration <= 30):
@@ -212,7 +212,7 @@ class MusicAssistantClient:
             parsed = urlsplit(result["url"])
             segments = parsed.path.split("/")
             if parsed.scheme not in {"http", "https"} or parsed.username or parsed.password or parsed.query or parsed.fragment or len(segments) != 6 or segments[1] != "single" or segments[3] != PLAYER_ID or not segments[5].startswith(PLAYER_ID + ".") or not all(re.fullmatch(r"[A-Za-z0-9_-]{1,128}", segments[index]) for index in (2, 4)):
-                raise MusicAssistantError("Music Assistant 流地址不符合固定小燕子队列合同")
+                raise MusicAssistantError("Music Assistant 流地址不符合固定伊迪斯队列合同")
             format_name = segments[5][len(PLAYER_ID) + 1:]
             if format_name not in {"wav", "flac", "mp3", "ogg", "aac"}:
                 raise MusicAssistantError("Music Assistant 返回了不支持的音频格式")

@@ -20,6 +20,8 @@ from src.assistant_app.infrastructure.settings import connector_configuration
 
 from aiohttp import WSMsgType, web
 
+from wake_phrase import DEFAULT_WAKE_PHRASE, device_wake_phrase, wake_phrase_display
+
 LOGGER = logging.getLogger("assistant")
 RUNTIME_KEY = web.AppKey("assistant_runtime", object)
 NOTIFICATION_SEND_TIMEOUT = 3
@@ -384,6 +386,7 @@ class NativeDevice:
         self.send_lock = asyncio.Lock()
         self.paired_device_id = runtime.config.get("device_id", "")
         self.firmware_version = "unknown"
+        self.wake_phrase = DEFAULT_WAKE_PHRASE
         self.screen_cards_supported = False
         self.media_stream_supported = False
         self.media_wake_word_supported = False
@@ -394,6 +397,7 @@ class NativeDevice:
         self.wake_clip_supported = False
         self.wake_input_ready_supported = False
         self.manual_input_ready_supported = False
+        self.natural_barge_in_supported = False
 
     async def send_json(self, payload):
         async with self.send_lock:
@@ -434,7 +438,9 @@ class NativeDevice:
             session = self.session_factory(self.conversation)
             session.manual = mode == "manual"
             session.require_wake_phrase = mode != "manual"
+            session.wake_phrase = self.wake_phrase
             session.manual_input_ready_supported = self.manual_input_ready_supported
+            session.natural_barge_in_supported = self.natural_barge_in_supported
             session.wake_clip_supported = self.wake_clip_supported and session.require_wake_phrase
             self.conversation.early_wake_input = self.wake_input_ready_supported and session.wake_clip_supported and session.config.get("llm_provider", "qwen_realtime") == "qwen_realtime"
             if session.require_wake_phrase and self.last_wake_detected_at is not None and asyncio.get_running_loop().time() - self.last_wake_detected_at < 10:
@@ -469,7 +475,7 @@ class NativeDevice:
                 if not any(not getattr(other, "browser", False) and not getattr(other, "closed", False) for other in self.runtime.voice_sessions):
                     self.runtime.last_device_state = "idle"
                 if not self.socket.closed:
-                    await self.socket.send_json({"type": "custom", "payload": {"state": "idle", "detail": "说“你好，小燕子”可继续"}})
+                    await self.socket.send_json({"type": "custom", "payload": {"state": "idle", "detail": f"说“{wake_phrase_display(self.wake_phrase)}”可继续"}})
             finally:
                 if self._session is session and self.task is owner_task:
                     self._session = None
@@ -482,7 +488,9 @@ class NativeDevice:
                 raise ValueError("设备消息必须为对象")
             kind = event.get("type")
             if kind == "hello":
+                wake_phrase = device_wake_phrase(event)
                 self.firmware_version = str(event.get("firmware_version") or "unknown")[:64]
+                self.wake_phrase = wake_phrase
                 features = event.get("features") if isinstance(event.get("features"), dict) else {}
                 self.screen_cards_supported = features.get("screen_cards") is True
                 self.media_stream_supported = features.get("media_stream") is True
@@ -490,6 +498,7 @@ class NativeDevice:
                 self.wake_clip_supported = features.get("wake_clip_v1") is True
                 self.wake_input_ready_supported = features.get("wake_input_ready_v1") is True
                 self.manual_input_ready_supported = features.get("manual_input_ready_v1") is True
+                self.natural_barge_in_supported = features.get("natural_barge_in_v1") is True
                 if isinstance(event.get("power"), dict):
                     self.latest_device_power = {"status": str(event["power"].get("status") or "unknown")[:16], "source": str(event["power"].get("source") or "device")[:80]}
                 return
@@ -618,7 +627,7 @@ class NativeDevice:
             preferences = await self.runtime.device_preferences()
             await self.send_json({"type": "device_preferences", **preferences})
             await self.runtime.send_screen_card({"kind": "power", "title": "电量状态", "detail": "电量未知 · 未获得可验证的 AXP2101 读数", "ttl_s": 12}, target=self)
-            await self.send_json({"type": "custom", "payload": {"state": "idle", "detail": "说“你好，小燕子”唤醒我"}})
+            await self.send_json({"type": "custom", "payload": {"state": "idle", "detail": f"说“{wake_phrase_display(self.wake_phrase)}”唤醒我"}})
             timer = await self.runtime.timer_snapshot()
             if timer and timer["status"] in {"running", "paused", "finished"}:
                 await self.runtime.send_timer_screen_card(timer, target=self)

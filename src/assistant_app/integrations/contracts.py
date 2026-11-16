@@ -20,10 +20,15 @@ class ConnectorAction:
     description: str
     scopes: frozenset[PermissionScope] = frozenset({PermissionScope.READ})
     requires_confirmation: bool = False
+    input_schema: dict[str, Any] | None = None
 
     @property
     def is_mutating(self) -> bool:
         return bool(self.scopes & {PermissionScope.WRITE, PermissionScope.SEND, PermissionScope.DEVICE_CONTROL})
+
+    @property
+    def needs_confirmation(self) -> bool:
+        return self.requires_confirmation or self.is_mutating
 
 
 @dataclass(frozen=True)

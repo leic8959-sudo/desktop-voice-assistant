@@ -34,7 +34,7 @@ const render = data => {
   const state = stream.state || 'idle';
   byId('music-playback').textContent = `${stateNames[state] || `服务状态：${state}`}${Number.isFinite(stream.device_position_s) ? ` · 设备进度 ${duration(stream.device_position_s)}` : ''}${data.pending ? ' · 等待本轮语音回答结束' : ''}`;
   const devices = Array.isArray(data.devices) ? data.devices.filter(item => item.online) : [];
-  byId('music-device').textContent = devices.length === 1 ? devices[0].supports_music ? `小燕子在线 · 固件 ${devices[0].firmware}` : '设备在线，但当前固件尚未支持音乐通道' : devices.length ? '有多个在线设备，请先保留唯一播放设备' : '实体设备离线';
+  byId('music-device').textContent = devices.length === 1 ? devices[0].supports_music ? `伊迪斯在线 · 固件 ${devices[0].firmware}` : '设备在线，但当前固件尚未支持音乐通道' : devices.length ? '有多个在线设备，请先保留唯一播放设备' : '实体设备离线';
   if (!configDirty) {
     byId('music-base-url').value = config.base_url || 'http://127.0.0.1:8095';
     byId('music-stream-url').value = config.stream_base_url || 'http://127.0.0.1:8097';
@@ -61,7 +61,7 @@ byId('music-search').onsubmit = event => { event.preventDefault(); run(async () 
   const list = byId('music-results'); list.replaceChildren();
   for (const item of data.items || []) {
     const row = element('article', 'track'); const details = element('div'); details.append(element('h3', '', item.title), element('p', '', `${(item.artists || []).join(' / ')}${item.album ? ` · ${item.album}` : ''} · ${duration(item.duration_s)}`));
-    const actions = element('div', 'toolbar'); const play = element('button', '', '在小燕子播放'); const queue = element('button', '', '加入队列');
+    const actions = element('div', 'toolbar'); const play = element('button', '', '在伊迪斯播放'); const queue = element('button', '', '加入队列');
     play.type = queue.type = 'button';
     play.onclick = () => run(async () => { const result = await api.request('/api/music/play', { method: 'POST', body: { selection_id: item.selection_id }, timeout: 55000 }); message(result.message || `请求状态：${result.status}。实际播放以设备回执为准。`); await refresh(); });
     queue.onclick = () => run(async () => { const result = await api.request('/api/music/actions/queue', { method: 'POST', body: { selection_id: item.selection_id } }); message(`已加入设备队列，共 ${result.queue_count} 首。`); await refresh(); });

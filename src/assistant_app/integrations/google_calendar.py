@@ -8,6 +8,8 @@ from typing import Any
 import aiohttp
 
 from .contracts import ConnectorAction, ConnectorContext, ConnectorManifest, PermissionScope
+from .action_schemas import SCHEMAS
+from .http_json import read_json
 
 
 class GoogleCalendarConnector:
@@ -17,8 +19,8 @@ class GoogleCalendarConnector:
         version="1.0",
         oauth_scopes=("https://www.googleapis.com/auth/calendar.readonly", "https://www.googleapis.com/auth/calendar.events"),
         actions=(
-            ConnectorAction("list_events", "查询日程"),
-            ConnectorAction("create_event", "创建日程", frozenset({PermissionScope.WRITE}), True),
+            ConnectorAction("list_events", "查询日程", input_schema=SCHEMAS[("google_calendar", "list_events")]),
+            ConnectorAction("create_event", "创建日程", frozenset({PermissionScope.WRITE}), True, SCHEMAS[("google_calendar", "create_event")]),
         ),
     )
 
@@ -36,10 +38,8 @@ class GoogleCalendarConnector:
     async def _request(self, method: str, path: str, *, payload: dict[str, Any] | None = None, params: dict[str, Any] | None = None) -> dict[str, Any]:
         token = await self.token_service.ensure_access_token("google_calendar") if self.token_service else self._token()
         headers = {"Authorization": f"Bearer {token}"}
-        async with self.client.request(method, f"https://www.googleapis.com/calendar/v3{path}", headers=headers, json=payload, params=params, timeout=aiohttp.ClientTimeout(total=20)) as response:
-            data = await response.json(content_type=None)
-            if response.status >= 400:
-                raise RuntimeError(f"Google Calendar 请求失败: {response.status}")
+        async with self.client.request(method, f"https://www.googleapis.com/calendar/v3{path}", headers=headers, json=payload, params=params, timeout=aiohttp.ClientTimeout(total=20), allow_redirects=False) as response:
+            data = await read_json(response, "Google Calendar")
             return data
 
     async def invoke(self, action: str, arguments: dict[str, Any], context: ConnectorContext) -> dict[str, Any]:
@@ -61,6 +61,8 @@ class GoogleCalendarConnector:
             if arguments.get("metadata_only"):
                 params["fields"] = "items(id,summary,status,start,end,updated),nextPageToken"
             data = await self._request("GET", "/calendars/primary/events", params=params)
+            if not isinstance(data, dict) or not isinstance(data.get("items", []), list) or len(data.get("items", [])) > limit:
+                raise RuntimeError("Google Calendar 列表格式无效或超过请求数量")
             if arguments.get("metadata_only"):
                 return {"provider": "google_calendar", "items": [{"id": item.get("id"), "summary": item.get("summary", ""), "status": item.get("status"), "cancelled": item.get("status") == "cancelled", "all_day": not bool((item.get("start") or {}).get("dateTime")), "start": (item.get("start") or {}).get("dateTime"), "updated_at": item.get("updated")} for item in data.get("items", [])], "next_page_token": data.get("nextPageToken")}
             return {"provider": "google_calendar", "items": [{"id": item.get("id"), "summary": item.get("summary", ""), "description": item.get("description", ""), "start": (item.get("start") or {}).get("dateTime") or (item.get("start") or {}).get("date"), "end": (item.get("end") or {}).get("dateTime") or (item.get("end") or {}).get("date"), "location": item.get("location", ""), "html_link": item.get("htmlLink", "")} for item in data.get("items", [])], "next_page_token": data.get("nextPageToken")}
@@ -70,6 +72,8 @@ class GoogleCalendarConnector:
                     raise ValueError(f"缺少日程字段: {key}")
             start = datetime.fromisoformat(str(arguments["start"]).replace("Z", "+00:00"))
             end = datetime.fromisoformat(str(arguments["end"]).replace("Z", "+00:00"))
+            if start.tzinfo is None or end.tzinfo is None:
+                raise ValueError("日程时间必须携带时区")
             if end <= start:
                 raise ValueError("日程结束时间必须晚于开始时间")
             data = await self._request("POST", "/calendars/primary/events", payload={"summary": arguments["summary"], "description": arguments.get("description", ""), "start": {"dateTime": arguments["start"]}, "end": {"dateTime": arguments["end"]}, "location": arguments.get("location", "")})

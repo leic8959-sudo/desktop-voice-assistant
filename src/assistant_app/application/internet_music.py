@@ -58,9 +58,9 @@ class InternetMusicService:
         string = {"type": "string"}
         definitions = (
             ("music_search", "在已授权曲库搜索歌曲，返回真实selection_id及歌手/专辑。按当前会话上下文理解原版、现场版、随便一个等选择；只有无法确定且用户未授权代选时询问。", {"query": {"type": "string", "maxLength": 200}, "limit": {"type": "integer", "minimum": 1, "maximum": 5}}, ["query"]),
-            ("music_play", "用户明确要求后在小燕子实体喇叭播放搜索返回的selection_id；只有试听时播放试听并明确告知，scheduled表示已安排，尚未发声。", {"selection_id": string}, ["selection_id"]),
+            ("music_play", "用户明确要求后在伊迪斯实体喇叭播放搜索返回的selection_id；只有试听时播放试听并明确告知，scheduled表示已安排，尚未发声。", {"selection_id": string}, ["selection_id"]),
             ("music_queue", "按用户要求将搜索候选加入最多8首设备播放队列。", {"selection_id": string}, ["selection_id"]),
-            ("music_noise", "在小燕子实体喇叭播放本地生成雨声或白噪音；半小时为30分钟，每次最长30分钟。", {"source": {"type": "string", "enum": ["rain", "white_noise"]}, "minutes": {"type": "integer", "minimum": 1, "maximum": 30}}, ["source"]),
+            ("music_noise", "在伊迪斯实体喇叭播放本地生成雨声或白噪音；半小时为30分钟，每次最长30分钟。", {"source": {"type": "string", "enum": ["rain", "white_noise"]}, "minutes": {"type": "integer", "minimum": 1, "maximum": 30}}, ["source"]),
             ("music_pause", "用户明确要求暂停实体设备音乐，保留设备回执中的实际进度。", {}, []),
             ("music_resume", "用户明确要求继续实体设备音乐，从设备已报告进度恢复；进度未知时不能假装续播。", {}, []),
             ("music_stop", "用户明确要求停止实体设备音乐并清空队列。", {}, []),
@@ -111,7 +111,7 @@ class InternetMusicService:
     def _device(self):
         devices = [device for device in tuple(self.runtime.native_devices) if not device.socket.closed]
         if len(devices) != 1:
-            raise ValueError("请连接一个小燕子实体设备后播放" if not devices else "存在多个在线设备，请先选择唯一播放设备")
+            raise ValueError("请连接一个伊迪斯实体设备后播放" if not devices else "存在多个在线设备，请先选择唯一播放设备")
         device = devices[0]
         if not getattr(device, "media_stream_supported", False):
             raise ValueError("当前设备固件尚未支持音乐通道，请安装媒体固件后再播放")

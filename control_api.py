@@ -27,6 +27,8 @@ from src.assistant_app.application.screen_feedback import TOOLS, api_operation
 from src.assistant_app.infrastructure.config_store import ConfigStoreError, CONNECTOR_CONFIG_FIELDS, SecureConfigStore, config_field_metadata, save_runtime_preferences, validate_connector_values
 from src.assistant_app.integrations import ConnectorContext, PermissionScope
 from src.assistant_app.integrations.contracts import action_for
+from src.assistant_app.integrations.action_schemas import normalize_arguments, schema_for
+from src.assistant_app.integrations.mcp_http import MCPConnector, connection_fingerprint, fingerprint
 from src.assistant_app.application.meeting_travel import plan_meeting_travel
 from src.assistant_app.application.meeting_notes import save_meeting_notes
 from src.assistant_app.application.github_issue import create_action_item
@@ -114,6 +116,10 @@ async def api_boundary(request, handler):
         return web.json_response({"error": {"code": "unauthorized", "message": "请先完成管理员认证；当前使用服务配置中的 device_token，六位配对码不能用于登录"}}, status=401, headers={"X-Request-ID": request_id})
     request["principal"] = principal
     request["request_id"] = request_id
+    disabled = runtime.config.get("disabled_connectors") or []
+    gmail_data = request.path.startswith("/api/gmail/") and request.path not in {"/api/gmail/config", "/api/gmail/status", "/api/gmail/disconnect"}
+    if "home_assistant" in disabled and (request.path == "/api/home" or request.path.startswith("/api/home/")) or "gmail" in disabled and gmail_data:
+        return web.json_response({"error": {"code": "permission_denied", "message": "该连接器已撤销小燕子访问，请先在连接中心重新允许"}}, status=403)
     screen_operation = api_operation(request.method, request.path, runtime.connector_registry)
     if request.method == "GET" and request.path == "/api/home" and request.query.get("refresh") == "true":
         screen_operation = TOOLS["list_home_devices"]
@@ -397,11 +403,13 @@ async def notification_ack(request):
 async def connectors(request):
     registry = request.app[RUNTIME_KEY].connector_registry
     config = request.app[RUNTIME_KEY].config
-    from src.assistant_app.infrastructure.settings import connector_configuration
-    configured = connector_configuration(config)
+    registry.configure(config)
     items = []
     for item in registry.manifests():
-        connector = {"id": item.connector_id, "name": item.display_name, "version": item.version, "configured": configured.get(item.connector_id, False), "oauth_scopes": list(item.oauth_scopes), "authorization": "oauth" if item.oauth_scopes else "webhook_or_token", "action_count": len(item.actions), "config_fields": config_field_metadata(item.connector_id, config), "actions": [{"name": action.name, "description": action.description, "scopes": [scope.value for scope in action.scopes], "requires_confirmation": action.requires_confirmation} for action in item.actions]}
+        connector = {"id": item.connector_id, "name": item.display_name, "version": item.version, **registry.status(item.connector_id), "oauth_scopes": list(item.oauth_scopes), "authorization": "oauth" if item.oauth_scopes else "webhook_or_token", "action_count": len(item.actions), "config_fields": config_field_metadata(item.connector_id, config), "actions": [{"name": action.name, "description": action.description, "scopes": [scope.value for scope in action.scopes], "requires_confirmation": action.needs_confirmation, "input_schema": schema_for(item.connector_id, action)} for action in item.actions]}
+        if item.connector_id == "mcp":
+            connector["tools"] = registry.get("mcp").public_tools()
+            connector["tool_revision"] = registry.get("mcp").discovery_revision
         if item.connector_id == "gmail" and request.app[RUNTIME_KEY].gmail is not None:
             gmail = request.app[RUNTIME_KEY].gmail
             connector["configured"] = gmail.configured
@@ -409,6 +417,8 @@ async def connectors(request):
         connector["config_available"] = request.app[CONFIG_STORE_KEY].available
         connector["config_note"] = "Windows DPAPI；留空保留，勾选清除才删除覆盖值" if connector["config_available"] else "当前环境未配置安全秘密存储，后台仅可读取状态；请使用部署环境变量，不能降级明文保存"
         items.append(connector)
+    if not any(item["id"] == "mcp" for item in items):
+        items.append({"id": "mcp", "name": "外部工具服务", **registry.status("mcp"), "config_fields": config_field_metadata("mcp", config), "config_available": request.app[CONFIG_STORE_KEY].available, "config_note": "首版支持一个 Streamable HTTP 服务；保存后主动检查，再逐项允许能力。需要交互式 OAuth 的服务暂不支持。", "actions": [], "tools": []})
     return web.json_response({"items": items})
 
 
@@ -446,7 +456,7 @@ async def connector_config(request):
     fields = {field["key"]: field for field in CONNECTOR_CONFIG_FIELDS[connector_id]}
     if (set(values) | set(clear)) - set(fields) or any(fields[key].get("managed_by") for key in set(values) | set(clear)):
         raise ValueError("该字段由既有专用流程管理，或不在当前白名单中")
-    if any(not fields[key]["secret"] and key != "home_assistant_url" for key in clear):
+    if any(not fields[key]["secret"] and key not in {"home_assistant_url", "mcp_url"} for key in clear):
         raise ValueError("必需的模型 / 音色 ID 不支持清除，请填写受支持的值")
     runtime = request.app[RUNTIME_KEY]
     async with request.app[CONFIG_LOCK_KEY]:
@@ -459,6 +469,8 @@ async def connector_config(request):
         candidate = dict(config)
         candidate.update({key: {} if key == "home_entities" else "" for key in clear})
         validated = validate_connector_values(connector_id, values, candidate)
+        if connector_id == "mcp":
+            validated["mcp_approved_tools"] = {}
         candidate.update(validated)
         if connector_id == "models":
             from llm_providers import provider_available
@@ -477,9 +489,76 @@ async def connector_config(request):
             await asyncio.to_thread(store.save, validated, clear)
         config.update({key: candidate.get(key) for key in set(validated) | set(clear)})
         config.setdefault("_config_sources", {}).update({key: "secure_override" for key in set(validated) | set(clear)})
+        registry = runtime.connector_registry
+        registry.configure(config)
+        registry.invalidate(connector_id)
+        if connector_id == "mcp":
+            try:
+                mcp = registry.get("mcp")
+                mcp.discovered = []
+                mcp.discovery_revision = ""
+                mcp.apply_approvals()
+            except KeyError:
+                registry.register(MCPConnector(registry.get("todoist").client, config))
         request.app[CONFIRMATIONS_KEY].invalidate_pending()
     record(request.app[AUDIT_KEY], action="configuration_save", outcome="saved", connector_id=connector_id, request_id=request.get("request_id"))
     return web.json_response({"saved": True, "connector_id": connector_id, "fields": config_field_metadata(connector_id, config), "effective": "next_session" if connector_id == "models" else "next_request", "message": "已安全保存；下次语音会话生效" if connector_id == "models" else "已安全保存并在下次请求使用；请单独检查第三方连接"})
+
+
+async def connector_access(request):
+    _require_config_transport(request)
+    connector_id = request.match_info["connector_id"]
+    registry = request.app[RUNTIME_KEY].connector_registry
+    registry.get(connector_id)
+    payload = await body_object(request)
+    if set(payload) != {"enabled"} or type(payload["enabled"]) is not bool:
+        raise ValueError("enabled 必须为布尔值")
+    async with request.app[CONFIG_LOCK_KEY]:
+        config = request.app[RUNTIME_KEY].config
+        disabled = set(config.get("disabled_connectors") or [])
+        if payload["enabled"]:
+            disabled.discard(connector_id)
+        else:
+            disabled.add(connector_id)
+        values = {"disabled_connectors": sorted(disabled)}
+        if connector_id == "mcp":
+            values["mcp_approved_tools"] = {}
+        await asyncio.to_thread(request.app[CONFIG_STORE_KEY].save, values)
+        config.update(values)
+        registry.configure(config)
+        registry.invalidate(connector_id)
+        if connector_id == "mcp":
+            registry.get("mcp").apply_approvals()
+        request.app[CONFIRMATIONS_KEY].invalidate_pending()
+    record(request.app[AUDIT_KEY], action="connector_access", outcome="enabled" if payload["enabled"] else "revoked", connector_id=connector_id, subject=request["principal"].subject)
+    return web.json_response({**registry.status(connector_id), "message": "已允许访问，请重新检查连接" if payload["enabled"] else "已撤销小燕子访问并作废未执行确认；提供商账号授权与令牌仍须在提供商设置中另行撤销"})
+
+
+async def mcp_permissions(request):
+    _require_config_transport(request)
+    registry = request.app[RUNTIME_KEY].connector_registry
+    connector = registry.get("mcp")
+    payload = await body_object(request)
+    modes = payload.get("tools")
+    if set(payload) != {"tools", "revision"} or not isinstance(modes, dict) or len(modes) > 64 or any(not isinstance(mode, str) or mode not in {"read", "confirm", "blocked"} for mode in modes.values()):
+        raise ValueError("tools 必须逐项选择 read / confirm / blocked")
+    async with request.app[CONFIG_LOCK_KEY]:
+        if registry.status("mcp")["status"] != "available":
+            raise ValueError("请先主动检查当前服务连接，再允许能力")
+        if not connector.discovery_revision or payload["revision"] != connector.discovery_revision:
+            raise ValueError("能力列表已变化，请刷新后重新核对允许的能力")
+        known = {tool["name"]: tool for tool in connector.discovered}
+        if set(modes) - set(known):
+            raise ValueError("工具不在本次检查列表中")
+        config = request.app[RUNTIME_KEY].config
+        approved = {name: {"mode": mode, "fingerprint": fingerprint(known[name]), "connection": connection_fingerprint(config)} for name, mode in modes.items() if mode != "blocked"}
+        await asyncio.to_thread(request.app[CONFIG_STORE_KEY].save, {"mcp_approved_tools": approved})
+        config["mcp_approved_tools"] = approved
+        connector.apply_approvals()
+        registry.record_check("mcp")
+        request.app[CONFIRMATIONS_KEY].invalidate_pending()
+    record(request.app[AUDIT_KEY], action="mcp_permissions", outcome="saved", connector_id="mcp", subject=request["principal"].subject)
+    return web.json_response({"saved": True, "tools": connector.public_tools()})
 
 
 async def settings(request):
@@ -517,9 +596,20 @@ SAFE_CHECKS = {
 
 
 async def connector_check(request):
+    # 同一个配置版本完成检查后才登记；避免检查旧凭据期间保存新凭据而误标可用。
+    async with request.app[CONFIG_LOCK_KEY]:
+        return await _connector_check(request)
+
+
+async def _connector_check(request):
     connector_id = request.match_info["connector_id"]
     registry = request.app[RUNTIME_KEY].connector_registry
-    action_name, defaults = SAFE_CHECKS.get(connector_id, (None, None))
+    registry.configure(request.app[RUNTIME_KEY].config)
+    registry.require_enabled(connector_id)
+    if connector_id == "mcp":
+        action_name, defaults = "tools/list", {}
+    else:
+        action_name, defaults = SAFE_CHECKS.get(connector_id, (None, None))
     if action_name is None:
         raise ValueError("该连接器没有安全的只读连接检查；Webhook 不通过发送消息测试")
     payload = await body_object(request)
@@ -542,16 +632,25 @@ async def connector_check(request):
         raise ValueError("该只读检查需要 query 或 city")
     context = ConnectorContext(subject=request["principal"].subject, approved_scopes=frozenset({PermissionScope.READ}), metadata={})
     try:
-        if connector_id == "home_assistant":
+        if connector_id == "mcp":
+            await registry.get("mcp").check_connection()
+        elif connector_id == "home_assistant":
             await request.app[RUNTIME_KEY].home.check_connection()
         elif connector_id == "microsoft_mail":
             await registry.get(connector_id).check_connection()
         else:
             await registry.invoke(connector_id, action_name, arguments, context)
     except (aiohttp.ClientError, asyncio.TimeoutError):
-        return web.json_response({"status": "unknown", "message": "读取结果待核实，请稍后重新读取提供商状态"}, status=502)
+        LOGGER.exception("connector_check_network_failed connector_id=%s", connector_id)
+        registry.record_check(connector_id, "connection_error", "连接错误或超时，请检查网络和服务地址")
+        return web.json_response(registry.status(connector_id), status=502)
     except RuntimeError as error:
-        return web.json_response({"status": "failed", "message": str(error)}, status=502)
+        LOGGER.exception("connector_check_failed connector_id=%s", connector_id)
+        denied = getattr(error, "status", None) in {401, 403} or any(code in str(error) for code in (": 401", ": 403"))
+        registry.record_check(connector_id, "expired_or_denied" if denied else "connection_error", "授权已过期或权限不足，请重新授权" if denied else str(error))
+        return web.json_response(registry.status(connector_id), status=502)
+    registry.record_check(connector_id)
+    record(request.app[AUDIT_KEY], action="connector_check", outcome="verified", connector_id=connector_id, subject=request["principal"].subject)
     return web.json_response({"status": "verified", "connector_id": connector_id, "action": action_name, "checked_at": datetime.now(timezone.utc).isoformat(), "request_id": request.get("request_id")})
 
 
@@ -596,11 +695,13 @@ async def connector_prepare(request):
     descriptor = action_for(connector.manifest, action_name)
     if connector_id == "gmail" and action_name == "send":
         raise ValueError("Gmail 发送请使用已有 prepare-send / confirm-send 流程")
-    if not descriptor.requires_confirmation:
+    if not descriptor.needs_confirmation:
         raise ValueError("只读动作不需要确认，请直接执行")
     arguments = payload.get("arguments", {})
     if not isinstance(arguments, dict):
         raise ValueError("arguments 必须为对象")
+    request.app[RUNTIME_KEY].connector_registry.require_enabled(connector_id)
+    arguments = normalize_arguments(connector_id, descriptor, arguments)
     action = f"{connector_id}.{action_name}"
     token, item = request.app[CONFIRMATIONS_KEY].prepare(request["principal"].subject, action, arguments)
     record(request.app[AUDIT_KEY], action="confirmation_prepare", outcome="pending_confirmation", connector_id=connector_id, action_name=action_name, subject=request["principal"].subject)
@@ -744,7 +845,9 @@ async def connector_invoke(request):
     connector_id, action_name = request.match_info["connector_id"], request.match_info["action"]
     connector = request.app[RUNTIME_KEY].connector_registry.get(connector_id)
     descriptor = action_for(connector.manifest, action_name)
-    if not descriptor.requires_confirmation:
+    arguments = normalize_arguments(connector_id, descriptor, arguments)
+    request.app[RUNTIME_KEY].connector_registry.require_enabled(connector_id)
+    if not descriptor.needs_confirmation:
         context = ConnectorContext(subject=request["principal"].subject, approved_scopes=frozenset(PermissionScope), metadata={})
         return web.json_response(await request.app[RUNTIME_KEY].connector_registry.invoke(connector_id, action_name, arguments, context))
     if connector_id == "gmail" and action_name == "send":
@@ -868,6 +971,8 @@ def register_routes(app, config):
     app.router.add_route("GET", "/api/connectors/{connector_id}/config", connector_config, name="connector_config_get")
     app.router.add_route("POST", "/api/connectors/{connector_id}/config", connector_config, name="connector_config_save")
     app.router.add_post("/api/connectors/{connector_id}/check", connector_check, name="connector_check")
+    app.router.add_post("/api/connectors/{connector_id}/access", connector_access, name="connector_access")
+    app.router.add_post("/api/connectors/mcp/permissions", mcp_permissions, name="mcp_permissions")
     app.router.add_post("/api/connectors/{connector_id}/{action}/prepare", connector_prepare, name="connector_prepare")
     app.router.add_get("/api/audit/recent", audit_recent)
     app.router.add_post("/api/devices/pairing/start", pairing_start)

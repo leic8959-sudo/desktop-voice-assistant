@@ -1,0 +1,585 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-11-09T11:59:13.676054+00:00",
+  "scope": "Static read-only manifest/source inventory;no stage/build/install/transitive resolver or physical acceptance. New OLED needs IDF5.5.6 and cached dummy-codec config,not a downloaded driver.",
+  "profiles": [
+    {
+      "profile": "waveshare-amoled-1.8",
+      "upstream_variant": null,
+      "manifest": "firmware/assistant_espidf/main/idf_component.yml",
+      "manifest_sha256": "18c447668138d9d4ec298265d66ef97ac1595b96d0013eba0c7504d1c515e3a3",
+      "idf_requirement": ">=5.5.0",
+      "cached_direct_sources_available": true,
+      "issues": []
+    },
+    {
+      "profile": "esp32-s3-box-3",
+      "upstream_variant": "espressif-esp-box-3",
+      "manifest": "firmware/assistant_espidf/boards/esp32-s3-box-3/idf_component.yml",
+      "manifest_sha256": "9200461521604ae8144af13303d852ebfa2f4a6eb7f448a1f1a4e0fde84b36d7",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": false,
+      "issues": [
+        {
+          "component": "esp-box-3",
+          "reason": "no unique cached BSP source"
+        },
+        {
+          "component": "espressif/esp-box-3",
+          "reason": "direct dependency absent"
+        }
+      ]
+    },
+    {
+      "profile": "waveshare-amoled-1.75",
+      "upstream_variant": "waveshare-esp32-s3-touch-amoled-1.75",
+      "manifest": "firmware/assistant_espidf/boards/waveshare-amoled-1.75/idf_component.yml",
+      "manifest_sha256": "fbdfdd9a31c470ca507f5da6a1a2a00adac329deab5496ce7c905e9e09ff863b",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": false,
+      "issues": [
+        {
+          "component": "esp32_s3_touch_amoled_1_75",
+          "reason": "no unique cached BSP source"
+        },
+        {
+          "component": "espressif/esp_lvgl_adapter",
+          "reason": "direct dependency absent"
+        },
+        {
+          "component": "waveshare/esp32_s3_touch_amoled_1_75",
+          "reason": "direct dependency absent"
+        }
+      ]
+    },
+    {
+      "profile": "m5stack-core-s3",
+      "upstream_variant": "m5stack-core-s3",
+      "manifest": "firmware/assistant_espidf/boards/m5stack-core-s3/idf_component.yml",
+      "manifest_sha256": "bac819b82820cc39d0e48cb6845d6a11cb7890138fe7bf62425c7a284e889c2b",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": false,
+      "issues": [
+        {
+          "component": "m5stack_core_s3",
+          "reason": "no unique cached BSP source"
+        },
+        {
+          "component": "espressif/m5stack_core_s3",
+          "reason": "direct dependency absent"
+        }
+      ]
+    },
+    {
+      "profile": "waveshare-amoled-1.75c",
+      "upstream_variant": "waveshare-esp32-s3-touch-amoled-1.75c",
+      "manifest": "firmware/assistant_espidf/boards/waveshare-amoled-1.75c/idf_component.yml",
+      "manifest_sha256": "af10e0080bde3c209a6588d461062b6fb48cbe52ff092b8341f5b256daf71e36",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": false,
+      "issues": [
+        {
+          "component": "esp32_s3_touch_amoled_1_75c",
+          "reason": "no unique cached BSP source"
+        },
+        {
+          "component": "espressif/esp_lvgl_adapter",
+          "reason": "direct dependency absent"
+        },
+        {
+          "component": "waveshare/esp32_s3_touch_amoled_1_75c",
+          "reason": "direct dependency absent"
+        }
+      ]
+    },
+    {
+      "profile": "waveshare-amoled-1.8-sh8601",
+      "upstream_variant": "waveshare-esp32-s3-touch-amoled-1.8",
+      "manifest": "firmware/assistant_espidf/boards/waveshare-amoled-1.8-sh8601/idf_component.yml",
+      "manifest_sha256": "5ace57fb4135bb5597f13d74a5672a001bb940f610c78142bd0d4e961c43531a",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": false,
+      "issues": [
+        {
+          "component": "waveshare/esp32_s3_touch_amoled_1_8",
+          "reason": "exact version differs",
+          "requested": "1.1.4",
+          "cached": "2.0.3"
+        }
+      ]
+    },
+    {
+      "profile": "waveshare-amoled-1.8-v2",
+      "upstream_variant": "waveshare-esp32-s3-touch-amoled-1.8-v2",
+      "manifest": "firmware/assistant_espidf/boards/waveshare-amoled-1.8-v2/idf_component.yml",
+      "manifest_sha256": "ace248807b78706ae0f9f27fc01c05e5d0feeb6f2cfa9f3f8560af93d4da06ba",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": true,
+      "issues": []
+    },
+    {
+      "profile": "esp32-s3-box",
+      "upstream_variant": "espressif-esp-box",
+      "manifest": "firmware/assistant_espidf/boards/esp32-s3-box/idf_component.yml",
+      "manifest_sha256": "57d0bc80829eb1de24feb0f2c6bab18240370a0ca896650ce0b6a69cc0adf0ff",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": false,
+      "issues": [
+        {
+          "component": "esp-box",
+          "reason": "no unique cached BSP source"
+        },
+        {
+          "component": "espressif/esp-box",
+          "reason": "direct dependency absent"
+        },
+        {
+          "component": "espressif/esp_codec_dev",
+          "reason": "exact version differs",
+          "requested": "1.1.0",
+          "cached": "1.5.11"
+        }
+      ]
+    },
+    {
+      "profile": "esp32-s3-box-lite",
+      "upstream_variant": "espressif-esp-box-lite",
+      "manifest": "firmware/assistant_espidf/boards/esp32-s3-box-lite/idf_component.yml",
+      "manifest_sha256": "25c9c081ab2207169916fb44b41d0105626169069f7e5ffe80918216510ccde4",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": false,
+      "issues": [
+        {
+          "component": "esp-box-lite",
+          "reason": "no unique cached BSP source"
+        },
+        {
+          "component": "espressif/esp-box-lite",
+          "reason": "direct dependency absent"
+        },
+        {
+          "component": "espressif/esp_codec_dev",
+          "reason": "exact version differs",
+          "requested": "1.1.0",
+          "cached": "1.5.11"
+        }
+      ]
+    },
+    {
+      "profile": "lilygo-t-circle-s3",
+      "upstream_variant": "lilygo-t-circle-s3",
+      "manifest": "firmware/assistant_espidf/boards/lilygo-t-circle-s3/idf_component.yml",
+      "manifest_sha256": "7a649ed9cbeaad09eaa1303e965b17c9cbf1963a17f52a2aa831598a682d9518",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": true,
+      "issues": []
+    },
+    {
+      "profile": "lilygo-t-circle-s3-v11",
+      "upstream_variant": "lilygo-t-circle-s3-v11",
+      "manifest": "firmware/assistant_espidf/boards/lilygo-t-circle-s3-v11/idf_component.yml",
+      "manifest_sha256": "7a649ed9cbeaad09eaa1303e965b17c9cbf1963a17f52a2aa831598a682d9518",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": true,
+      "issues": []
+    },
+    {
+      "profile": "waveshare-amoled-1.32",
+      "upstream_variant": "waveshare-esp32-s3-touch-amoled-1.32",
+      "manifest": "firmware/assistant_espidf/boards/waveshare-amoled-1.32/idf_component.yml",
+      "manifest_sha256": "f1e982fb8adfc3aec8b2d954a06b1193a7984653f4b2248ae0a70b8d3c3e13b8",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": false,
+      "issues": [
+        {
+          "component": "esp32_s3_touch_amoled_1_32",
+          "reason": "no unique cached BSP source"
+        },
+        {
+          "component": "waveshare/esp32_s3_touch_amoled_1_32",
+          "reason": "direct dependency absent"
+        },
+        {
+          "component": "espressif/esp_codec_dev",
+          "reason": "exact version differs",
+          "requested": "1.3.1",
+          "cached": "1.5.11"
+        }
+      ]
+    },
+    {
+      "profile": "waveshare-amoled-2.06",
+      "upstream_variant": "waveshare-esp32-s3-touch-amoled-2.06",
+      "manifest": "firmware/assistant_espidf/boards/waveshare-amoled-2.06/idf_component.yml",
+      "manifest_sha256": "9473b5a2092fea0f311965c24c6e4ca50bd5913299859d35fb70c6cff92a9f31",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": false,
+      "issues": [
+        {
+          "component": "esp32_s3_touch_amoled_2_06",
+          "reason": "no unique cached BSP source"
+        },
+        {
+          "component": "waveshare/esp32_s3_touch_amoled_2_06",
+          "reason": "direct dependency absent"
+        }
+      ]
+    },
+    {
+      "profile": "waveshare-amoled-2.16",
+      "upstream_variant": "waveshare-esp32-s3-touch-amoled-2.16",
+      "manifest": "firmware/assistant_espidf/boards/waveshare-amoled-2.16/idf_component.yml",
+      "manifest_sha256": "73f0c4cd7de7411cd1a72d0ff2fc30fd7e3d001b14eb3bd22a12d9f752662da2",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": false,
+      "issues": [
+        {
+          "component": "esp32_s3_touch_amoled_2_16",
+          "reason": "no unique cached BSP source"
+        },
+        {
+          "component": "espressif/esp_lvgl_adapter",
+          "reason": "direct dependency absent"
+        },
+        {
+          "component": "waveshare/esp32_s3_touch_amoled_2_16",
+          "reason": "direct dependency absent"
+        }
+      ]
+    },
+    {
+      "profile": "waveshare-lcd-1.54",
+      "upstream_variant": "waveshare-esp32-s3-touch-lcd-1.54",
+      "manifest": "firmware/assistant_espidf/boards/waveshare-lcd-1.54/idf_component.yml",
+      "manifest_sha256": "3a3e9ab036a639bef0a2bd9210fc7aa426b36721222f2c4ad888220e7cfcba29",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": true,
+      "issues": []
+    },
+    {
+      "profile": "waveshare-lcd-1.83",
+      "upstream_variant": "waveshare-esp32-s3-touch-lcd-1.83",
+      "manifest": "firmware/assistant_espidf/boards/waveshare-lcd-1.83/idf_component.yml",
+      "manifest_sha256": "3a3e9ab036a639bef0a2bd9210fc7aa426b36721222f2c4ad888220e7cfcba29",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": true,
+      "issues": []
+    },
+    {
+      "profile": "waveshare-lcd-0.85",
+      "upstream_variant": "waveshare-esp32-s3-lcd-0.85",
+      "manifest": "firmware/assistant_espidf/boards/waveshare-lcd-0.85/idf_component.yml",
+      "manifest_sha256": "7a649ed9cbeaad09eaa1303e965b17c9cbf1963a17f52a2aa831598a682d9518",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": true,
+      "issues": []
+    },
+    {
+      "profile": "waveshare-lcd-1.46",
+      "upstream_variant": "waveshare-esp32-s3-touch-lcd-1.46",
+      "manifest": "firmware/assistant_espidf/boards/waveshare-lcd-1.46/idf_component.yml",
+      "manifest_sha256": "87532e81ab744b6ddc7ddc80b73602679f91d562408bf4f44881458326ef03c8",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": false,
+      "issues": [
+        {
+          "component": "espressif/esp_lcd_spd2010",
+          "reason": "direct dependency absent"
+        },
+        {
+          "component": "espressif/esp_lcd_touch_spd2010",
+          "reason": "direct dependency absent"
+        }
+      ]
+    },
+    {
+      "profile": "waveshare-lcd-1.85",
+      "upstream_variant": "waveshare-esp32-s3-touch-lcd-1.85",
+      "manifest": "firmware/assistant_espidf/boards/waveshare-lcd-1.85/idf_component.yml",
+      "manifest_sha256": "f8038b95bf5586baba8a49abe8e45e50a705031036721b56bf6dc7d32533ce45",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": false,
+      "issues": [
+        {
+          "component": "espressif/esp_lcd_st77916",
+          "reason": "direct dependency absent"
+        }
+      ]
+    },
+    {
+      "profile": "waveshare-lcd-1.85b",
+      "upstream_variant": "waveshare-esp32-s3-touch-lcd-1.85b",
+      "manifest": "firmware/assistant_espidf/boards/waveshare-lcd-1.85b/idf_component.yml",
+      "manifest_sha256": "d9b0bed5d3382d22c15e9ca66d67156424d26dd0586f110cbd605cb7f54024d1",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": false,
+      "issues": [
+        {
+          "component": "espressif/esp_lcd_st77916",
+          "reason": "direct dependency absent"
+        }
+      ]
+    },
+    {
+      "profile": "waveshare-lcd-1.85c",
+      "upstream_variant": "waveshare-esp32-s3-touch-lcd-1.85c",
+      "manifest": "firmware/assistant_espidf/boards/waveshare-lcd-1.85c/idf_component.yml",
+      "manifest_sha256": "f8038b95bf5586baba8a49abe8e45e50a705031036721b56bf6dc7d32533ce45",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": false,
+      "issues": [
+        {
+          "component": "espressif/esp_lcd_st77916",
+          "reason": "direct dependency absent"
+        }
+      ]
+    },
+    {
+      "profile": "lc-s3-wifi-1.54tft",
+      "upstream_variant": "lc-s3-wifi-1.54tft",
+      "manifest": "firmware/assistant_espidf/boards/lc-s3-wifi-1.54tft/idf_component.yml",
+      "manifest_sha256": "7a649ed9cbeaad09eaa1303e965b17c9cbf1963a17f52a2aa831598a682d9518",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": true,
+      "issues": []
+    },
+    {
+      "profile": "nologo-xingzhi-cube-1.54tft-wifi",
+      "upstream_variant": "nologo-xingzhi-cube-1.54tft-wifi",
+      "manifest": "firmware/assistant_espidf/boards/nologo-xingzhi-cube-1.54tft-wifi/idf_component.yml",
+      "manifest_sha256": "7a649ed9cbeaad09eaa1303e965b17c9cbf1963a17f52a2aa831598a682d9518",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": true,
+      "issues": []
+    },
+    {
+      "profile": "zhengchen-1.54tft-wifi",
+      "upstream_variant": "zhengchen-1.54tft-wifi",
+      "manifest": "firmware/assistant_espidf/boards/zhengchen-1.54tft-wifi/idf_component.yml",
+      "manifest_sha256": "7a649ed9cbeaad09eaa1303e965b17c9cbf1963a17f52a2aa831598a682d9518",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": true,
+      "issues": []
+    },
+    {
+      "profile": "bread-compact-wifi-lcd",
+      "upstream_variant": "bread-compact-wifi-lcd",
+      "manifest": "firmware/assistant_espidf/boards/bread-compact-wifi-lcd/idf_component.yml",
+      "manifest_sha256": "7a649ed9cbeaad09eaa1303e965b17c9cbf1963a17f52a2aa831598a682d9518",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": true,
+      "issues": []
+    },
+    {
+      "profile": "nologo-xingzhi-abs-2.0",
+      "upstream_variant": "nologo-xingzhi-abs-2.0",
+      "manifest": "firmware/assistant_espidf/boards/nologo-xingzhi-abs-2.0/idf_component.yml",
+      "manifest_sha256": "7a649ed9cbeaad09eaa1303e965b17c9cbf1963a17f52a2aa831598a682d9518",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": true,
+      "issues": []
+    },
+    {
+      "profile": "nologo-xingzhi-cube-0.85tft-wifi",
+      "upstream_variant": "nologo-xingzhi-cube-0.85tft-wifi",
+      "manifest": "firmware/assistant_espidf/boards/nologo-xingzhi-cube-0.85tft-wifi/idf_component.yml",
+      "manifest_sha256": "c9d7a4e7a3f6cc7ee270762d73981cffc9814b66a39bdaceeab4782604d1cca6",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": false,
+      "issues": [
+        {
+          "component": "78/esp_lcd_nv3023",
+          "reason": "direct dependency absent"
+        }
+      ]
+    },
+    {
+      "profile": "nologo-xingzhi-metal-1.54-wifi",
+      "upstream_variant": "nologo-xingzhi-metal-1.54-wifi",
+      "manifest": "firmware/assistant_espidf/boards/nologo-xingzhi-metal-1.54-wifi/idf_component.yml",
+      "manifest_sha256": "7a649ed9cbeaad09eaa1303e965b17c9cbf1963a17f52a2aa831598a682d9518",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": true,
+      "issues": []
+    },
+    {
+      "profile": "spotpear-sp-esp32-s3-1.28-box",
+      "upstream_variant": "spotpear-sp-esp32-s3-1.28-box",
+      "manifest": "firmware/assistant_espidf/boards/spotpear-sp-esp32-s3-1.28-box/idf_component.yml",
+      "manifest_sha256": "eaa5aa7b95d6e90740912211a2bc7f571d857ccba2f848190165f7db0ff8ad4a",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": false,
+      "issues": [
+        {
+          "component": "espressif/esp_lcd_gc9a01",
+          "reason": "direct dependency absent"
+        }
+      ]
+    },
+    {
+      "profile": "spotpear-sp-esp32-s3-1.54-muma",
+      "upstream_variant": "spotpear-sp-esp32-s3-1.54-muma",
+      "manifest": "firmware/assistant_espidf/boards/spotpear-sp-esp32-s3-1.54-muma/idf_component.yml",
+      "manifest_sha256": "1dfed1c9a5550e95a998d5faec8f4e9e88eb471b523b1624a3762241aa915ba1",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": true,
+      "issues": []
+    },
+    {
+      "profile": "movecall-moji-esp32s3",
+      "upstream_variant": "movecall-moji-esp32s3",
+      "manifest": "firmware/assistant_espidf/boards/movecall-moji-esp32s3/idf_component.yml",
+      "manifest_sha256": "72d6b0ad1c33b663eed9ea56aa301746e8f2b70f06910bcfeb30be7effb97130",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": false,
+      "issues": [
+        {
+          "component": "espressif/esp_lcd_gc9a01",
+          "reason": "direct dependency absent"
+        }
+      ]
+    },
+    {
+      "profile": "movecall-cuican-esp32s3",
+      "upstream_variant": "movecall-cuican-esp32s3",
+      "manifest": "firmware/assistant_espidf/boards/movecall-cuican-esp32s3/idf_component.yml",
+      "manifest_sha256": "72d6b0ad1c33b663eed9ea56aa301746e8f2b70f06910bcfeb30be7effb97130",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": false,
+      "issues": [
+        {
+          "component": "espressif/esp_lcd_gc9a01",
+          "reason": "direct dependency absent"
+        }
+      ]
+    },
+    {
+      "profile": "genjutech-s3-1.54tft",
+      "upstream_variant": "genjutech-s3-1.54tft",
+      "manifest": "firmware/assistant_espidf/boards/genjutech-s3-1.54tft/idf_component.yml",
+      "manifest_sha256": "7a649ed9cbeaad09eaa1303e965b17c9cbf1963a17f52a2aa831598a682d9518",
+      "idf_requirement": ">=5.5.0,<5.6.0",
+      "cached_direct_sources_available": true,
+      "issues": []
+    },
+    {
+      "profile": "bread-compact-wifi",
+      "upstream_variant": "bread-compact-wifi",
+      "manifest": "firmware/assistant_espidf/boards/bread-compact-wifi/idf_component.yml",
+      "manifest_sha256": "9bdcbfa3a27f743812d331e951437a3246e282e8d88097c5c01ee578041eb8c5",
+      "idf_requirement": ">=5.5.6,<5.6.0",
+      "cached_direct_sources_available": true,
+      "issues": []
+    },
+    {
+      "profile": "bread-compact-wifi-128x64",
+      "upstream_variant": "bread-compact-wifi-128x64",
+      "manifest": "firmware/assistant_espidf/boards/bread-compact-wifi-128x64/idf_component.yml",
+      "manifest_sha256": "9bdcbfa3a27f743812d331e951437a3246e282e8d88097c5c01ee578041eb8c5",
+      "idf_requirement": ">=5.5.6,<5.6.0",
+      "cached_direct_sources_available": true,
+      "issues": []
+    },
+    {
+      "profile": "nologo-xingzhi-cube-0.96oled-wifi",
+      "upstream_variant": "nologo-xingzhi-cube-0.96oled-wifi",
+      "manifest": "firmware/assistant_espidf/boards/nologo-xingzhi-cube-0.96oled-wifi/idf_component.yml",
+      "manifest_sha256": "9bdcbfa3a27f743812d331e951437a3246e282e8d88097c5c01ee578041eb8c5",
+      "idf_requirement": ">=5.5.6,<5.6.0",
+      "cached_direct_sources_available": true,
+      "issues": []
+    }
+  ],
+  "cached_components": {
+    "espressif/cjson": {
+      "version": "1.7.19~2",
+      "manifest": "firmware/assistant_espidf/managed_components/espressif__cjson/idf_component.yml",
+      "manifest_sha256": "8cf02081bf037b8d0b89e613f5803d463d4a93d2eab892c4bbe20020cdbd4396"
+    },
+    "espressif/cmake_utilities": {
+      "version": "0.5.3",
+      "manifest": "firmware/assistant_espidf/managed_components/espressif__cmake_utilities/idf_component.yml",
+      "manifest_sha256": "8c21ccd7648224f955d0f8e694fca3e5c469db87ceea389ebbf66b6e5c5da239"
+    },
+    "espressif/dl_fft": {
+      "version": "0.8.0",
+      "manifest": "firmware/assistant_espidf/managed_components/espressif__dl_fft/idf_component.yml",
+      "manifest_sha256": "a599055ee4e8725c39bc1d02f25f02bf2e3b01732ca34a9f1d1fe6a4d9a5a992"
+    },
+    "espressif/esp-dsp": {
+      "version": "1.8.0",
+      "manifest": "firmware/assistant_espidf/managed_components/espressif__esp-dsp/idf_component.yml",
+      "manifest_sha256": "bf17a34ac40d2f438cea4d69e6cf614feefb80cdaf923f227a81c323996017f8"
+    },
+    "espressif/esp-sr": {
+      "version": "2.4.7",
+      "manifest": "firmware/assistant_espidf/managed_components/espressif__esp-sr/idf_component.yml",
+      "manifest_sha256": "17bd7ae6e93d3144f1d716f1369c846f42a7ea247765abf375463b6ca8661dd6"
+    },
+    "espressif/esp_codec_dev": {
+      "version": "1.5.11",
+      "manifest": "firmware/assistant_espidf/managed_components/espressif__esp_codec_dev/idf_component.yml",
+      "manifest_sha256": "9b933ca7ca16413fb771ca9bffa30afc205f81c3f7b00da4b3238a8174b3ad36"
+    },
+    "espressif/esp_io_expander": {
+      "version": "1.2.1",
+      "manifest": "firmware/assistant_espidf/managed_components/espressif__esp_io_expander/idf_component.yml",
+      "manifest_sha256": "5aa5ed672c9c6337886a77536841433791a3dfb93f1835515f67e8de34c0e6ce"
+    },
+    "espressif/esp_io_expander_tca9554": {
+      "version": "2.0.3",
+      "manifest": "firmware/assistant_espidf/managed_components/espressif__esp_io_expander_tca9554/idf_component.yml",
+      "manifest_sha256": "cb096f169c07cb75ad106ebbb363f38f92d36f874c6765adb2b6534027e8c4b3"
+    },
+    "espressif/esp_lcd_co5300": {
+      "version": "2.2.0",
+      "manifest": "firmware/assistant_espidf/managed_components/espressif__esp_lcd_co5300/idf_component.yml",
+      "manifest_sha256": "9b39a7e1112612918d3c5a622f018c7e39f37ffd9478680a0a0360fcaa1c7454"
+    },
+    "espressif/esp_lcd_panel_io_additions": {
+      "version": "1.0.1~1",
+      "manifest": "firmware/assistant_espidf/managed_components/espressif__esp_lcd_panel_io_additions/idf_component.yml",
+      "manifest_sha256": "ac781cc30945e91b413617d92ab3ccd5ed7bc82112f8d97291a8c942242c7e2a"
+    },
+    "espressif/esp_lcd_touch": {
+      "version": "1.2.1",
+      "manifest": "firmware/assistant_espidf/managed_components/espressif__esp_lcd_touch/idf_component.yml",
+      "manifest_sha256": "007dc69052e52d0556b410f45dded316237b2434878767fb379f2b9bd84e4616"
+    },
+    "espressif/esp_lcd_touch_cst816s": {
+      "version": "1.1.2",
+      "manifest": "firmware/assistant_espidf/managed_components/espressif__esp_lcd_touch_cst816s/idf_component.yml",
+      "manifest_sha256": "1d41285b7e3666b40e1c7805a62268670c0929964ea5f73d33c8d6ddaea13be0"
+    },
+    "espressif/esp_lcd_touch_ft5x06": {
+      "version": "1.1.1",
+      "manifest": "firmware/assistant_espidf/managed_components/espressif__esp_lcd_touch_ft5x06/idf_component.yml",
+      "manifest_sha256": "4080ff2f5e20e62fdc3a7d389bf3992d3e0cf17bca83993d4569403a65f1412e"
+    },
+    "espressif/esp_lvgl_port": {
+      "version": "2.9.0",
+      "manifest": "firmware/assistant_espidf/managed_components/espressif__esp_lvgl_port/idf_component.yml",
+      "manifest_sha256": "6e02590618c51cc5a8369a183facfaaacc0e0710669e51c3ae5cbe28387b51a4"
+    },
+    "espressif/esp_websocket_client": {
+      "version": "1.8.0",
+      "manifest": "firmware/assistant_espidf/managed_components/espressif__esp_websocket_client/idf_component.yml",
+      "manifest_sha256": "2304c43d6c508feee04e7653dc07934f9e4b3a1dface06945a8ec2bdfa3f3410"
+    },
+    "lvgl/lvgl": {
+      "version": "9.6.0~1",
+      "manifest": "firmware/assistant_espidf/managed_components/lvgl__lvgl/idf_component.yml",
+      "manifest_sha256": "28661afb4ed6f9237b9fd21a5fe1261de44c6834289f8feef29a73a91e044a77"
+    },
+    "waveshare/esp32_s3_touch_amoled_1_8": {
+      "version": "2.0.3",
+      "manifest": "firmware/assistant_espidf/managed_components/waveshare__esp32_s3_touch_amoled_1_8/idf_component.yml",
+      "manifest_sha256": "e5e615c0074a15e52072d6bffadc15ef3b8241de9507280301a3d33012013a16"
+    }
+  },
+  "counts": {
+    "profiles": 36,
+    "cached_direct_sources_available": 18,
+    "blocked": 18
+  }
+}
