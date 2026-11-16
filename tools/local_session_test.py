@@ -90,10 +90,10 @@ class MockAliyun:
 def build_config(realtime_url, **overrides):
     config = {
         "host": "127.0.0.1", "port": 0,
-        "public_base_url": "http://192.168.3.8:8765",
+        "public_base_url": "http://127.0.0.1:8765",
         "provisioning_token": "prov_token_local_test_0000000000",
         "device_token": "device_token_local_test_000000000",
-        "device_id": "desk-prototype-01",
+        "device_id": "配置中的默认设备 ID",
         "aliyun_workspace_id": "local-test-workspace",
         "aliyun_api_key": "local-test-key",
         "aliyun_model": "qwen3.8-omni-flash-realtime",
@@ -265,7 +265,7 @@ async def main():
                 output = mock.tool_output
                 check("tool_executed_and_reported", output is not None and output.get("saved") is True and output.get("storage") == "pc_prototype", f"remember_fact执行并回传function_call_output：{output}")
                 database = sqlite3.connect(Path(TEST_RUNTIME.name) / "memory.sqlite3")
-                row = database.execute("SELECT value FROM memories WHERE device_id=? AND key=?", ("desk-prototype-01", "牛牛的名字")).fetchone()
+                row = database.execute("SELECT value FROM memories WHERE device_id=? AND key=?", ("配置中的默认设备 ID", "牛牛的名字")).fetchone()
                 database.close()
                 check("memory_persisted", row is not None and row[0] == "牛牛", f"记忆已写入本机数据库并读回：{row[0] if row else None}")
                 await socket.close()

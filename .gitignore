@@ -14,6 +14,9 @@ tools/font_converter/node_modules/
 # Local credentials, runtime state and generated evidence must never enter a release.
 config.*.json
 !config.example.json
+# Cloud-voice wake greeting has no redistribution grant. Keep a local copy if needed.
+assets/wake_ack/ack.pcm
+assets/wake_ack/manifest.json
 .env
 runtime/
 evidence/**/*.log
