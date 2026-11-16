@@ -32,6 +32,8 @@ python gateway.py --config config.local.json
 
 操作演示：<https://leic8959-sudo.github.io/desktop-voice-assistant/>。演示只模拟启动和对话，不连接任何网关，也不接收密钥。
 
+全新克隆＋全新 venv＋无密钥的安装验证记录见 [安装验证](docs/安装验证-20261117.md)。
+
 没有模型密钥时，不要期待语音对话可用。管理页面、手工待办和记忆是否能在无密钥时完整使用，仍需你在自己的环境确认。
 
 ## 安全与贡献
